@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Tpe_arqui.iml" filepath="$PROJECT_DIR$/Tpe_arqui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-Usuario.iml" filepath="$PROJECT_DIR$/ms-Usuario.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-administracion.iml" filepath="$PROJECT_DIR$/ms-administracion.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-monopatin.iml" filepath="$PROJECT_DIR$/ms-monopatin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-tarifas.iml" filepath="$PROJECT_DIR$/ms-tarifas.iml" />
+    </modules>
+  </component>
+</project>
