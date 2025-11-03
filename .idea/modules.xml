@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Tpe_arqui.iml" filepath="$PROJECT_DIR$/Tpe_arqui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ms-monopatin/ms-monopatin.iml" filepath="$PROJECT_DIR$/ms-monopatin/ms-monopatin.iml" />
     </modules>
   </component>
 </project>
