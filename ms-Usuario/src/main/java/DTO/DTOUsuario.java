@@ -2,6 +2,7 @@ package DTO;
 
 import lombok.*;
 import java.util.List;
+import Modelos.*;
 
 @Data
 @AllArgsConstructor

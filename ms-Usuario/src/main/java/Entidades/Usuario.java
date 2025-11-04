@@ -2,6 +2,8 @@ package Entidades;
 
 import jakarta.persistence.*;
 import lombok.*;
+import Modelos.*;
+import java.util.List;
 
 @Data
 @Table(name = "usuario")
@@ -9,6 +11,7 @@ import lombok.*;
 public class Usuario {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
 
     @Column
@@ -17,18 +20,21 @@ public class Usuario {
     @Column
     private String apellido;
 
-    @ManyToMany(mappedBy = "usuario")
+    @ManyToMany(mappedBy = "usuarios")
     private List<Cuenta> cuentas;
 
     @Column
     private String nroTelefono;
 
     @Column
+    private boolean habilitado;
+
+    @Column
     private String mail;
 
     //Usa un enumerado (usuario, mantenimiento, admin)
-    @Column
-    private Enum rol;
+    @Enumerated(EnumType.STRING)
+    private roles rol;
 
     @Column
     private int latitud;
@@ -42,5 +48,10 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario")
     private List<Viaje> viajes;
 
+    public enum roles {
+        ADMINISTRADOR,
+        USUARIO,
+        TECNICO_MANTENIMIENTO
+    }
 }
 

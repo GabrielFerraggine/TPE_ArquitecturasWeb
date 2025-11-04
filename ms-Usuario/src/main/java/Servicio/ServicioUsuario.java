@@ -36,16 +36,18 @@ public class ServicioUsuario {
     /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona, para poder encontrar
     un monopatín cerca de mi ubicación*/
     //Devuelve los 5 monopatines mas cercanos
-    @Transactional(readOnly = true)
-    public List<Monopatin> obtenerMonopatinesCercanos(Long idUsuario) {
+    /*@Transactional(readOnly = true)
+    public List<Monopatin> obtenerMonopatinesCercanos(Long idUsuario) throws Exception{
         try {
             DTOUsuario usuario = obtenerUsuario(idUsuario);
             //tengo que hacer algun calculo para que devuelva los 5 mas cercanos
             //quizas usar algun metodo extra que calcule las distancias y ordene, luego en esta funcion guardo los mas cercanos
+            return null;
         } catch (Exception e) {
             throw new Exception("No se pudo retornar los monopatines mas cercanos");
         }
-    }
+    }*/
+    //se consume desde monopatin
 
     //Obtener todos los usuarios
     @Transactional(readOnly = true)
