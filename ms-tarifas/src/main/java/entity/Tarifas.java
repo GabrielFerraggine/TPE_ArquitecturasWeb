@@ -1,4 +1,4 @@
-/*package entity;
+package entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +15,6 @@ public class Tarifas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
 
-}*/
+
+}
