@@ -1,0 +1,75 @@
+package edu.tudai.microserviciofacturacion.controller;
+
+import edu.tudai.microserviciofacturacion.entity.Factura;
+import edu.tudai.microserviciofacturacion.service.ServiceFactura;
+import lombok.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Controller
+@Data
+@RequestMapping("/api/factura")
+public class ControllerFactura {
+
+    private final ServiceFactura serviceFactura;
+
+    @GetMapping
+    public ResponseEntity<List<Factura>> obtenerTodas(){
+        List<Factura> facturas = serviceFactura.buscarTodas();
+        if(facturas.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(facturas);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Factura> obtenerPorId(@PathVariable("id") Long id){
+        Factura factura = serviceFactura.buscarPorId(id);
+        if(factura == null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(factura);
+    }
+
+    @PostMapping
+    public ResponseEntity<Factura> insertarFactura(@RequestBody Factura factura){
+        Factura facturaNueva = serviceFactura.agregarFactura(factura);
+        if(facturaNueva == null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(facturaNueva);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Factura> updateFactura(@PathVariable("id") Long id, @RequestBody Factura factura) {
+        Factura facturaExistente = serviceFactura.buscarPorId(id);
+
+        if (facturaExistente == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        facturaExistente.setUsuarioId(factura.getUsuarioId());
+        facturaExistente.setFechaEmision(factura.getFechaEmision());
+
+        Factura facturaUpdated = serviceFactura.actualizarFactura(facturaExistente);
+
+        return ResponseEntity.ok(facturaUpdated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Factura> eliminarFactura(@PathVariable("id") Long id, @RequestBody Factura factura){
+        serviceFactura.eliminarFactura(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/totalFacturado")
+    public ResponseEntity<Double> obtenerTotalFacturado(
+            @RequestParam int anio, @RequestParam int mesInicio, @RequestParam int mesFin){
+
+        double totalFacturado = serviceFactura.obtenerTotalFacturado(anio, mesInicio, mesFin);
+        return ResponseEntity.ok(totalFacturado);
+    }
+}

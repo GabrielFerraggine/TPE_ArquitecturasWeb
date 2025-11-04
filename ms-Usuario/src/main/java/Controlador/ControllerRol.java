@@ -1,4 +1,4 @@
-package Controlador;
+package controller;
 
 public class ControllerRol {
 }

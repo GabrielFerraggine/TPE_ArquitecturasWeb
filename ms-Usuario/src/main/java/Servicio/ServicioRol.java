@@ -1,4 +1,4 @@
-package Servicio;
+package service;
 
 public class ServicioRol {
 }
