@@ -36,8 +36,17 @@ public class DetalleFactura {
         this.tiempoPausado = tiempoPausado;
     }
 
-    public void calcularMonto(){
-        Double costoBase = tarifaBase * tiempoUso;
+    public void calcularMonto(String tipoCuenta, Double kmAcumuladosMes) {
+        Double multiplicadorDescuento = 1.0;
+
+        if (tipoCuenta.equals("PREMIUM")) { //si el tipo de cuenta es premium aplica descuento segun cant de km acumulados
+            if(kmAcumuladosMes < 100){
+                multiplicadorDescuento = 0.5;
+            } else{
+                multiplicadorDescuento = 0.5;
+            }
+        }
+        Double costoBase = (tarifaBase * tiempoUso) * multiplicadorDescuento;
         Double costoExtra = tiempoPausado > 15 ? tarifaExtra * (tiempoPausado - 15) : 0;
         this.montoCalculado = costoBase + costoExtra;
     }

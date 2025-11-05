@@ -44,7 +44,7 @@ public class ControllerFactura {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Factura> updateFactura(@PathVariable("id") Long id, @RequestBody Factura factura) {
+    public ResponseEntity<Factura> actualizarFactura(@PathVariable("id") Long id, @RequestBody Factura factura) {
         Factura facturaExistente = serviceFactura.buscarPorId(id);
 
         if (facturaExistente == null) {

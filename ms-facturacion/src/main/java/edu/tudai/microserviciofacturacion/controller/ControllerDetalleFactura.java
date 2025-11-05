@@ -45,9 +45,9 @@ public class ControllerDetalleFactura {
                 detalleDTO.getTarifaBase(), detalleDTO.getTarifaExtra(),
                 detalleDTO.getTiempoUso(), detalleDTO.getTiempoPausado());
 
-        detalle.calcularMonto();  // calcular el monto antes de guardar
+        detalle.calcularMonto(detalleDTO.getTipoCuenta(), detalleDTO.getKmAcumuladosMes());  // calcular el monto antes de guardar
         factura.agregarDetalle(detalle); //este metodo llama a recalcularMontoTotal()
-        serviceFactura.agregarFactura(factura); // Gracias a CascadeType.ALL, esto guarda el detalle Y actualiza la factura
+        serviceFactura.actualizarFactura(factura); // Gracias a CascadeType.ALL, esto guarda el detalle Y actualiza la factura
         return ResponseEntity.ok(detalle);
     }
 

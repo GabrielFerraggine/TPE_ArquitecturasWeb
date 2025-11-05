@@ -11,4 +11,7 @@ public class DetalleFacturaDTO {
     private Double tarifaExtra;
     private Long tiempoUso;
     private Long tiempoPausado;
+
+    private String tipoCuenta;
+    private Double kmAcumuladosMes;
 }
