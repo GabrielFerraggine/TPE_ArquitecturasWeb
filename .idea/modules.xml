@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Tpe_arqui.iml" filepath="$PROJECT_DIR$/Tpe_arqui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-Usuario.iml" filepath="$PROJECT_DIR$/ms-Usuario.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-monopatin.iml" filepath="$PROJECT_DIR$/ms-monopatin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-viaje.iml" filepath="$PROJECT_DIR$/ms-viaje.iml" />
     </modules>
   </component>
 </project>
