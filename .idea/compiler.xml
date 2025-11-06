@@ -9,6 +9,8 @@
         <module name="ms-Usuario" />
         <module name="ms-monopatin" />
         <module name="ms-viaje" />
+        <module name="ms-gatewayt" />
+        <module name="ms-autenticacion" />
         <module name="ms-facturacion" />
         <module name="ms-cuenta" />
       </profile>
@@ -24,6 +26,7 @@
       <module name="ms-Usuario" options="-parameters" />
       <module name="ms-cuenta" options="-parameters" />
       <module name="ms-facturacion" options="-parameters" />
+      <module name="ms-monopatin" options="-parameters" />
     </option>
   </component>
 </project>
