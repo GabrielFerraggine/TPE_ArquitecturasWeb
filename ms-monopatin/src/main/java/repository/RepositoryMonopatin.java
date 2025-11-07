@@ -17,5 +17,4 @@ public interface RepositoryMonopatin extends JpaRepository<Monopatin, Integer> {
     @Query("UPDATE Monopatin m SET m.estado = :estado WHERE m.idMonopatin = :idMonopatin")
     int setEstado(int idMonopatin, String estado);
 
-
 }

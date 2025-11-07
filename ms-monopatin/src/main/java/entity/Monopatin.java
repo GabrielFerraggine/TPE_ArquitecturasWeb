@@ -1,5 +1,6 @@
 package entity;
 
+import DTO.MonopatinDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,5 +29,13 @@ public class Monopatin {
     private int tiempoDeUsoTotal;
     private int tiempoDePausas;
 
-
+    public Monopatin(MonopatinDTO mpDTO) {
+        this.idMonopatin = mpDTO.getIdMonopatin();
+        this.estado = mpDTO.getEstado();
+        this.latitud = mpDTO.getLatitud();
+        this.longitud = mpDTO.getLongitud();
+        this.kmRecorridos = mpDTO.getKmRecorridos();
+        this.tiempoDeUsoTotal = getTiempoDeUsoTotal();
+        this.tiempoDePausas = getTiempoDePausas();
+    }
 }

@@ -1,10 +1,14 @@
 package service;
 
+import DTO.MonopatinDTO;
 import entity.Monopatin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import repository.RepositoryMonopatin;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -18,9 +22,22 @@ public class ServiceMonopatin {
         return repoMonopatin.buscarPorId(idMonopatin);
     }
 
+    @Transactional(readOnly = true)
+    public List<MonopatinDTO> traerTodos() {
+        List<Monopatin> monopatines = repoMonopatin.findAll();
+        return monopatines.stream().map(MonopatinDTO::new).collect(Collectors.toList());
+    }
+
     @Transactional
     public boolean setEstado(int idMonopatin, String estado) {
         return (repoMonopatin.setEstado(idMonopatin, estado) == 1);
+    }
+
+    @Transactional
+    public MonopatinDTO save(MonopatinDTO monopatinDto) {
+        Monopatin monopatin = new Monopatin(monopatinDto);
+        repoMonopatin.save(monopatin);
+        return monopatinDto;
     }
 
     public boolean esParadaPermitida() {
