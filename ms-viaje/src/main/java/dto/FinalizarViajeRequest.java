@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ViajeCreateDTO {
-    private Long idMonopatin;
-    private Long idUsuario;
-    private Long paradaInicio;
+public class FinalizarViajeRequest  {
+    private Long idViaje;
+    private Long paradaFinal;
+    private Double kmRecorridos;
 }
