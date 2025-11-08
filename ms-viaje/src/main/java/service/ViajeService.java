@@ -1,16 +1,13 @@
 package service;
 
 
-import dto.FinalizarViajeRequest;
-import dto.IniciarViajeRequest;
-import dto.PausaDTO;
-import dto.ViajeDTO;
+import dto.*;
+import entity.Pausa;
 import entity.Viaje;
 import org.springframework.stereotype.Service;
 import repository.ViajeRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,13 +17,13 @@ public class ViajeService {
 
     private ViajeRepository viajeRepository;
 
-    public ViajeDTO inicirarViaje (IniciarViajeRequest request) {
+    public ViajeDTO iniciarViaje (IniciarViajeRequest request) {
         // Verificar si el usuario ya tiene un viaje activo
-        Viaje viajeActico = viajeRepository.findViajeActivoByIdUsuario(request.getIdUsuario());
+        Viaje viajeActico = viajeRepository.findViajeActivoByUsuario(request.getIdUsuario());
         if (viajeActico != null) {
             throw new RuntimeException("El usuario ya tiene un viaje activo");
         }
-        Viaje monopatinActivo = viajeRepository.findViajeActivoByIdMonopatin(request.getIdMonopatin());
+        Viaje monopatinActivo = viajeRepository.findViajeActivoByMonopatin(request.getIdMonopatin());
         if (monopatinActivo != null) {
             throw new RuntimeException("El monopatín ya está en uso");
         }
@@ -54,13 +51,76 @@ public class ViajeService {
         }
 
         // ¿CALCULAR TARIFA?
-        Double tarifa = calcularTarifa(viaje);
+        //Double tarifa = calcularTarifa(viaje);
+        // ACA EN IMPLEMENTAR EL MS-TARIFAS
+        Double tarifa = null;
 
-        viaje.finalizarViaje(LocalDateTime.now(), request.getParadaFinal(), request.getKmRecorridos(), tarifa);
+        viaje.finalizarViaje(
+                LocalDateTime.now(),
+                request.getParadaFinal(),
+                request.getKmRecorridos(),
+                tarifa);
 
         Viaje viajeFinalizado = viajeRepository.save(viaje);
         return mapToDTO(viajeFinalizado);
     }
+
+    public ViajeDTO pausarViaje(PausaRequest request){
+        Optional<Viaje> viajeOptional = viajeRepository.findById(request.getIdViaje());
+        if (viajeOptional.isEmpty()){ // Verificar si el viaje existe
+            throw new RuntimeException("Viaje no encontrado");
+        }
+        Viaje viaje = viajeOptional.get();
+        if (!viaje.getEstado().equals("EN_CURSO")) {
+            throw new RuntimeException("El viaje no está en curso");
+        }
+
+        Pausa pausa = new Pausa(LocalDateTime.now());
+        viaje.agregarPausa(pausa);
+        viaje.setEstado(Viaje.EstadoViaje.PAUSADO);
+
+        Viaje viajePausado = viajeRepository.save(viaje);
+        return mapToDTO(viajePausado);
+    }
+
+    public ViajeDTO retomarViaje(PausaRequest request){
+        Optional<Viaje> viajeOptional = viajeRepository.findById(request.getIdViaje());
+        if (viajeOptional.isEmpty()) { // Verificar si el viaje existe
+            throw new RuntimeException("Viaje no encontrado");
+        }
+        Viaje viaje = viajeOptional.get();
+        if (!viaje.getEstado().equals("PAUSADO")) {
+            throw new RuntimeException("El viaje no está pausado");
+        }
+
+        if (!viaje.getPausas().isEmpty()){
+            Pausa ultimaPausa = viaje.getPausas().get(viaje.getPausas().size() - 1);
+            if (ultimaPausa.getFechaHoraFin() == null) {
+                ultimaPausa.finalizarPausa(LocalDateTime.now());
+            }
+        }
+
+        viaje.setEstado(Viaje.EstadoViaje.EN_CURSO);
+        Viaje viajeActualizado = viajeRepository.save(viaje);
+        return mapToDTO(viajeActualizado);
+    }
+
+    public List<ViajeDTO> obtenerViajesPorUsuario(Long idUsuario){
+        return viajeRepository.findByIdUsuario(idUsuario)
+                .stream().map(
+                        viaje->mapToDTO(viaje)
+                )
+                .collect(Collectors.toList());
+    }
+
+    public List<ViajeDTO> obtenerViajesPorCuenta(Long idCuenta){
+        return viajeRepository.findByIdCuenta(idCuenta)
+                .stream().map(
+                        this::mapToDTO // viaje->mapToDTO(viaje)
+                )
+                .collect(Collectors.toList());
+    }
+
 
 
     private ViajeDTO mapToDTO(Viaje viaje) {
