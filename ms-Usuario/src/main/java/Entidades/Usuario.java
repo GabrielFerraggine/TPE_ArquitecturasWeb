@@ -3,6 +3,7 @@ package Entidades;
 import jakarta.persistence.*;
 import lombok.*;
 import Modelos.*;
+
 import java.util.List;
 
 @Data
@@ -11,7 +12,7 @@ import java.util.List;
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private Long idUsuario;
 
     @Column
@@ -25,9 +26,6 @@ public class Usuario {
 
     @Column
     private String nroTelefono;
-
-    @Column
-    private boolean habilitado;
 
     @Column
     private String mail;
