@@ -1,9 +1,12 @@
 package Servicio;
 
 import Entidades.Usuario;
-import Modelos.Monopatin;
+import Modelos.*;
 import Repository.RepositoryUsuario;
 import DTO.DTOUsuario;
+import feignClients.FeignClientCuenta;
+import feignClients.FeignClientMonopatin;
+import feignClients.FeignClientViaje;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,15 @@ public class ServicioUsuario {
 
     @Autowired
     private RepositoryUsuario repoUsuario;
+
+    @Autowired
+    private FeignClientCuenta feignCuenta;
+
+    @Autowired
+    private FeignClientMonopatin feignMonopatin;
+
+    @Autowired
+    private FeignClientViaje feignViaje;
 
     public DTOUsuario toDTO(Usuario u) {
         DTOUsuario dtoUsuario = new DTOUsuario(
@@ -33,21 +45,80 @@ public class ServicioUsuario {
         return dtoUsuario;
     }
 
-    /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona, para poder encontrar
-    un monopatín cerca de mi ubicación*/
-    //Devuelve los 5 monopatines mas cercanos
-    /*@Transactional(readOnly = true)
-    public List<Monopatin> obtenerMonopatinesCercanos(Long idUsuario) throws Exception{
+    /*=========================Metodos de los FeignClient================================*/
+    /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona,
+    para poder encontrar un monopatín cerca de mi ubicación*/
+    @Transactional(readOnly = true)
+    public List<Monopatin> obtenerMonopatinesCercanos(int latitud, int longitud) throws Exception {
         try {
-            DTOUsuario usuario = obtenerUsuario(idUsuario);
-            //tengo que hacer algun calculo para que devuelva los 5 mas cercanos
-            //quizas usar algun metodo extra que calcule las distancias y ordene, luego en esta funcion guardo los mas cercanos
-            return null;
+            return feignMonopatin.obtenerMonopatinesCercanos(latitud, longitud);
         } catch (Exception e) {
-            throw new Exception("No se pudo retornar los monopatines mas cercanos");
+            throw new Exception("Error al obtener monopatines cercanos: " + e.getMessage());
         }
-    }*/
-    //se consume desde monopatin
+    }
+
+    //Obtener una cuenta de un usuario
+    @Transactional(readOnly = true)
+    public Cuenta obtenerCuentaUsuario(Long idCuenta) throws Exception{
+        try {
+            return feignCuenta.obtenerCuentaUsuario(idCuenta);
+        } catch (Exception e) {
+            throw new Exception("No se pudo obtener la cuenta: " + e.getMessage());
+        }
+    }
+
+    //Obtener todas las cuentas de un usuario
+    @Transactional(readOnly = true)
+    public List<Cuenta> obtenerCuentasUsuarios(Long idCuenta) throws Exception {
+        try {
+            return feignCuenta.obtenerCuentasUsuario(idCuenta);
+        } catch (Exception e) {
+            throw new Exception("no se pudo obtener todas las cuentas: " + e.getMessage());
+        }
+    }
+
+    //Obtener un viaje de un usuario
+    @Transactional(readOnly = true)
+    public Viaje obtenerViaje(Long idViaje, Long idUsuario) throws Exception {
+        try {
+            return feignViaje.obtenerViaje(idViaje, idUsuario);
+        } catch (Exception e) {
+            throw new Exception("No se pudo obtener el viaje solicitado: " + e.getMessage());
+        }
+    }
+
+    //Obtener todos los viajes de un usuario
+    @Transactional(readOnly = true)
+    public List<Viaje> obtenerViajesUsuario(Long idUsuario) throws Exception {
+        try {
+            return feignViaje.obtenerViajesUsuario(idUsuario);
+        } catch (Exception e) {
+            throw new Exception("No se pudo obtener los viajes solicitados: " + e.getMessage());
+        }
+    }
+
+    //Agregar un nuevo viaje
+    @Transactional
+    public Viaje agregarViaje(Viaje v) throws Exception{
+        try {
+            return feignViaje.save(v);
+        } catch(Exception e) {
+            throw new Exception("Error al crear un nuevo viaje: " + e.getMessage());
+        }
+    }
+
+    /*==================================Metodos propios==================================*/
+    //Obtener un usuario
+    @Transactional(readOnly = true)
+    public DTOUsuario obtenerUsuario(Long id) throws Exception{
+        try {
+            Usuario usuario = repoUsuario.obtenerUsuario(id);
+            DTOUsuario dtoUsuario = this.toDTO(usuario);
+            return dtoUsuario;
+        } catch (Exception e) {
+            throw new Exception("Error al obtener usuario con la id: " + id + " " + e.getMessage());
+        }
+    }
 
     //Obtener todos los usuarios
     @Transactional(readOnly = true)
@@ -81,7 +152,7 @@ public class ServicioUsuario {
 
     //Obtener todos los usuarios deshabilitados
     @Transactional(readOnly = true)
-    public List<DTOUsuario> obtenerUsuariosDehabilitados() throws Exception {
+    public List<DTOUsuario> obtenerUsuariosDeshabilitados() throws Exception {
         try {
             List<Usuario> usuarios = repoUsuario.obtenerDeshabilitados();
             List<DTOUsuario> dtoUsuarios = new ArrayList<>();
@@ -94,17 +165,6 @@ public class ServicioUsuario {
         }
     }
 
-    //Obtener un usuario
-    @Transactional(readOnly = true)
-    public DTOUsuario obtenerUsuario(Long id) throws Exception{
-        try {
-            Usuario usuario = repoUsuario.obtenerUsuario(id);
-            DTOUsuario dtoUsuario = this.toDTO(usuario);
-            return dtoUsuario;
-        } catch (Exception e) {
-            throw new Exception("Error al obtener estudiante con la id: " + e.getMessage());
-        }
-    }
 
     //Dar de alta un usuario
     @Transactional
@@ -121,7 +181,7 @@ public class ServicioUsuario {
 
     //Dar de baja un usuario
     @Transactional
-    public boolean eliminarUsuario(Long id) throws Exception{
+    public Boolean eliminarUsuario(Long id) throws Exception{
         try {
             if(repoUsuario.existsById(id)) {
                 repoUsuario.deleteById(id);
@@ -136,30 +196,48 @@ public class ServicioUsuario {
     }
 
 
-    //Modificar un usuario
+    //Modificar un usuario (funciona como un patch)
     @Transactional
-    public DTOUsuario actualizarUsuario(Long id, Usuario usuario) throws Exception {
+    public DTOUsuario actualizarUsuario(Long id, Usuario usuarioActualizado) throws Exception {
         try {
-            if (repoUsuario.existsById(id)){
-                Usuario usuarioGuardado = repoUsuario.save(usuario);
-                DTOUsuario dtoUsuario = this.toDTO(usuarioGuardado);
-                return dtoUsuario;
-            }
-            throw new Exception("Usuario no encontrado");
+            Usuario usuarioExistente = repoUsuario.findById(id)
+                    .orElseThrow(() -> new Exception("Usuario no encontrado con id: " + id));
+            actualizarCamposUsuario(usuarioExistente, usuarioActualizado);
+            Usuario usuarioGuardado = repoUsuario.save(usuarioExistente);
+            return this.toDTO(usuarioGuardado);
+
         } catch (Exception e) {
-            throw new Exception("Error al actualizar el usuario con id=" + id + " " + e.getMessage());
+            throw new Exception("Error al actualizar el usuario con id=" + id + ": " + e.getMessage());
         }
     }
 
+    //El metodo comprueba los campos para no tener que realizar un update con un objeto con todos los parametros
+    private void actualizarCamposUsuario(Usuario existente, Usuario actualizado) {
+        if (actualizado.getNombre() != null) {
+            existente.setNombre(actualizado.getNombre());
+        }
+        if (actualizado.getApellido() != null) {
+            existente.setApellido(actualizado.getApellido());
+        }
+        if (actualizado.getNroTelefono() != null) {
+            existente.setNroTelefono(actualizado.getNroTelefono());
+        }
+        existente.setHabilitado(actualizado.isHabilitado());
+        if (actualizado.getMail() != null) {
+            existente.setMail(actualizado.getMail());
+        }
+        if (actualizado.getRol() != null) {
+            existente.setRol(actualizado.getRol());
+        }
+        existente.setLatitud(actualizado.getLatitud());
+        existente.setLongitud(actualizado.getLongitud());
+    }
 
+    //Obtiene un usuario si existe devuelve true
+    @Transactional(readOnly = true)
+    public boolean existeUsuario(Long id) {
+        return repoUsuario.existsById(id);
+    }
 
-
-
-
-
-
-
-
-
-
+    //TODO Put para habilitar y deshabilitar usuario
 }

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "viajes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,32 +26,38 @@ public class Viaje {
     private Long idUsuario;
 
     @Column(nullable = false)
+    private Long idCuenta;
+
+    @Column(nullable = false)
     private LocalDateTime fechaHoraInicio;
+
     private LocalDateTime fechaHoraFin;
     private Double kmRecorridos;
     private Double taifa;
 
     @Column(nullable = false)
     private Long paradaInicio;
+
     private Long paradaFinal;
 
     @Enumerated(EnumType.STRING)
     private EstadoViaje estado;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "viaje_id")
-    private List<Pausa> pausas;
+    private List<Pausa> pausas = new ArrayList<>();
 
-    public Viaje(Long idMonopatin, Long idUsuario, LocalDateTime fechaHoraInicio, Long paradaInicio) {
+    public Viaje(Long idMonopatin, Long idUsuario, Long idCuenta, LocalDateTime fechaHoraInicio, Long paradaInicio) {
         this.idMonopatin = idMonopatin;
         this.idUsuario = idUsuario;
+        this.idCuenta = idCuenta;
         this.fechaHoraInicio = fechaHoraInicio;
         this.paradaInicio = paradaInicio;
         this.estado = EstadoViaje.EN_CURSO;
         this.pausas = new ArrayList<>();
         this.kmRecorridos = 0.0;
     }
-    public void finalizarViaje(LocalDateTime fechaHoraFin, Long paradaFinal, Double kmRecorridos) {
+    public void finalizarViaje(LocalDateTime fechaHoraFin, Long paradaFinal, Double kmRecorridos, Double taifa) {
         this.fechaHoraFin = fechaHoraFin;
         this.paradaFinal = paradaFinal;
         this.kmRecorridos = kmRecorridos;

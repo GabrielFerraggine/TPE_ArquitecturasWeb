@@ -14,6 +14,7 @@ public class ViajeDTO {
     private Long id;
     private Long idMonopatin;
     private Long idUsuario;
+    private Long idCuenta;
     private LocalDateTime  fechaHoraInicio;
     private LocalDateTime fechaHoraFin;
     private Double kmRecorridos;

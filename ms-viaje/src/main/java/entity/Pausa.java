@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "pausas")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,19 +23,24 @@ public class Pausa {
 
     private LocalDateTime fechaHoraFin;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "viaje_id", nullable = false)
-    private Viaje viaje;
+    @Column(nullable = false)
+    private Boolean pausaExtendida = false;
 
-    public Duration getDuracion() {
-        if (fechaHoraFin != null) {
-            return Duration.between(fechaHoraInicio, fechaHoraFin);
-        } else {
-            return Duration.between(fechaHoraInicio, LocalDateTime.now());
-        }
+    public Pausa(LocalDateTime fechaHoraInicio) {
+        this.fechaHoraInicio = fechaHoraInicio;
+        this.pausaExtendida = false;
     }
 
-    public boolean esPausaExtensa() {
-        return getDuracion().toMinutes() > 15;
+    public void finalizarPausa(LocalDateTime fechaHoraFin) {
+        this.fechaHoraFin = fechaHoraFin;
+        Duration duracion = Duration.between(this.fechaHoraInicio, this.fechaHoraFin);
+        this.pausaExtendida = duracion.toMinutes() > 15;
+    }
+
+    public Long getDuracionEnMinutos() {
+        if (fechaHoraFin == null) {
+            return 0L;
+        }
+        return Duration.between(fechaHoraInicio, fechaHoraFin).toMinutes();
     }
 }

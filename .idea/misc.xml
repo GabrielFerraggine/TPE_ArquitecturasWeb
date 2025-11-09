@@ -12,10 +12,14 @@
         <option value="$PROJECT_DIR$/ms-facturacion/pom.xml" />
         <option value="$PROJECT_DIR$/ms-tarifas/pom.xml" />
         <option value="$PROJECT_DIR$/ms-Usuario/pom.xml" />
+        <option value="$PROJECT_DIR$/ms-gatewayt/pom.xml" />
+        <option value="$PROJECT_DIR$/ms-autenticacion/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/ms-administracion/pom.xml" />
+        <option value="$PROJECT_DIR$/ms-tarifas/pom.xml" />
         <option value="$PROJECT_DIR$/ms-usuario/pom.xml" />
       </set>
     </option>

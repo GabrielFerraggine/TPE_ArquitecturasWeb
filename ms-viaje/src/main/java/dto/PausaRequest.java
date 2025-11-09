@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ViajeCreateDTO {
-    private Long idMonopatin;
-    private Long idUsuario;
-    private Long paradaInicio;
+public class PausaRequest {
+    private Long idViaje;
+
+    // Con esto encapsulamos los datos necesarios para pausar un viaje
 }

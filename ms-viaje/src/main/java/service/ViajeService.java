@@ -1,63 +1,151 @@
 package service;
 
-import dto.ViajeCreateDTO;
+
+import dto.*;
 import entity.Pausa;
 import entity.Viaje;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import repository.ViajeRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ViajeService {
-    private final ViajeRepository viajeRepository;
 
-    @Transactional
-    public Viaje inicirarViaje(ViajeCreateDTO viajeCreateDTO) {
-        Optional<Viaje> viajeActivo = viajeRepository.findByIdMonopatinAndEstado(viajeCreateDTO.getIdMonopatin(), Viaje.EstadoViaje.EN_CURSO);
+    private ViajeRepository viajeRepository;
 
-        if (viajeActivo.isPresent()) {
+    public ViajeDTO iniciarViaje (IniciarViajeRequest request) {
+        // Verificar si el usuario ya tiene un viaje activo
+        Viaje viajeActico = viajeRepository.findViajeActivoByUsuario(request.getIdUsuario());
+        if (viajeActico != null) {
+            throw new RuntimeException("El usuario ya tiene un viaje activo");
+        }
+        Viaje monopatinActivo = viajeRepository.findViajeActivoByMonopatin(request.getIdMonopatin());
+        if (monopatinActivo != null) {
             throw new RuntimeException("El monopatín ya está en uso");
         }
         Viaje nuevoViaje = new Viaje(
-                viajeCreateDTO.getIdMonopatin(),
-                viajeCreateDTO.getIdUsuario(),
+                request.getIdMonopatin(),
+                request.getIdUsuario(),
+                request.getIdCuenta(),
                 LocalDateTime.now(),
-                viajeCreateDTO.getParadaInicio()
+                request.getParadaInicio()
         );
 
-        return viajeRepository.save(nuevoViaje);
+        Viaje viajeGuardado = viajeRepository.save(nuevoViaje);
+        return mapToDTO(viajeGuardado);
+    }
+
+    public ViajeDTO finalizarViaje(FinalizarViajeRequest request){
+        // Optional para manejar si no existe
+        Optional<Viaje> viajeOptional = viajeRepository.findById(request.getIdViaje());
+        if (viajeOptional.isEmpty()){ // Verificar si el viaje existe
+            throw new RuntimeException("Viaje no encontrado");
+        }
+        Viaje viaje = viajeOptional.get();
+        if (!viaje.getEstado().equals("EN_CURSO") && !viaje.getEstado().equals("PAUSADO")) {
+            throw new RuntimeException("El viaje no está activo");
+        }
+
+        // ¿CALCULAR TARIFA?
+        //Double tarifa = calcularTarifa(viaje);
+        // ACA EN IMPLEMENTAR EL MS-TARIFAS
+        Double tarifa = null;
+
+        viaje.finalizarViaje(
+                LocalDateTime.now(),
+                request.getParadaFinal(),
+                request.getKmRecorridos(),
+                tarifa);
+
+        Viaje viajeFinalizado = viajeRepository.save(viaje);
+        return mapToDTO(viajeFinalizado);
+    }
+
+    public ViajeDTO pausarViaje(PausaRequest request){
+        Optional<Viaje> viajeOptional = viajeRepository.findById(request.getIdViaje());
+        if (viajeOptional.isEmpty()){ // Verificar si el viaje existe
+            throw new RuntimeException("Viaje no encontrado");
+        }
+        Viaje viaje = viajeOptional.get();
+        if (!viaje.getEstado().equals("EN_CURSO")) {
+            throw new RuntimeException("El viaje no está en curso");
+        }
+
+        Pausa pausa = new Pausa(LocalDateTime.now());
+        viaje.agregarPausa(pausa);
+        viaje.setEstado(Viaje.EstadoViaje.PAUSADO);
+
+        Viaje viajePausado = viajeRepository.save(viaje);
+        return mapToDTO(viajePausado);
+    }
+
+    public ViajeDTO retomarViaje(PausaRequest request){
+        Optional<Viaje> viajeOptional = viajeRepository.findById(request.getIdViaje());
+        if (viajeOptional.isEmpty()) { // Verificar si el viaje existe
+            throw new RuntimeException("Viaje no encontrado");
+        }
+        Viaje viaje = viajeOptional.get();
+        if (!viaje.getEstado().equals("PAUSADO")) {
+            throw new RuntimeException("El viaje no está pausado");
+        }
+
+        if (!viaje.getPausas().isEmpty()){
+            Pausa ultimaPausa = viaje.getPausas().get(viaje.getPausas().size() - 1);
+            if (ultimaPausa.getFechaHoraFin() == null) {
+                ultimaPausa.finalizarPausa(LocalDateTime.now());
+            }
+        }
+
+        viaje.setEstado(Viaje.EstadoViaje.EN_CURSO);
+        Viaje viajeActualizado = viajeRepository.save(viaje);
+        return mapToDTO(viajeActualizado);
+    }
+
+    public List<ViajeDTO> obtenerViajesPorUsuario(Long idUsuario){
+        return viajeRepository.findByIdUsuario(idUsuario)
+                .stream().map(
+                        viaje->mapToDTO(viaje)
+                )
+                .collect(Collectors.toList());
+    }
+
+    public List<ViajeDTO> obtenerViajesPorCuenta(Long idCuenta){
+        return viajeRepository.findByIdCuenta(idCuenta)
+                .stream().map(
+                        this::mapToDTO // viaje->mapToDTO(viaje)
+                )
+                .collect(Collectors.toList());
     }
 
 
-    @Transactional
-    public Viaje finalizarViaje(Long idViaje, Long paradaFinal, Double kmRecorridos, Double tarifa) {
-        Viaje viajeActual = viajeRepository.findById(idViaje)
-                .orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
-        if (viajeActual.getEstado() != Viaje.EstadoViaje.EN_CURSO && viajeActual.getEstado() != Viaje.EstadoViaje.PAUSADO) {
-            throw new RuntimeException("El viaje ya ha sido finalizado");
-        }
 
-        viajeActual.finalizarViaje(LocalDateTime.now(), paradaFinal, kmRecorridos);
-        viajeActual.setTaifa(tarifa);
-        return viajeRepository.save(viajeActual);
-    }
 
-    @Transactional
-    public Viaje pausarViaje(Long idViaje){
-        Viaje viajeActual = viajeRepository.findById(idViaje).orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
-        if(viajeActual.getEstado() != Viaje.EstadoViaje.EN_CURSO) {
-            throw new RuntimeException("El viaje no está en curso y no se puede pausar");
-        }
-        Pausa pausa = new Pausa();
-        pausa.setFechaHoraInicio(LocalDateTime.now());
-        pausa.setViaje(viajeActual);
-        viajeActual.agregarPausa(pausa);
-        viajeActual.setEstado(Viaje.EstadoViaje.PAUSADO);
-        return viajeRepository.save(viajeActual);
+
+    private ViajeDTO mapToDTO(Viaje viaje) {
+        List<PausaDTO> pausasDTO = viaje.getPausas().stream()
+                .map(p -> new PausaDTO(
+                        p.getId(),
+                        p.getFechaHoraInicio(),
+                        p.getFechaHoraFin(),
+                        p.getPausaExtendida()))
+                .collect(Collectors.toList());
+
+        return new ViajeDTO(
+                viaje.getId(),
+                viaje.getIdMonopatin(),
+                viaje.getIdUsuario(),
+                viaje.getIdCuenta(),
+                viaje.getFechaHoraInicio(),
+                viaje.getFechaHoraFin(),
+                viaje.getKmRecorridos(),
+                viaje.getTaifa(),
+                viaje.getParadaInicio(),
+                viaje.getParadaFinal(),
+                viaje.getEstado().toString(),
+                pausasDTO);
     }
 }
