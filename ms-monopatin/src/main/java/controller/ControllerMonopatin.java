@@ -1,6 +1,7 @@
 package controller;
 
 import DTO.MonopatinDTO;
+import DTO.ReporteDTO;
 import entity.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ControllerMonopatin {
     @Autowired
     private ServiceMonopatin serviceMonopatin;
 
-    @GetMapping("")
+    @GetMapping("/")
     public ResponseEntity<List<MonopatinDTO>> traerTodosLosMonopatines() {
         List<MonopatinDTO> monopatines = serviceMonopatin.traerTodos();
         if (monopatines.isEmpty()) {
@@ -53,28 +54,70 @@ public class ControllerMonopatin {
         }
     }
 
-    @PutMapping("/{id}/{estado}")
+    @PutMapping("/{id}/cambiarEstado/{estado}")
     public ResponseEntity<String> setEstado(@PathVariable("id") int idMonopatin, @PathVariable("estado") String estado, @RequestBody Monopatin monopatin) {
         if (estado.equals("enMantenimiento") || estado.equals("enUso") || (estado.equals("libre"))) {
             if (serviceMonopatin.setEstado(idMonopatin, estado)) {
                 return ResponseEntity.ok().body("El estado del Monopatin (id = " + idMonopatin + ") se ha actualizado a '" + estado + "'");
             }
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
-        return  ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().build();
     }
 
-    public boolean esParadaPermitida() {
-        //Algo con el GPS, Latitud y Longitud
-        return true;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") int id) {
+        Monopatin mp = serviceMonopatin.buscarMonopatinPorId(id);
+        if (mp == null) {
+            return ResponseEntity.notFound().build();
+        }
+        serviceMonopatin.borrarMonopatin(mp);
+        return ResponseEntity.ok().body("Se borró el Monopatin (id = " + id + ")");
     }
 
-    public void compenzarPausa() {
-
+    @GetMapping("/reporte/kmRecorridos")
+    public ResponseEntity<List<ReporteDTO>> getReportePorKmRecorridos() {
+        List<ReporteDTO> reporte = serviceMonopatin.getReportePorKmRecorridos();
+        if (reporte != null) {
+            return ResponseEntity.ok(reporte);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    public void finalizarPausa() {
+    @GetMapping("/reporte/tiempoDeUsoTotal")
+    public ResponseEntity<List<ReporteDTO>> getReportePorTiempoDeUsoTotal() {
+        List<ReporteDTO> reporte = serviceMonopatin.getReportePorTiempoDeUsoTotal();
+        if (reporte != null) {
+            return ResponseEntity.ok(reporte);
+        }
+        return ResponseEntity.notFound().build();
+    }
 
+    @GetMapping("/reporte/tiempoDePausas")
+    public ResponseEntity<List<ReporteDTO>> getReportePorTiempoDePausas() {
+        List<ReporteDTO> reporte = serviceMonopatin.getReportePorTiempoDePausas();
+        if (reporte != null) {
+            return ResponseEntity.ok(reporte);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/reporte")
+    public ResponseEntity<List<ReporteDTO>> getReporteCompleto() {
+        List<ReporteDTO> reporte = serviceMonopatin.getReporteCompleto();
+        if (reporte != null) {
+            return ResponseEntity.ok(reporte);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{idMonopatin}/finalizarRecorrido")
+    public ResponseEntity<?> finalizarRecorrido(@PathVariable("idMonopatin") int idMonopatin, @RequestParam double kmRecorridos, @RequestParam int tiempoDeUsoTotal, @RequestParam int tiempoDePausas) {
+        boolean resultado = serviceMonopatin.finalizarRecorrido(idMonopatin, kmRecorridos, tiempoDeUsoTotal, tiempoDePausas);
+        if (resultado) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.internalServerError().body("Error al finalizar el Monopatin");
     }
 
 }

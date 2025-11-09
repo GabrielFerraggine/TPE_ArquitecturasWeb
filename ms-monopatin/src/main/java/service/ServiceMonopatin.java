@@ -1,12 +1,14 @@
 package service;
 
 import DTO.MonopatinDTO;
+import DTO.ReporteDTO;
 import entity.Monopatin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import repository.RepositoryMonopatin;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,13 +26,8 @@ public class ServiceMonopatin {
 
     @Transactional(readOnly = true)
     public List<MonopatinDTO> traerTodos() {
-        List<Monopatin> monopatines = repoMonopatin.findAll();
+        List<Monopatin> monopatines = repoMonopatin.traerTodos();
         return monopatines.stream().map(MonopatinDTO::new).collect(Collectors.toList());
-    }
-
-    @Transactional
-    public boolean setEstado(int idMonopatin, String estado) {
-        return (repoMonopatin.setEstado(idMonopatin, estado) == 1);
     }
 
     @Transactional
@@ -40,48 +37,91 @@ public class ServiceMonopatin {
         return monopatinDto;
     }
 
-    public boolean esParadaPermitida() {
-        //Algo con el GPS, Latitud y Longitud
-        return true;
+    @Transactional
+    public boolean setEstado(int idMonopatin, String estado) {
+        return (repoMonopatin.setEstado(idMonopatin, estado) == 1);
     }
 
-    public void compenzarPausa() {
-
+    @Transactional
+    public void borrarMonopatin(Monopatin monopatin) {
+        repoMonopatin.delete(monopatin);
     }
 
-    public void finalizarPausa() {
 
-    }
 
-    /*
-    public ArrayList<Double> getUbicacion() {
-        ArrayList<Double> ubicacion = new ArrayList<Double>();
-        ubicacion.addFirst(this.latitud);
-        ubicacion.addLast(this.longitud);
-        return ubicacion;
-    }
-    */
 
-    //Sumar Tiempos Y KMs recorridos?
 
-    //Generar Reporte? Retornar una lista o un JSON/XML ?
 
-    // Ubicar Monopatin? Retornar Ubicacion Actual?
 
-    /*
-    @Override
-    public void setEstado(String nuevoEstado) {
-        if (nuevoEstado.equals("enUso")) {
-            this.estado = "Activo";
-        } else if (nuevoEstado.equals("enMantenimiento")) {
-            this.estado = "enMantenimiento";
-        } else if (nuevoEstado.equals("libre")) {
-            this.estado = "libre";
-        } else {
-            // Devolver Un error
+
+
+
+    @Transactional(readOnly = true)
+    public List<ReporteDTO> getReportePorKmRecorridos() {
+        try {
+            List<ReporteDTO> reporte = repoMonopatin.getReportePorKmRecorridos();
+
+            if (reporte == null || reporte.isEmpty())
+                return Collections.emptyList();
+
+            return reporte;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar el reporte de uso de monopatines por kilometros", e);
         }
     }
 
-    */
+    @Transactional(readOnly = true)
+    public List<ReporteDTO> getReportePorTiempoDePausas() {
+        try {
+            List<ReporteDTO> reportes = repoMonopatin.getReportePorTiempoDePausas();
+            if (reportes == null || reportes.isEmpty())
+                return Collections.emptyList();
+
+            return reportes;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar el reporte de uso de monopatines por tiempo con pausas", e);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReporteDTO> getReportePorTiempoDeUsoTotal() {
+        try {
+            List<ReporteDTO> reporte = repoMonopatin.getReportePorTiempoDeUsoTotal();
+
+            if (reporte == null || reporte.isEmpty())
+                return Collections.emptyList();
+
+            return reporte;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar el reporte de uso de monopatines por kilometros", e);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReporteDTO> getReporteCompleto() {
+        try {
+            List<ReporteDTO> reporte = repoMonopatin.getReporteCompleto();
+
+            if (reporte == null || reporte.isEmpty())
+                return Collections.emptyList();
+
+            return reporte;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar el reporte de uso de monopatines por kilometros", e);
+        }
+    }
+
+
+
+
+    @Transactional
+    public boolean finalizarRecorrido(int idMonopatin, double kmRecorridos, int tiempoDeUsoTotal, int tiempoDePausas) {
+        Monopatin mpAUX = this.buscarMonopatinPorId(idMonopatin);
+        mpAUX.setKmRecorridos(kmRecorridos + mpAUX.getKmRecorridos());
+        mpAUX.setTiempoDeUsoTotal(tiempoDeUsoTotal + mpAUX.getTiempoDeUsoTotal());
+        mpAUX.setTiempoDePausas(tiempoDePausas + mpAUX.getTiempoDePausas());
+        int resultado = repoMonopatin.finalizarRecorrido(mpAUX.getIdMonopatin(), mpAUX.getKmRecorridos(), mpAUX.getTiempoDeUsoTotal(), mpAUX.getTiempoDePausas());
+        return resultado != 0;
+    }
 }
 

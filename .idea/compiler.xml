@@ -9,7 +9,6 @@
         <module name="ms-Usuario" />
         <module name="ms-monopatin" />
         <module name="ms-viaje" />
-        <module name="ms-gatewayt" />
         <module name="ms-autenticacion" />
         <module name="ms-facturacion" />
         <module name="ms-cuenta" />
@@ -17,6 +16,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ms-administracion" target="21" />
+      <module name="ms-gatewayt" target="21" />
       <module name="ms-tarifas" target="21" />
       <module name="ms-usuario" target="21" />
     </bytecodeTargetLevel>
