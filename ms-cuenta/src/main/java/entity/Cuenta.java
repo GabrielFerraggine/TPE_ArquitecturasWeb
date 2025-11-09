@@ -6,7 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -15,12 +17,11 @@ public class Cuenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long nroCuenta;
-    //TODO consultar por la lista de usuarios.
-    //private List<String> usuarios; //dnis
-    private double saldo; // cargado por MP
-    private boolean activo; //estado de cuenta
+    private List<String> usuarios; //dnis
+    private BigDecimal saldo; // cargado por MP
     private Date fechaAlta;
-    //TODO consultar si hay tipo de cuenta
-    //private String tipoCuenta (si hubiese basica o premium)
+    private TipoCuenta tipoCuenta; // premium o basica
+    private String idCuentaMP;
+    private boolean activo; //estado de cuenta: anulada o no
 
 }
