@@ -41,136 +41,168 @@ public class ControllerUsuario {
     // --No se a que servicio pedirlo
 
     @GetMapping("/obtenerCuentaUsuario/{idCuenta}")
-    public ResponseEntity<Cuenta> obtenerCuentaUsuario(Long idCuenta) throws Exception{
+    public ResponseEntity<Cuenta> obtenerCuentaUsuario(Long idCuenta) {
         try {
             return ResponseEntity.ok(servicioUsuario.obtenerCuentaUsuario(idCuenta));
         } catch (Exception e) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/obtenerCuentasUsuarios/{idCuenta}")
-    public ResponseEntity<List<Cuenta>> obtenerCuentasUsuarios(Long idCuenta) throws Exception {
+    public ResponseEntity<List<Cuenta>> obtenerCuentasUsuarios(Long idCuenta) {
         try {
             return ResponseEntity.ok(servicioUsuario.obtenerCuentasUsuarios(idCuenta));
         } catch (Exception e) {
-            throw new Exception("No se pudo obtener las cuentas del usuario: " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/obtenerViaje/{idViaje}/{idUsuario}")
-    public ResponseEntity<Viaje> obtenerViaje(Long idViaje, Long idUsuario) throws Exception{
+    public ResponseEntity<Viaje> obtenerViaje(Long idViaje, Long idUsuario) {
         try {
-            return ResponseEntity.ok(servicioUsuario.obtenerViaje(idViaje, idUsuario));
+            if(servicioUsuario.existeUsuario(idUsuario)) {
+                return ResponseEntity.ok(servicioUsuario.obtenerViaje(idViaje, idUsuario));
+            }else {
+                return ResponseEntity.badRequest().build();
+            }
         } catch (Exception e) {
-            throw new Exception("no se pudo obtener el viaje: " + idViaje + " del usuario: " + idUsuario + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/obtenerViajesUsuario/{idUsuario}")
-    public ResponseEntity<List<Viaje>> obtenerViajesUsuario(Long idUsuario) throws Exception {
+    public ResponseEntity<List<Viaje>> obtenerViajesUsuario(Long idUsuario) {
         try {
-            return ResponseEntity.ok(servicioUsuario.obtenerViajesUsuario(idUsuario));
+            if(servicioUsuario.existeUsuario(idUsuario)) {
+                return ResponseEntity.ok(servicioUsuario.obtenerViajesUsuario(idUsuario));
+            }else {
+                return ResponseEntity.badRequest().build();
+            }
         } catch (Exception e) {
-            throw new Exception("No se pudo obtener los viajes del usuario: " + idUsuario + " " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping("/agregarViaje/{Viaje}")
-    public ResponseEntity<Viaje> agregarViaje(Viaje v, Long idUsuario) throws Exception {
+    public ResponseEntity<Viaje> agregarViaje(Viaje v, Long idUsuario) {
         try {
             if(servicioUsuario.existeUsuario(v.getIdUsuario())) {
-                //TODO deberia agregar a un usuario su lista de viajes?
-                return ResponseEntity.ok(servicioUsuario.agregarViaje(v));
+                //TODO ¿deberia agregar a un usuario su lista de viajes?
+                Viaje nuevoViaje = servicioUsuario.agregarViaje(v);
+                return ResponseEntity.status(HttpStatus.CREATED).body(nuevoViaje);
             } else {
-                throw new Exception("No existe el usuario al cual se le quiere agregar el viaje");
+                return ResponseEntity.badRequest().build();
             }
         } catch (Exception e) {
-            throw new Exception("No se pudo agregar el viaje: " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
     /*=============================Llamadas de usuario=====================================*/
     @GetMapping("/obtenerUsuario/{idUsuario}")
-    public ResponseEntity<DTOUsuario> obtenerUsuario(Long idUsuario) throws Exception {
+    public ResponseEntity<DTOUsuario> obtenerUsuario(Long idUsuario) {
         try {
             if (servicioUsuario.existeUsuario(idUsuario)) {
                 return ResponseEntity.ok(servicioUsuario.obtenerUsuario(idUsuario));
-            }
-            else {
-                throw new Exception("El usuario no existe");
+            } else {
+                return ResponseEntity.badRequest().build();
             }
         } catch (Exception e) {
-            throw new Exception("No se pudo obtener el usuario con id: " + idUsuario + " " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/obtenerUsuarios")
-    public ResponseEntity<List<DTOUsuario>> obtenerUsuarios() throws Exception {
+    public ResponseEntity<List<DTOUsuario>> obtenerUsuarios() {
         try {
             return ResponseEntity.ok(servicioUsuario.obtenerUsuarios());
         } catch(Exception e) {
-            throw new Exception("No se pudieron obtener todos los usuarios " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
-    @GetMapping("/obtenerUsuariosHabilitados/")
-    public ResponseEntity<List<DTOUsuario>> obtenerUsuariosHabilitados() throws Exception {
+    /*@GetMapping("/obtenerUsuariosHabilitados/")
+    public ResponseEntity<List<DTOUsuario>> obtenerUsuariosHabilitados() {
         try {
             return ResponseEntity.ok(servicioUsuario.obtenerUsuariosHabilitados());
         } catch (Exception e) {
-            throw new Exception("No se pudo obtener los usuarios habilitados: " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/obtenerUsuariosDeshabilitados/")
-    public ResponseEntity<List<DTOUsuario>> obtenerUsuariosDeshabilitados() throws Exception {
+    public ResponseEntity<List<DTOUsuario>> obtenerUsuariosDeshabilitados() {
         try {
             return ResponseEntity.ok(servicioUsuario.obtenerUsuariosDeshabilitados());
         } catch (Exception e) {
-            throw new Exception("no se pudieron obtener los usuarios deshabilitados: " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 
     @PostMapping("/agregarUsuario/{usuario}")
-    public ResponseEntity<DTOUsuario> agregarUsuario(Usuario u) throws Exception {
+    public ResponseEntity<DTOUsuario> agregarUsuario(Usuario u) {
         try {
             if(!servicioUsuario.existeUsuario(u.getIdUsuario())) {
-                return ResponseEntity.ok(servicioUsuario.agregarUsuario(u));
+                DTOUsuario dtoUsuario = servicioUsuario.agregarUsuario(u);
+                return ResponseEntity.status(HttpStatus.CREATED).body(dtoUsuario);
             } else {
-                throw new Exception("Ya existe el usuario que se desea agregar");
+                return ResponseEntity.badRequest().build();
             }
         } catch (Exception e) {
-            throw new Exception("No se pudo agregar al usuario: " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/eliminarUsuario/{idUsuario}")
-    public ResponseEntity<Boolean> eliminarUsuario(Long idUsuario) throws Exception {
+    public ResponseEntity<Boolean> eliminarUsuario(Long idUsuario) {
         try {
             if(servicioUsuario.existeUsuario(idUsuario)) {
                 return ResponseEntity.ok(servicioUsuario.eliminarUsuario(idUsuario));
             } else {
-                throw new Exception("No existe el usuario con la id: " + idUsuario);
+                return ResponseEntity.badRequest().build();
             }
         } catch (Exception e) {
-            throw new Exception("No se pudo eliminar el usuario con la id: " + idUsuario + " " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/actualizarUsuario/{idUsuario}/{usuario}")
-    public ResponseEntity<DTOUsuario> actualizarUsuario(Long idUsuario, Usuario u) throws Exception {
+    public ResponseEntity<DTOUsuario> actualizarUsuario(Long idUsuario, Usuario u) {
         try {
             if(servicioUsuario.existeUsuario(idUsuario)) {
                 return ResponseEntity.ok(servicioUsuario.actualizarUsuario(idUsuario, u));
             } else {
-                throw new Exception("No existe el usuario que se desea actualizar con la id: " + idUsuario);
+                return ResponseEntity.badRequest().build();
             }
         } catch (Exception e) {
-            throw new Exception("No se pudo actualizar el usuario con la id: " + idUsuario + " " + e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 
+    /*@PutMapping("/habilitarUsuario/{idUsuario}")
+    public ResponseEntity<DTOUsuario> habilitarUsuario(Long idUsuario) {
+        try {
+            if(servicioUsuario.existeUsuario(idUsuario)) {
+                return ResponseEntity.ok(servicioUsuario.habilitarUsuario(idUsuario));
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-    //TODO endpoints para habilitar y deshabilitar usuario
+    @PutMapping("/deshabilitarUsuario/{idUsuario}")
+    public ResponseEntity<DTOUsuario> deshabilitarUsuario(Long idUsuario) {
+        try {
+            if(servicioUsuario.existeUsuario(idUsuario)) {
+                return ResponseEntity.ok(servicioUsuario.deshabilitarUsuario(idUsuario));
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }*/
 }

@@ -239,5 +239,41 @@ public class ServicioUsuario {
         return repoUsuario.existsById(id);
     }
 
-    //TODO Put para habilitar y deshabilitar usuario
+    //Habilitar a un usuario
+    @Transactional
+    public DTOUsuario habilitarUsuario(Long idUsuario) throws Exception {
+        try {
+            if(repoUsuario.existsById(idUsuario)) {
+                Usuario usuarioExistente = repoUsuario.findById(idUsuario)
+                        .orElseThrow(() -> new Exception("Usuario no encontrado con id: " + idUsuario));
+                usuarioExistente.setHabilitado(true);
+                Usuario usuarioGuardado = repoUsuario.save(usuarioExistente);
+                return this.toDTO(usuarioGuardado);
+            } else {
+                throw new Exception("El usuario con la id: " + idUsuario + " no existe");
+            }
+        } catch (Exception e) {
+            throw new Exception("No se pudo habilitar al usuario: " + e.getMessage());
+        }
+    }
+
+    //Deshabilitar a un usuario
+    @Transactional
+    public DTOUsuario deshabilitarUsuario(Long idUsuario) throws Exception{
+        try {
+            if(repoUsuario.existsById(idUsuario)) {
+                Usuario usuarioExistente = repoUsuario.findById(idUsuario)
+                        .orElseThrow(() -> new Exception("Usuario no encontrado con id: " + idUsuario));
+                usuarioExistente.setHabilitado(false);
+                Usuario usuarioGuardado = repoUsuario.save(usuarioExistente);
+                return this.toDTO(usuarioGuardado);
+            } else {
+                throw new Exception("El usuario con la id: " + idUsuario + " no existe");
+            }
+        } catch (Exception e) {
+            throw new Exception("No se pudo deshabilitar al usuario: " + e.getMessage());
+        }
+    }
+
+
 }
