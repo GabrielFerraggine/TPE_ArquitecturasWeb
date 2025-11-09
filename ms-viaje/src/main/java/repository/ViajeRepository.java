@@ -21,11 +21,17 @@ public interface ViajeRepository extends JpaRepository<Viaje, Long> {
     // Querys
     //
 
-    @Query("SELECT v FROM Viaje v WHERE v.estado = 'EN_CURSO' AND v.idMonopatin = :idMonopatin")
+    @Query("SELECT v FROM Viaje v " +
+            "WHERE v.estado = 'EN_CURSO' " +
+            "AND v.idMonopatin = :idMonopatin")
     Viaje findViajeActivoByMonopatin(@Param("idMonopatin") Long idMonopatin);
 
-    @Query("SELECT v FROM Viaje v WHERE v.estado = 'EN_CURSO' AND v.idUsuario = :idUsuario")
+    @Query("SELECT v FROM Viaje v " +
+            "WHERE v.estado = 'EN_CURSO' " +
+            "AND v.idUsuario = :idUsuario")
     Viaje findViajeActivoByUsuario(@Param("idUsuario") Long idUsuario);
+
+
 
 
 }

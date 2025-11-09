@@ -9,4 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PausaRequest {
     private Long idViaje;
+
+    // Con esto encapsulamos los datos necesarios para pausar un viaje
 }

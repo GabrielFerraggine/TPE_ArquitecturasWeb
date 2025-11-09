@@ -12,4 +12,7 @@ public class IniciarViajeRequest {
     private Long idUsuario;
     private Long idCuenta;
     private Long paradaInicio;
+
+    // Con esto encapsulamos los datos necesarios para iniciar un viaje
+
 }

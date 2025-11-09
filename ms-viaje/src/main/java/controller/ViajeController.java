@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import service.ViajeService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/viajes")
@@ -63,5 +64,15 @@ public class ViajeController {
         List<ViajeDTO> viajes = viajeService.obtenerViajesPorUsuario(idUsuario);
         return ResponseEntity.ok(viajes);
     }
+
+    @GetMapping("/cuenta/{idCuenta}")
+    public ResponseEntity<List<ViajeDTO>> obtenerViajesPorCuenta(@PathVariable Long idCuenta) {
+        List<ViajeDTO> viajes = viajeService.obtenerViajesPorCuenta(idCuenta);
+        return ResponseEntity.ok(viajes);
+    }
+
+
+
+
 
 }

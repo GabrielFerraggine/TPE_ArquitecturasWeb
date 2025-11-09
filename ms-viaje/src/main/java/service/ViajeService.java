@@ -123,6 +123,8 @@ public class ViajeService {
 
 
 
+
+
     private ViajeDTO mapToDTO(Viaje viaje) {
         List<PausaDTO> pausasDTO = viaje.getPausas().stream()
                 .map(p -> new PausaDTO(
