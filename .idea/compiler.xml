@@ -7,12 +7,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="ms-facturacion" />
         <module name="ms-Usuario" />
         <module name="ms-monopatin" />
         <module name="ms-viaje" />
-        <module name="ms-autenticacion" />
-        <module name="ms-facturacion" />
         <module name="ms-cuenta" />
+        <module name="ms-autenticacion" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

@@ -1,0 +1,4 @@
+id,tipo,monto,fechaInicio,fechaFin
+1,BASE,5.0,2024-01-01,
+2,EXTRA_PAUSA,2.0,2024-01-01,
+3,BASE,3.5,2023-01-01,2023-12-31

@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Data
-@Controller("/api/detalleFactura")
+@RestController
+@RequestMapping("/api/detalleFactura")
 public class ControllerDetalleFactura {
 
     private final ServiceDetalleFactura serviceDetalleFactura;
@@ -45,28 +46,42 @@ public class ControllerDetalleFactura {
                 detalleDTO.getTarifaBase(), detalleDTO.getTarifaExtra(),
                 detalleDTO.getTiempoUso(), detalleDTO.getTiempoPausado());
 
-        detalle.calcularMonto(detalleDTO.getTipoCuenta(), detalleDTO.getKmAcumuladosMes());  // calcular el monto antes de guardar
-        factura.agregarDetalle(detalle); //este metodo llama a recalcularMontoTotal()
-        serviceFactura.actualizarFactura(factura); // Gracias a CascadeType.ALL, esto guarda el detalle Y actualiza la factura
-        return ResponseEntity.ok(detalle);
+        detalle.calcularMonto(detalleDTO.getTipoCuenta(), detalleDTO.getKmAcumuladosMes());  // calcular el monto
+
+
+        DetalleFactura detalleGuardado = serviceDetalleFactura.agregarDetalleFactura(detalle);
+        factura.agregarDetalle(detalleGuardado); // este metodo llama a recalcularMontoTotal()
+        serviceFactura.actualizarFactura(factura);
+
+        return ResponseEntity.ok(detalleGuardado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DetalleFactura> actualizarDetalleFactura(@PathVariable("id") Long id, @RequestBody DetalleFactura detalleFactura) {
+    public ResponseEntity<DetalleFactura> actualizarDetalleFactura(@PathVariable("id") Long id, @RequestBody DetalleFacturaDTO detalleDTO) {
         DetalleFactura detalleFacturaExistente = serviceDetalleFactura.buscarPorId(id);
 
         if (detalleFacturaExistente == null) {
             return ResponseEntity.notFound().build();
         }
 
-        detalleFacturaExistente.setFactura(detalleFactura.getFactura());
-        detalleFacturaExistente.setTiempoUso(detalleFactura.getTiempoUso());
-        detalleFacturaExistente.setTiempoPausado(detalleFactura.getTiempoPausado());
-        detalleFacturaExistente.setTarifaBase(detalleFactura.getTarifaBase());
-        detalleFacturaExistente.setTarifaExtra(detalleFactura.getTarifaExtra());
-        detalleFacturaExistente.setViajeId(detalleFactura.getViajeId());
+        Factura factura = serviceFactura.buscarPorId(detalleDTO.getFacturaId());
+        if (factura == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        detalleFacturaExistente.setFactura(factura);
+        detalleFacturaExistente.setViajeId(detalleDTO.getViajeId());
+        detalleFacturaExistente.setTiempoUso(detalleDTO.getTiempoUso());
+        detalleFacturaExistente.setTiempoPausado(detalleDTO.getTiempoPausado());
+        detalleFacturaExistente.setTarifaBase(detalleDTO.getTarifaBase());
+        detalleFacturaExistente.setTarifaExtra(detalleDTO.getTarifaExtra());
+
+        detalleFacturaExistente.calcularMonto(detalleDTO.getTipoCuenta(), detalleDTO.getKmAcumuladosMes());
 
         DetalleFactura detalleFacturaActualizada = serviceDetalleFactura.actualizarDetalleFactura(detalleFacturaExistente);
+
+        factura.recalcularMontoTotal();
+        serviceFactura.actualizarFactura(factura);
 
         return ResponseEntity.ok(detalleFacturaActualizada);
     }

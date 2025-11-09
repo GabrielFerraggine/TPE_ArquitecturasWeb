@@ -19,7 +19,7 @@ public class Factura {
     private LocalDate fechaEmision;
 
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DetalleFactura> detallesFactura;
+    private List<DetalleFactura> detallesFactura = new java.util.ArrayList<>();
 
 
     //recorre detallesFactura y suma el montoCalculado de cada detalle
