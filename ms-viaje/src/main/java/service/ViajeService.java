@@ -58,12 +58,20 @@ public class ViajeService {
         Viaje viaje = viajeOpt.get();
         validarEstadoParaFinalizar(viaje);
 
-        paradaService.validarMonopatinEnParadaEspecifica(
+
+        boolean estaEnParadaCorrecta = paradaService.validarMonopatinEnParadaEspecifica(
                 viaje.getIdMonopatin(),
                 request.getParadaFinal()
         );
 
+        if (!estaEnParadaCorrecta) {
+            throw new RuntimeException("El monopatín no se encuentra en la parada designada para finalizar");
+        }
+
         //Calcular la tarifa?
+
+        viaje.finalizarViaje(LocalDateTime.now(), request.getParadaFinal(),
+                request.getKmRecorridos());
 
         Viaje viajeActualizado = viajeRepository.save(viaje);
         return mapToDTO(viajeActualizado);
@@ -83,13 +91,14 @@ public class ViajeService {
             throw new RuntimeException("Viaje no encontrado");
         }
         Viaje viaje = viajeOptional.get();
-        if (!viaje.getEstado().equals("EN_CURSO")) {
+        if (viaje.getEstado() != Viaje.EstadoViaje.EN_CURSO) {
             throw new RuntimeException("El viaje no está en curso");
         }
 
-        Pausa pausa = new Pausa(LocalDateTime.now());
+        Pausa pausa = new Pausa(LocalDateTime.now(), viaje.getId());
         viaje.agregarPausa(pausa);
         viaje.setEstado(Viaje.EstadoViaje.PAUSADO);
+
 
         Viaje viajePausado = viajeRepository.save(viaje);
         return mapToDTO(viajePausado);

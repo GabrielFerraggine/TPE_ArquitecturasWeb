@@ -26,8 +26,12 @@ public class Pausa {
     @Column(nullable = false)
     private Boolean pausaExtendida = false;
 
-    public Pausa(LocalDateTime fechaHoraInicio) {
+    @Column(name = "viaje_id", nullable = false)
+    private Long viajeId;
+
+    public Pausa(LocalDateTime fechaHoraInicio, Long viajeId) {
         this.fechaHoraInicio = fechaHoraInicio;
+        this.viajeId = viajeId;
         this.pausaExtendida = false;
     }
 

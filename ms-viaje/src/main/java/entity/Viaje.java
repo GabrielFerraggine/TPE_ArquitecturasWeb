@@ -57,7 +57,7 @@ public class Viaje {
         this.pausas = new ArrayList<>();
         this.kmRecorridos = 0.0;
     }
-    public void finalizarViaje(LocalDateTime fechaHoraFin, Long paradaFinal, Double kmRecorridos, Double taifa) {
+    public void finalizarViaje(LocalDateTime fechaHoraFin, Long paradaFinal, Double kmRecorridos) {
         this.fechaHoraFin = fechaHoraFin;
         this.paradaFinal = paradaFinal;
         this.kmRecorridos = kmRecorridos;

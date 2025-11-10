@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name="ms-monopatin", url="")
-public interface  MonopatinFeignClient  {
+@FeignClient(name="ms-monopatin", url="${ms-monopatin.url}")
+public interface MonopatinFeignClient  {
 
     @PutMapping("/monopatines/{id}/estado")
     void actualizarEstadoMonopatin(@PathVariable Long id, @RequestParam String estado);
