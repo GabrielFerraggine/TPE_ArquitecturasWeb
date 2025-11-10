@@ -1,14 +1,14 @@
-package Utils;
+package Aplicacion.Utils;
 
+import Aplicacion.entity.Monopatin;
+import Aplicacion.repository.RepositoryMonopatin;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import jakarta.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 

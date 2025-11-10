@@ -1,16 +1,17 @@
-package controller;
+package Aplicacion.controller;
 
-import DTO.MonopatinDTO;
-import DTO.ReporteDTO;
-import entity.*;
+import Aplicacion.DTO.MonopatinDTO;
+import Aplicacion.DTO.ReporteDTO;
+import Aplicacion.entity.Monopatin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import service.ServiceMonopatin;
+import Aplicacion.service.ServiceMonopatin;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/monopatin")
@@ -75,9 +76,15 @@ public class ControllerMonopatin {
         return ResponseEntity.ok().body("Se borró el Monopatin (id = " + id + ")");
     }
 
+    /*reporte/kmRecorridos?tiempoDePausas=true & ... */
     @GetMapping("/reporte/kmRecorridos")
-    public ResponseEntity<List<ReporteDTO>> getReportePorKmRecorridos() {
-        List<ReporteDTO> reporte = serviceMonopatin.getReportePorKmRecorridos();
+    public ResponseEntity<List<ReporteDTO>> getReportePorKmRecorridos(@RequestParam(required = false)Optional<Boolean> tiempoDePausas) {
+        List<ReporteDTO> reporte = null;
+        if (tiempoDePausas.isPresent()) {
+            reporte = serviceMonopatin.getReportePorKmYTiempoDePausas();
+        } else {
+            reporte = serviceMonopatin.getReportePorKmRecorridos();
+        }
         if (reporte != null) {
             return ResponseEntity.ok(reporte);
         }
@@ -120,4 +127,12 @@ public class ControllerMonopatin {
         return ResponseEntity.internalServerError().body("Error al finalizar el Monopatin");
     }
 
+    /*
+    /reporte
+    /reporte/kmRecorridos
+    /reporte/kmRecorridos?tiempoDePausas=true
+
+
+    /{idMonopatin}/finalizarRecorrido
+    */
 }

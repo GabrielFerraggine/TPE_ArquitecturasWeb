@@ -1,12 +1,12 @@
-package service;
+package Aplicacion.service;
 
-import DTO.MonopatinDTO;
-import DTO.ReporteDTO;
-import entity.Monopatin;
+import Aplicacion.DTO.MonopatinDTO;
+import Aplicacion.DTO.ReporteDTO;
+import Aplicacion.entity.Monopatin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import repository.RepositoryMonopatin;
+import Aplicacion.repository.RepositoryMonopatin;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +51,20 @@ public class ServiceMonopatin {
     public List<ReporteDTO> getReportePorKmRecorridos() {
         try {
             List<ReporteDTO> reporte = repoMonopatin.getReportePorKmRecorridos();
+
+            if (reporte == null || reporte.isEmpty())
+                return Collections.emptyList();
+
+            return reporte;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar el reporte de uso de monopatines por kilometros", e);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReporteDTO> getReportePorKmYTiempoDePausas() {
+        try {
+            List<ReporteDTO> reporte = repoMonopatin.getReportePorKmYTiempoDePausas();
 
             if (reporte == null || reporte.isEmpty())
                 return Collections.emptyList();
