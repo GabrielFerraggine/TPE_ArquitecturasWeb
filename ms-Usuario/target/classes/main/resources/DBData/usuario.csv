@@ -1,0 +1,4 @@
+idUsuario,nombre,apellido,nroTelefono,mail,rol,latitud,longitud
+1,Juan,Carlos,123456789,gabriel@mail.com,USUARIO,-34,58
+2,Lucia,Gomez,987654321,lucia@mail.com,ADMINISTRADOR,-35,59
+3,Carlos,Perez,555666777,carlos@mail.com,TECNICO_MANTENIMIENTO,-33,60
