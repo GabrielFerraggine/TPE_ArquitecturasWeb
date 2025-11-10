@@ -20,7 +20,7 @@ public class ServiceMonopatin {
     private RepositoryMonopatin repoMonopatin;
 
     @Transactional
-    public Monopatin buscarMonopatinPorId(int idMonopatin) {
+    public Monopatin buscarMonopatinPorId(Long idMonopatin) {
         return repoMonopatin.buscarPorId(idMonopatin);
     }
 
@@ -38,7 +38,7 @@ public class ServiceMonopatin {
     }
 
     @Transactional
-    public boolean setEstado(int idMonopatin, String estado) {
+    public boolean setEstado(Long idMonopatin, String estado) {
         return (repoMonopatin.setEstado(idMonopatin, estado) == 1);
     }
 
@@ -46,15 +46,6 @@ public class ServiceMonopatin {
     public void borrarMonopatin(Monopatin monopatin) {
         repoMonopatin.delete(monopatin);
     }
-
-
-
-
-
-
-
-
-
 
     @Transactional(readOnly = true)
     public List<ReporteDTO> getReportePorKmRecorridos() {
@@ -111,11 +102,8 @@ public class ServiceMonopatin {
         }
     }
 
-
-
-
     @Transactional
-    public boolean finalizarRecorrido(int idMonopatin, double kmRecorridos, int tiempoDeUsoTotal, int tiempoDePausas) {
+    public boolean finalizarRecorrido(Long idMonopatin, double kmRecorridos, int tiempoDeUsoTotal, int tiempoDePausas) {
         Monopatin mpAUX = this.buscarMonopatinPorId(idMonopatin);
         mpAUX.setKmRecorridos(kmRecorridos + mpAUX.getKmRecorridos());
         mpAUX.setTiempoDeUsoTotal(tiempoDeUsoTotal + mpAUX.getTiempoDeUsoTotal());

@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReporteDTO {
-    private int idMonopatin;
+    private Long idMonopatin;
     private double kmRecorridos;
     private int tiempoDeUsoTotal;
     private int tiempoDePausas;

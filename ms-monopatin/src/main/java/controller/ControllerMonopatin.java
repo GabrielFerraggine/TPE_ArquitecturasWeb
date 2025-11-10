@@ -29,7 +29,7 @@ public class ControllerMonopatin {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MonopatinDTO> buscarMonopatinPorId(@PathVariable int id) {
+    public ResponseEntity<MonopatinDTO> buscarMonopatinPorId(@PathVariable Long id) {
         Monopatin mp = serviceMonopatin.buscarMonopatinPorId(id);
         if (mp == null) {
             return  ResponseEntity.notFound().build();
@@ -55,7 +55,7 @@ public class ControllerMonopatin {
     }
 
     @PutMapping("/{id}/cambiarEstado/{estado}")
-    public ResponseEntity<String> setEstado(@PathVariable("id") int idMonopatin, @PathVariable("estado") String estado, @RequestBody Monopatin monopatin) {
+    public ResponseEntity<String> setEstado(@PathVariable("id") Long idMonopatin, @PathVariable("estado") String estado, @RequestBody Monopatin monopatin) {
         if (estado.equals("enMantenimiento") || estado.equals("enUso") || (estado.equals("libre"))) {
             if (serviceMonopatin.setEstado(idMonopatin, estado)) {
                 return ResponseEntity.ok().body("El estado del Monopatin (id = " + idMonopatin + ") se ha actualizado a '" + estado + "'");
@@ -66,7 +66,7 @@ public class ControllerMonopatin {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") int id) {
+    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
         Monopatin mp = serviceMonopatin.buscarMonopatinPorId(id);
         if (mp == null) {
             return ResponseEntity.notFound().build();
@@ -112,7 +112,7 @@ public class ControllerMonopatin {
     }
 
     @PutMapping("/{idMonopatin}/finalizarRecorrido")
-    public ResponseEntity<?> finalizarRecorrido(@PathVariable("idMonopatin") int idMonopatin, @RequestParam double kmRecorridos, @RequestParam int tiempoDeUsoTotal, @RequestParam int tiempoDePausas) {
+    public ResponseEntity<?> finalizarRecorrido(@PathVariable("idMonopatin") Long idMonopatin, @RequestParam double kmRecorridos, @RequestParam int tiempoDeUsoTotal, @RequestParam int tiempoDePausas) {
         boolean resultado = serviceMonopatin.finalizarRecorrido(idMonopatin, kmRecorridos, tiempoDeUsoTotal, tiempoDePausas);
         if (resultado) {
             return ResponseEntity.ok().build();

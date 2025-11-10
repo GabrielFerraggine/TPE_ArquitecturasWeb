@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MonopatinDTO {
-    private int idMonopatin;
+    private Long idMonopatin;
     private String estado; // enUso, enMantenimiento, libre
     private double latitud;
     private double longitud;

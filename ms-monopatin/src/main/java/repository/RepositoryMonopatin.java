@@ -14,11 +14,11 @@ import org.springframework.stereotype.Repository;
 public interface RepositoryMonopatin extends JpaRepository<Monopatin, Integer> {
 
     @Query("SELECT m FROM Monopatin m WHERE m.idMonopatin = :id")
-    Monopatin buscarPorId(int id);
+    Monopatin buscarPorId(Long id);
 
     @Modifying
     @Query("UPDATE Monopatin m SET m.estado = :estado WHERE m.idMonopatin = :idMonopatin")
-    int setEstado(int idMonopatin, String estado);
+    int setEstado(Long idMonopatin, String estado);
 
     @Query("SELECT m FROM Monopatin m")
     List<Monopatin> traerTodos();
@@ -39,6 +39,7 @@ public interface RepositoryMonopatin extends JpaRepository<Monopatin, Integer> {
             "FROM Monopatin m ")
     List<ReporteDTO>getReporteCompleto();
 
+    @Modifying
     @Query("UPDATE Monopatin m SET m.kmRecorridos = :kmRecorridos, m.tiempoDeUsoTotal = :tiempoDeUsoTotal, m.tiempoDePausas = :tiempoDePausas WHERE m.idMonopatin = :idMonopatin")
-    int finalizarRecorrido(int idMonopatin, double kmRecorridos, int tiempoDeUsoTotal, int tiempoDePausas);
+    int finalizarRecorrido(Long idMonopatin, double kmRecorridos, int tiempoDeUsoTotal, int tiempoDePausas);
 }

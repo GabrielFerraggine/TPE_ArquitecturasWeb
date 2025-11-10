@@ -51,7 +51,7 @@ public class CargarDatos {
                 for (CSVRecord record : csvParser) {
                     Monopatin monopatin = new Monopatin();
 
-                    monopatin.setIdMonopatin(Integer.parseInt(record.get("idMonopatin")));
+                    monopatin.setIdMonopatin(Long.parseLong(record.get("idMonopatin")));
                     monopatin.setEstado(record.get("estado"));
                     monopatin.setLatitud(Double.parseDouble(record.get("latitud")));
                     monopatin.setLongitud(Double.parseDouble(record.get("longitud")));
