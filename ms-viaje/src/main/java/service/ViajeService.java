@@ -4,6 +4,8 @@ package service;
 import dto.*;
 import entity.Pausa;
 import entity.Viaje;
+import feignClients.MonopatinFeignClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.ViajeRepository;
 
@@ -15,7 +17,15 @@ import java.util.stream.Collectors;
 @Service
 public class ViajeService {
 
+    @Autowired
     private ViajeRepository viajeRepository;
+
+    @Autowired
+    private ParadaService paradaService;
+
+    @Autowired
+    private MonopatinFeignClient monopatinFeignClient;
+
 
     public ViajeDTO iniciarViaje (IniciarViajeRequest request) {
         // Verificar si el usuario ya tiene un viaje activo
@@ -39,31 +49,33 @@ public class ViajeService {
         return mapToDTO(viajeGuardado);
     }
 
-    public ViajeDTO finalizarViaje(FinalizarViajeRequest request){
-        // Optional para manejar si no existe
-        Optional<Viaje> viajeOptional = viajeRepository.findById(request.getIdViaje());
-        if (viajeOptional.isEmpty()){ // Verificar si el viaje existe
+    public ViajeDTO finalizarViaje(FinalizarViajeRequest request) {
+        Optional<Viaje> viajeOpt = viajeRepository.findById(request.getIdViaje());
+        if (viajeOpt.isEmpty()) {
             throw new RuntimeException("Viaje no encontrado");
         }
-        Viaje viaje = viajeOptional.get();
-        if (!viaje.getEstado().equals("EN_CURSO") && !viaje.getEstado().equals("PAUSADO")) {
+
+        Viaje viaje = viajeOpt.get();
+        validarEstadoParaFinalizar(viaje);
+
+        paradaService.validarMonopatinEnParadaEspecifica(
+                viaje.getIdMonopatin(),
+                request.getParadaFinal()
+        );
+
+        //Calcular la tarifa?
+
+        Viaje viajeActualizado = viajeRepository.save(viaje);
+        return mapToDTO(viajeActualizado);
+    }
+
+    private void validarEstadoParaFinalizar(Viaje viaje) {
+        if (viaje.getEstado() != Viaje.EstadoViaje.EN_CURSO &&
+            viaje.getEstado() != Viaje.EstadoViaje.PAUSADO) {
             throw new RuntimeException("El viaje no está activo");
         }
-
-        // ¿CALCULAR TARIFA?
-        //Double tarifa = calcularTarifa(viaje);
-        // ACA EN IMPLEMENTAR EL MS-TARIFAS
-        Double tarifa = null;
-
-        viaje.finalizarViaje(
-                LocalDateTime.now(),
-                request.getParadaFinal(),
-                request.getKmRecorridos(),
-                tarifa);
-
-        Viaje viajeFinalizado = viajeRepository.save(viaje);
-        return mapToDTO(viajeFinalizado);
     }
+
 
     public ViajeDTO pausarViaje(PausaRequest request){
         Optional<Viaje> viajeOptional = viajeRepository.findById(request.getIdViaje());

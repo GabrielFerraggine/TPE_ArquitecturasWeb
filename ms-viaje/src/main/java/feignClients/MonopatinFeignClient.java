@@ -1,6 +1,6 @@
 package feignClients;
 
-import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +14,15 @@ public interface  MonopatinFeignClient  {
 
     @GetMapping("/monopatines/{id}/disponible")
     boolean verificarMonopatinActivo(@PathVariable Long id);
+
+    @GetMapping("/monopatines/{id}/latitud")
+    double obtenerLatitud(@PathVariable Long id);
+
+    @GetMapping("/monopatines/{id}/longitud")
+    double obtenerLongitud(@PathVariable Long id);
+
+    @GetMapping("/monopatines/{id}/enParada")
+    boolean verificarMonopatinEnParada(@PathVariable Long id);
 
 
 

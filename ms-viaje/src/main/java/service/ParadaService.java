@@ -1,0 +1,53 @@
+package service;
+
+import entity.Parada;
+import feignClients.MonopatinFeignClient;
+import repository.ParadaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ParadaService {
+
+    @Autowired
+    private ParadaRepository paradaRepository;
+
+    @Autowired
+    private MonopatinFeignClient monopatinFeignClient;
+
+    public Boolean paradaValida(Double latitud, Double longitud) {
+        if (latitud == null || longitud == null) return false;
+        return paradaRepository.paradaValida(latitud, longitud);
+    }
+
+    public void validarMonopatinEnParadaEspecifica(Long idMonopatin, Long paradaDesignadaId) {
+        Parada paradaDesignada = paradaRepository.findByIdAndActivaTrue(paradaDesignadaId)
+                .orElseThrow(() -> new RuntimeException("La parada designada no existe"));
+
+        Double latitudMonopatin = monopatinFeignClient.obtenerLatitud(idMonopatin);
+        Double longitudMonopatin = monopatinFeignClient.obtenerLongitud(idMonopatin);
+
+        Double distancia = calcularDistanciaMetros(
+                latitudMonopatin, longitudMonopatin,
+                paradaDesignada.getLatitud(), paradaDesignada.getLongitud()
+        );
+
+        if (distancia > paradaDesignada.getRadioPermitidoMetros()) {
+            throw new RuntimeException("El monopatín no se encuentra en la parada designada");
+        }
+
+    }
+
+    private Double calcularDistanciaMetros(Double lat1, Double lon1, Double lat2, Double lon2) {
+        final int R = 6371000;
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+}

@@ -1,0 +1,15 @@
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\controller\ControllerDetalleFactura.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\controller\ControllerFactura.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\controller\ControllerTarifa.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\DTO\DetalleFacturaDTO.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\entity\DetalleFactura.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\entity\Factura.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\entity\Tarifa.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\MicroservicioFacturacionApplication.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\repository\RepositoryDetalleFactura.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\repository\RepositoryFactura.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\repository\RepositoryTarifa.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\service\ServiceDetalleFactura.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\service\ServiceFactura.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\service\ServiceTarifa.java
+D:\DATOS\Desktop\Arquitecturas Web\TPE_ArquitecturasWeb\ms-facturacion\src\main\java\edu\tudai\microserviciofacturacion\utils\CargarDatos.java
