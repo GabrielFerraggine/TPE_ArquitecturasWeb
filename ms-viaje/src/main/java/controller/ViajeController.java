@@ -5,6 +5,7 @@ import dto.IniciarViajeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import service.ParadaService;
 import service.ViajeService;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class ViajeController {
     @Autowired
     private ViajeService viajeService;
 
+    @Autowired
+    private ParadaService paradaService;
+
     @PostMapping("/iniciar")
     public ResponseEntity<?> iniciarVIaje(@RequestBody IniciarViajeRequest request) {
         try {
@@ -27,12 +31,33 @@ public class ViajeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    /*
     @PostMapping("/finalizar")
     public ResponseEntity<?> finalizarViaje(@RequestBody FinalizarViajeRequest request) {
         try {
             ViajeDTO viaje = viajeService.finalizarViaje(request);
             return ResponseEntity.ok(viaje);
 
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    */
+
+    @PostMapping("/finalizar")
+    public ResponseEntity<?> finalizarViaje(@RequestBody FinalizarViajeRequest request) {
+
+        try {
+            if (request.getLatitud() == null || request.getLongitud() == null) {
+                return ResponseEntity.badRequest().body("Latitud e Longitud invalido");
+            }
+
+            if (!paradaService.paradaValida(request.getLatitud(), request.getLongitud())) {
+                return ResponseEntity.badRequest().body("No se encuentra en una parada válida");
+            }
+
+            ViajeDTO viaje = viajeService.finalizarViaje(request);
+            return ResponseEntity.ok(viaje);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -70,7 +95,6 @@ public class ViajeController {
         List<ViajeDTO> viajes = viajeService.obtenerViajesPorCuenta(idCuenta);
         return ResponseEntity.ok(viajes);
     }
-
 
 
 
