@@ -32,13 +32,13 @@ public class Usuario {
 
     //Usa un enumerado (usuario, mantenimiento, admin)
     @Enumerated(EnumType.STRING)
-    private roles rol;
+    private Rol rol;
 
     @Column
-    private int latitud;
+    private double latitud;
 
     @Column
-    private int longitud;
+    private double longitud;
 
     //@OneToMany(mappedBy = "usuario")
     //private List<Monopatin> monopatines;
@@ -46,10 +46,6 @@ public class Usuario {
     //@OneToMany(mappedBy = "usuario")
     //private List<Viaje> viajes;
 
-    public enum roles {
-        ADMINISTRADOR,
-        USUARIO,
-        TECNICO_MANTENIMIENTO
-    }
+
 }
 

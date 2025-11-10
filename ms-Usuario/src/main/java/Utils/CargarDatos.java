@@ -5,14 +5,11 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import jakarta.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import Entidades.Usuario;
+import Entidades.*;
 import Repository.RepositoryUsuario;
 
 @Service
@@ -56,7 +53,7 @@ public class CargarDatos {
                     usuario.setApellido(record.get("apellido"));
                     usuario.setNroTelefono(record.get("nroTelefono"));
                     usuario.setMail(record.get("mail"));
-                    usuario.setRol(Usuario.roles.valueOf(record.get("rol")));
+                    usuario.setRol(Rol.valueOf(record.get("rol")));
                     usuario.setLatitud(Integer.parseInt(record.get("latitud")));
                     usuario.setLongitud(Integer.parseInt(record.get("longitud")));
 
