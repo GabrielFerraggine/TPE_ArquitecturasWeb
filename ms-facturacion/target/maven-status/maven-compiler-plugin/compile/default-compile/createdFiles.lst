@@ -1,0 +1,16 @@
+edu\tudai\microserviciofacturacion\utils\CargarDatos.class
+edu\tudai\microserviciofacturacion\DTO\DetalleFacturaDTO.class
+edu\tudai\microserviciofacturacion\MicroservicioFacturacionApplication.class
+edu\tudai\microserviciofacturacion\controller\ControllerFactura.class
+edu\tudai\microserviciofacturacion\service\ServiceFactura.class
+edu\tudai\microserviciofacturacion\entity\Tarifa.class
+edu\tudai\microserviciofacturacion\controller\ControllerTarifa.class
+edu\tudai\microserviciofacturacion\service\ServiceTarifa.class
+edu\tudai\microserviciofacturacion\controller\ControllerDetalleFactura.class
+edu\tudai\microserviciofacturacion\entity\DetalleFactura.class
+edu\tudai\microserviciofacturacion\repository\RepositoryFactura.class
+edu\tudai\microserviciofacturacion\entity\Factura.class
+edu\tudai\microserviciofacturacion\entity\Tarifa$TipoTarifa.class
+edu\tudai\microserviciofacturacion\repository\RepositoryTarifa.class
+edu\tudai\microserviciofacturacion\repository\RepositoryDetalleFactura.class
+edu\tudai\microserviciofacturacion\service\ServiceDetalleFactura.class
