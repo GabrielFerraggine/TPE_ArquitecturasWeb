@@ -1,0 +1,6 @@
+idMonopatin, estado, latitud, longitud, kmRecorridos, tiempoDeUsoTotal, tiempoDePausas
+1, libre, 100.50, 200.50, 34.3, 202, 4
+2, libre, 200.50, 300.50, 120.3, 202, 8
+3, libre, 300.50, 400.50, 86.3, 202, 7
+4, libre, 400.50, 500.50, 73.3, 202, 18
+5, libre, 500.50, 600.50, 139.3, 277, 43
