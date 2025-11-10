@@ -4,13 +4,11 @@ import Entidades.Usuario;
 import Modelos.*;
 import Repository.RepositoryUsuario;
 import DTO.DTOUsuario;
-import feignClients.FeignClientCuenta;
-import feignClients.FeignClientMonopatin;
-import feignClients.FeignClientViaje;
+import feignClients.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import feignClients.FeignClientFacturacion;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +26,9 @@ public class ServicioUsuario {
 
     //@Autowired
     //private FeignClientViaje feignViaje;
+
+    //@Autowired
+    //private FeignClientFacturacion feignFacturacion;
 
     public DTOUsuario toDTO(Usuario u) {
         DTOUsuario dtoUsuario = new DTOUsuario(
@@ -104,6 +105,16 @@ public class ServicioUsuario {
             return feignViaje.save(v);
         } catch(Exception e) {
             throw new Exception("Error al crear un nuevo viaje: " + e.getMessage());
+        }
+    }*/
+
+    /*@Transactional(readOnly = true)
+    public Double obtenerTotalFacturado(int anioDeseado, int mesDeseadoInicial, int mesDeseadoFinal) throws Exception {
+        try {
+            return feignFacturacion.obtenerTotalFacturado(anioDeseado, mesDeseadoInicial, mesDeseadoFinal);
+        } catch (Exception e) {
+            throw new Exception("Error al obtener el total facturado en el año: " + anioDeseado + " en el intervalo de meses: "
+                    + mesDeseadoInicial + " y " +mesDeseadoFinal);
         }
     }*/
 

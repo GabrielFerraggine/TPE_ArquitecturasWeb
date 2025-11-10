@@ -94,6 +94,16 @@ public class ControllerUsuario {
         }
     }*/
 
+    //d. Como administrador quiero consultar el total facturado en un rango de meses de cierto año.*/
+    /*@GetMapping("")
+    public ResponseEntity<Double> obtenerTotalFacturado(int anioDeseado, int mesDeseadoInicial, int mesDeseadoFinal) {
+        try {
+            return ResponseEntity.ok(servicioUsuario.obtenerTotalFacturado(anioDeseado, mesDeseadoInicial, mesDeseadoFinal));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }*/
+
     /*=============================Llamadas de usuario=====================================*/
     @GetMapping("/obtenerUsuario/{idUsuario}")
     public ResponseEntity<DTOUsuario> obtenerUsuario(@PathVariable Long idUsuario) {  // Agregar @PathVariable
