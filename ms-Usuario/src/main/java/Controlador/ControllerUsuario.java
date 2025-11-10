@@ -1,14 +1,10 @@
 package Controlador;
 
-
 import DTO.DTOUsuario;
 import Entidades.Usuario;
-import Modelos.*;
 import Servicio.ServicioUsuario;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,25 +18,24 @@ public class ControllerUsuario {
     public ControllerUsuario(ServicioUsuario servicioUsuario) {
         this.servicioUsuario = servicioUsuario;
     }
-
     /*==============================Llamadas de los FeignClient==============================*/
     /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona,
     para poder encontrar un monopatín cerca de mi ubicación*/
-    @GetMapping("/obtenerMonopatinesCercanos/{latitud}/{longitud}")
+    /*@GetMapping("/obtenerMonopatinesCercanos/{latitud}/{longitud}")
     public ResponseEntity<List<Monopatin>> obtenerMonopatinesCercanos(@PathVariable int latitud, @PathVariable int longitud) {
         try {
             return ResponseEntity.ok(servicioUsuario.obtenerMonopatinesCercanos(latitud, longitud));
         } catch (Exception e) {
             return  ResponseEntity.notFound().build();
         }
-    }
+    }*/
 
     //TODO
     // /*h. Como usuario quiero saber cuánto he usado los monopatines en un período,
     //  y opcionalmente si otros usuarios relacionados a mi cuenta los han usado*/
     // --No se a que servicio pedirlo
 
-    @GetMapping("/obtenerCuentaUsuario/{idCuenta}")
+    /*@GetMapping("/obtenerCuentaUsuario/{idCuenta}")
     public ResponseEntity<Cuenta> obtenerCuentaUsuario(Long idCuenta) {
         try {
             return ResponseEntity.ok(servicioUsuario.obtenerCuentaUsuario(idCuenta));
@@ -97,11 +92,11 @@ public class ControllerUsuario {
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 
     /*=============================Llamadas de usuario=====================================*/
     @GetMapping("/obtenerUsuario/{idUsuario}")
-    public ResponseEntity<DTOUsuario> obtenerUsuario(Long idUsuario) {
+    public ResponseEntity<DTOUsuario> obtenerUsuario(@PathVariable Long idUsuario) {  // Agregar @PathVariable
         try {
             if (servicioUsuario.existeUsuario(idUsuario)) {
                 return ResponseEntity.ok(servicioUsuario.obtenerUsuario(idUsuario));
@@ -122,7 +117,46 @@ public class ControllerUsuario {
         }
     }
 
-    /*@GetMapping("/obtenerUsuariosHabilitados/")
+    @PostMapping("/agregarUsuario")
+    public ResponseEntity<DTOUsuario> agregarUsuario(@RequestBody Usuario u) {  // Cambiar a @RequestBody
+        try {
+            if(!servicioUsuario.existeUsuario(u.getIdUsuario())) {
+                DTOUsuario dtoUsuario = servicioUsuario.agregarUsuario(u);
+                return ResponseEntity.status(HttpStatus.CREATED).body(dtoUsuario);
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/eliminarUsuario/{idUsuario}")
+    public ResponseEntity<Boolean> eliminarUsuario(@PathVariable Long idUsuario) {  // Agregar @PathVariable
+        try {
+            if(servicioUsuario.existeUsuario(idUsuario)) {
+                return ResponseEntity.ok(servicioUsuario.eliminarUsuario(idUsuario));
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/actualizarUsuario/{idUsuario}")
+    public ResponseEntity<DTOUsuario> actualizarUsuario(@PathVariable Long idUsuario, @RequestBody Usuario u) {  // Agregar @PathVariable y @RequestBody
+        try {
+            if(servicioUsuario.existeUsuario(idUsuario)) {
+                return ResponseEntity.ok(servicioUsuario.actualizarUsuario(idUsuario, u));
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+        /*@GetMapping("/obtenerUsuariosHabilitados/")
     public ResponseEntity<List<DTOUsuario>> obtenerUsuariosHabilitados() {
         try {
             return ResponseEntity.ok(servicioUsuario.obtenerUsuariosHabilitados());
@@ -139,46 +173,6 @@ public class ControllerUsuario {
             return ResponseEntity.notFound().build();
         }
     }*/
-
-    @PostMapping("/agregarUsuario/{usuario}")
-    public ResponseEntity<DTOUsuario> agregarUsuario(Usuario u) {
-        try {
-            if(!servicioUsuario.existeUsuario(u.getIdUsuario())) {
-                DTOUsuario dtoUsuario = servicioUsuario.agregarUsuario(u);
-                return ResponseEntity.status(HttpStatus.CREATED).body(dtoUsuario);
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/eliminarUsuario/{idUsuario}")
-    public ResponseEntity<Boolean> eliminarUsuario(Long idUsuario) {
-        try {
-            if(servicioUsuario.existeUsuario(idUsuario)) {
-                return ResponseEntity.ok(servicioUsuario.eliminarUsuario(idUsuario));
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/actualizarUsuario/{idUsuario}/{usuario}")
-    public ResponseEntity<DTOUsuario> actualizarUsuario(Long idUsuario, Usuario u) {
-        try {
-            if(servicioUsuario.existeUsuario(idUsuario)) {
-                return ResponseEntity.ok(servicioUsuario.actualizarUsuario(idUsuario, u));
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
     /*@PutMapping("/habilitarUsuario/{idUsuario}")
     public ResponseEntity<DTOUsuario> habilitarUsuario(Long idUsuario) {
@@ -206,3 +200,5 @@ public class ControllerUsuario {
         }
     }*/
 }
+
+

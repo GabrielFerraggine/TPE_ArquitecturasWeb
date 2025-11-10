@@ -21,8 +21,8 @@ public class Usuario {
     @Column
     private String apellido;
 
-    @ManyToMany(mappedBy = "usuarios")
-    private List<Cuenta> cuentas;
+    //@ManyToMany(mappedBy = "usuarios")
+    //private List<Cuenta> cuentas;
 
     @Column
     private String nroTelefono;
@@ -40,11 +40,11 @@ public class Usuario {
     @Column
     private int longitud;
 
-    @OneToMany(mappedBy = "usuario")
-    private List<Monopatin> monopatines;
+    //@OneToMany(mappedBy = "usuario")
+    //private List<Monopatin> monopatines;
 
-    @OneToMany(mappedBy = "usuario")
-    private List<Viaje> viajes;
+    //@OneToMany(mappedBy = "usuario")
+    //private List<Viaje> viajes;
 
     public enum roles {
         ADMINISTRADOR,

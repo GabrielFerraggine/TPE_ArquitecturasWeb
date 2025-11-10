@@ -10,11 +10,11 @@ public class DTOUsuario {
     private Long idUsuario;
     private String nombre;
     private String apellido;
-    private List<Cuenta> cuentas;
+    //private List<Cuenta> cuentas;
     private String mail;
     private Enum rol;
     private int latitud;
     private int longitud;
-    private List<Monopatin> monopatines;
-    private List<Viaje> viajes;
+    //private List<Monopatin> monopatines;
+    //private List<Viaje> viajes;
  }

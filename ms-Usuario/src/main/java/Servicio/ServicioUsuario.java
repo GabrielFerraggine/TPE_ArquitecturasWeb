@@ -20,27 +20,27 @@ public class ServicioUsuario {
     @Autowired
     private RepositoryUsuario repoUsuario;
 
-    @Autowired
-    private FeignClientCuenta feignCuenta;
+    //@Autowired
+    //private FeignClientCuenta feignCuenta;
 
-    @Autowired
-    private FeignClientMonopatin feignMonopatin;
+    //@Autowired
+    //private FeignClientMonopatin feignMonopatin;
 
-    @Autowired
-    private FeignClientViaje feignViaje;
+    //@Autowired
+    //private FeignClientViaje feignViaje;
 
     public DTOUsuario toDTO(Usuario u) {
         DTOUsuario dtoUsuario = new DTOUsuario(
                 u.getIdUsuario(),
                 u.getNombre(),
                 u.getApellido(),
-                u.getCuentas(),
+       //         u.getCuentas(),
                 u.getMail(),
                 u.getRol(),
                 u.getLatitud(),
-                u.getLongitud(),
-                u.getMonopatines(),
-                u.getViajes()
+                u.getLongitud()
+                //,u.getMonopatines(),
+        //     u.getViajes()
         );
         return dtoUsuario;
     }
@@ -48,64 +48,64 @@ public class ServicioUsuario {
     /*=========================Metodos de los FeignClient================================*/
     /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona,
     para poder encontrar un monopatín cerca de mi ubicación*/
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     public List<Monopatin> obtenerMonopatinesCercanos(int latitud, int longitud) throws Exception {
         try {
             return feignMonopatin.obtenerMonopatinesCercanos(latitud, longitud);
         } catch (Exception e) {
             throw new Exception("Error al obtener monopatines cercanos: " + e.getMessage());
         }
-    }
+    }*/
 
     //Obtener una cuenta de un usuario
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     public Cuenta obtenerCuentaUsuario(Long idCuenta) throws Exception{
         try {
             return feignCuenta.obtenerCuentaUsuario(idCuenta);
         } catch (Exception e) {
             throw new Exception("No se pudo obtener la cuenta: " + e.getMessage());
         }
-    }
+    }*/
 
     //Obtener todas las cuentas de un usuario
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     public List<Cuenta> obtenerCuentasUsuarios(Long idCuenta) throws Exception {
         try {
             return feignCuenta.obtenerCuentasUsuario(idCuenta);
         } catch (Exception e) {
             throw new Exception("no se pudo obtener todas las cuentas: " + e.getMessage());
         }
-    }
+    }*/
 
     //Obtener un viaje de un usuario
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     public Viaje obtenerViaje(Long idViaje, Long idUsuario) throws Exception {
         try {
             return feignViaje.obtenerViaje(idViaje, idUsuario);
         } catch (Exception e) {
             throw new Exception("No se pudo obtener el viaje solicitado: " + e.getMessage());
         }
-    }
+    }*/
 
     //Obtener todos los viajes de un usuario
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     public List<Viaje> obtenerViajesUsuario(Long idUsuario) throws Exception {
         try {
             return feignViaje.obtenerViajesUsuario(idUsuario);
         } catch (Exception e) {
             throw new Exception("No se pudo obtener los viajes solicitados: " + e.getMessage());
         }
-    }
+    }*/
 
     //Agregar un nuevo viaje
-    @Transactional
+    /*@Transactional
     public Viaje agregarViaje(Viaje v) throws Exception{
         try {
             return feignViaje.save(v);
         } catch(Exception e) {
             throw new Exception("Error al crear un nuevo viaje: " + e.getMessage());
         }
-    }
+    }*/
 
     /*==================================Metodos propios==================================*/
     //Obtener un usuario
@@ -136,7 +136,7 @@ public class ServicioUsuario {
     }
 
     //Obtener todos los usuarios habilitados
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     public List<DTOUsuario> obtenerUsuariosHabilitados() throws Exception {
         try {
             List<Usuario> usuarios = repoUsuario.obtenerHabilitados();
@@ -148,10 +148,10 @@ public class ServicioUsuario {
         } catch(Exception e) {
             throw new Exception("no se pudo obtener los usuarios habilitados " + e.getMessage());
         }
-    }
+    }*/
 
     //Obtener todos los usuarios deshabilitados
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     public List<DTOUsuario> obtenerUsuariosDeshabilitados() throws Exception {
         try {
             List<Usuario> usuarios = repoUsuario.obtenerDeshabilitados();
@@ -163,7 +163,7 @@ public class ServicioUsuario {
         } catch(Exception e) {
             throw new Exception("no se pudo obtener los usuarios habilitados " + e.getMessage());
         }
-    }
+    }*/
 
 
     //Dar de alta un usuario
@@ -222,7 +222,7 @@ public class ServicioUsuario {
         if (actualizado.getNroTelefono() != null) {
             existente.setNroTelefono(actualizado.getNroTelefono());
         }
-        existente.setHabilitado(actualizado.isHabilitado());
+        //existente.setHabilitado(actualizado.isHabilitado());
         if (actualizado.getMail() != null) {
             existente.setMail(actualizado.getMail());
         }
@@ -240,7 +240,7 @@ public class ServicioUsuario {
     }
 
     //Habilitar a un usuario
-    @Transactional
+    /*@Transactional
     public DTOUsuario habilitarUsuario(Long idUsuario) throws Exception {
         try {
             if(repoUsuario.existsById(idUsuario)) {
@@ -255,10 +255,10 @@ public class ServicioUsuario {
         } catch (Exception e) {
             throw new Exception("No se pudo habilitar al usuario: " + e.getMessage());
         }
-    }
+    }*/
 
     //Deshabilitar a un usuario
-    @Transactional
+    /*@Transactional
     public DTOUsuario deshabilitarUsuario(Long idUsuario) throws Exception{
         try {
             if(repoUsuario.existsById(idUsuario)) {
@@ -273,7 +273,7 @@ public class ServicioUsuario {
         } catch (Exception e) {
             throw new Exception("No se pudo deshabilitar al usuario: " + e.getMessage());
         }
-    }
+    }*/
 
 
 }
