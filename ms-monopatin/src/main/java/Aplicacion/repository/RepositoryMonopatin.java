@@ -1,10 +1,9 @@
-package repository;
+package Aplicacion.repository;
 
 import java.util.List;
-import java.util.Optional;
 
-import DTO.ReporteDTO;
-import entity.*;
+import Aplicacion.DTO.*;
+import Aplicacion.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,19 +22,23 @@ public interface RepositoryMonopatin extends JpaRepository<Monopatin, Integer> {
     @Query("SELECT m FROM Monopatin m")
     List<Monopatin> traerTodos();
 
-    @Query("SELECT new DTO.ReporteDTO(m.idMonopatin, m.kmRecorridos, null, null) " +
+    @Query("SELECT new Aplicacion.DTO.ReporteDTO (m.idMonopatin, m.kmRecorridos, null, null) " +
             "FROM Monopatin m ")
     List<ReporteDTO> getReportePorKmRecorridos();
 
-    @Query("SELECT new DTO.ReporteDTO(m.idMonopatin, null, m.tiempoDeUsoTotal, null) " +
+    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, m.kmRecorridos, null, m.tiempoDePausas) " +
+            "FROM Monopatin m ")
+    List<ReporteDTO> getReportePorKmYTiempoDePausas();
+
+    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, null, m.tiempoDeUsoTotal, null) " +
             "FROM Monopatin m ")
     List<ReporteDTO>getReportePorTiempoDeUsoTotal();
 
-    @Query("SELECT new DTO.ReporteDTO(m.idMonopatin, null, null, m.tiempoDePausas) " +
+    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, null, null, m.tiempoDePausas) " +
             "FROM Monopatin m ")
     List<ReporteDTO>getReportePorTiempoDePausas();
 
-    @Query("SELECT new DTO.ReporteDTO(m.idMonopatin, m.kmRecorridos, m.tiempoDeUsoTotal, m.tiempoDePausas) " +
+    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, m.kmRecorridos, m.tiempoDeUsoTotal, m.tiempoDePausas) " +
             "FROM Monopatin m ")
     List<ReporteDTO>getReporteCompleto();
 

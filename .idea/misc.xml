@@ -14,6 +14,7 @@
         <option value="$PROJECT_DIR$/ms-Usuario/pom.xml" />
         <option value="$PROJECT_DIR$/ms-gatewayt/pom.xml" />
         <option value="$PROJECT_DIR$/ms-autenticacion/pom.xml" />
+        <option value="$PROJECT_DIR$/gateway/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

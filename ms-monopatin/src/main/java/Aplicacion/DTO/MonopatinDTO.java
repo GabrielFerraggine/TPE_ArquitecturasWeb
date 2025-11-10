@@ -1,6 +1,6 @@
-package DTO;
+package Aplicacion.DTO;
 
-import entity.Monopatin;
+import Aplicacion.entity.Monopatin;
 import lombok.*;
 
 @Getter
