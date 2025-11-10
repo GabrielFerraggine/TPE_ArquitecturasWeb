@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -20,14 +22,14 @@ public class DetalleFactura {
     private Factura factura;
 
     private Long viajeId;
-    private Double tarifaBase;
-    private Double tarifaExtra;
+    private BigDecimal tarifaBase;
+    private BigDecimal tarifaExtra;
     private Long tiempoUso;
     private Long tiempoPausado;
-    private Double montoCalculado;
+    private BigDecimal montoCalculado;
 
     //se crea construnctor con 6 parametros(no uso el AllArgs de lombok)
-    public DetalleFactura(Factura factura, Long viajeId, double tarifaBase, double tarifaExtra, long tiempoUso, long tiempoPausado) {
+    public DetalleFactura(Factura factura, Long viajeId, BigDecimal tarifaBase, BigDecimal tarifaExtra, long tiempoUso, long tiempoPausado) {
         this.factura = factura;
         this.viajeId = viajeId;
         this.tarifaBase = tarifaBase;
@@ -37,18 +39,27 @@ public class DetalleFactura {
     }
 
     public void calcularMonto(String tipoCuenta, Double kmAcumuladosMes) {
-        Double multiplicadorDescuento = 1.0;
+        BigDecimal multiplicadorDescuento = BigDecimal.ONE;
 
-        if (tipoCuenta.equals("PREMIUM")) { //si el tipo de cuenta es premium aplica descuento segun cant de km acumulados
-            if(kmAcumuladosMes < 100){
-                multiplicadorDescuento = 0.5;
-            } else{
-                multiplicadorDescuento = 0.5;
+        if (tipoCuenta.equals("PREMIUM")) {
+            if (kmAcumuladosMes < 100.0) {
+                multiplicadorDescuento = BigDecimal.valueOf(0.5);
+            } else {
+                multiplicadorDescuento = BigDecimal.valueOf(0.5);
             }
         }
-        Double costoBase = (tarifaBase * tiempoUso) * multiplicadorDescuento;
-        Double costoExtra = tiempoPausado > 15 ? tarifaExtra * (tiempoPausado - 15) : 0;
-        this.montoCalculado = costoBase + costoExtra;
+
+        BigDecimal tiempoUsoBD = BigDecimal.valueOf(tiempoUso);
+        BigDecimal costoBase = tarifaBase.multiply(tiempoUsoBD).multiply(multiplicadorDescuento);
+        BigDecimal costoExtra = BigDecimal.ZERO;
+
+        if (tiempoPausado > 15) {
+            BigDecimal tiempoPausadoExtra = BigDecimal.valueOf(tiempoPausado - 15);
+
+            costoExtra = tarifaExtra.multiply(tiempoPausadoExtra);
+        }
+
+        this.montoCalculado = costoBase.add(costoExtra);
     }
 
 }

@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.*;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ServiceTarifa {
     }
 
     @Transactional
-    public void ajustarPrecios(Double nuevaTarifaBase, Double nuevaTarifaExtra, LocalDate fechaInicio){
+    public void ajustarPrecios(BigDecimal nuevaTarifaBase, BigDecimal nuevaTarifaExtra, LocalDate fechaInicio){
 
         //creo tarifa vacio y le asigno los valores
         Tarifa tarifaBase =  new Tarifa();

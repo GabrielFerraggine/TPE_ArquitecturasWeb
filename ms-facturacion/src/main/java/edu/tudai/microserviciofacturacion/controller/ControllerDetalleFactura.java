@@ -7,7 +7,6 @@ import edu.tudai.microserviciofacturacion.service.ServiceDetalleFactura;
 import edu.tudai.microserviciofacturacion.service.ServiceFactura;
 import lombok.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

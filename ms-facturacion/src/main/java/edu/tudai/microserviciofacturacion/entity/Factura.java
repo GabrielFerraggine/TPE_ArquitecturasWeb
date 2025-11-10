@@ -3,6 +3,7 @@ package edu.tudai.microserviciofacturacion.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class Factura {
     private Long id;
 
     private Long usuarioId;
-    private Double montoTotal;
+    private BigDecimal montoTotal;
     private LocalDate fechaEmision;
 
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -23,10 +24,10 @@ public class Factura {
 
 
     //recorre detallesFactura y suma el montoCalculado de cada detalle
-    public double calcularMontoTotal() {
+    public BigDecimal calcularMontoTotal() {
         return detallesFactura.stream()
-                .mapToDouble(DetalleFactura::getMontoCalculado)
-                .sum();
+                .map(DetalleFactura::getMontoCalculado)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     //Agrega un detalle a la factura y actualiza el monto total.

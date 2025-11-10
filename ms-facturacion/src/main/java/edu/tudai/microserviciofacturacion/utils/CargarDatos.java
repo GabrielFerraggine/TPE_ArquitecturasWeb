@@ -16,6 +16,7 @@ import org.springframework.util.ResourceUtils;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -49,7 +50,9 @@ public class CargarDatos {
 
                 tarifa.setId(Long.parseLong(record.get("id")));
                 tarifa.setTipo(Tarifa.TipoTarifa.valueOf(record.get("tipo").toUpperCase()));
-                tarifa.setMonto(Double.parseDouble(record.get("monto")));
+
+                tarifa.setMonto(new BigDecimal(record.get("monto")));
+
                 tarifa.setFechaInicio(LocalDate.parse(record.get("fechaInicio")));
 
                 String fechaFinStr = record.get("fechaFin");
@@ -72,7 +75,9 @@ public class CargarDatos {
 
                 factura.setId(Long.parseLong(record.get("id")));
                 factura.setUsuarioId(Long.parseLong(record.get("usuarioId")));
-                factura.setMontoTotal(Double.parseDouble(record.get("montoTotal")));
+
+                factura.setMontoTotal(new BigDecimal(record.get("montoTotal")));
+
                 factura.setFechaEmision(LocalDate.parse(record.get("fechaEmision")));
 
                 factura.setDetallesFactura(new ArrayList<>());
@@ -96,14 +101,16 @@ public class CargarDatos {
                 DetalleFactura detalle = new DetalleFactura(
                         factura,
                         Long.parseLong(record.get("viajeId")),
-                        Double.parseDouble(record.get("tarifaBase")),
-                        Double.parseDouble(record.get("tarifaExtra")),
+                        new BigDecimal(record.get("tarifaBase")),
+                        new BigDecimal(record.get("tarifaExtra")),
+
                         Long.parseLong(record.get("tiempoUso")),
                         Long.parseLong(record.get("tiempoPausado"))
                 );
 
                 detalle.setId(Long.parseLong(record.get("id")));
-                detalle.setMontoCalculado(Double.parseDouble(record.get("montoCalculado")));
+
+                detalle.setMontoCalculado(new BigDecimal(record.get("montoCalculado")));
 
                 repoDetalleFactura.save(detalle);
             }
