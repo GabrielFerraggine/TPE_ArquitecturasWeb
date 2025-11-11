@@ -6,7 +6,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 public class DTOUsuario {
-    private Long idUsuario;
+    private String idUsuario; //ESTO TIENE QUE SER LONG ? //Peter 1
     private String nombre;
     private String apellido;
     //private List<Cuenta> cuentas;

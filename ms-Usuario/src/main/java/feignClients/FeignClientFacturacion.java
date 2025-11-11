@@ -24,8 +24,8 @@ public interface FeignClientFacturacion {
 
     /*f. Como administrador quiero hacer un ajuste de precios, y que a partir de cierta fecha el sistema habilite los nuevos precios*/
     @PostMapping("/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}")
-    ResponseEntity<Void> ajustarPreciosTarifas(@RequestParam BigDecimal nuevaTarifaBase,
-                                              @RequestParam BigDecimal nuevaTarifaExtra,
-                                              @RequestParam LocalDate fechaInicio);
+    ResponseEntity<Void> ajustarPreciosTarifas(@PathVariable BigDecimal nuevaTarifaBase,
+                                              @PathVariable BigDecimal nuevaTarifaExtra,
+                                              @PathVariable LocalDate fechaInicio);
 
     }

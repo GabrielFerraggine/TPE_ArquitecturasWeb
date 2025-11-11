@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RepositoryUsuario extends JpaRepository<Usuario, Long>{
+public interface RepositoryUsuario extends JpaRepository<Usuario, String>{
 
     //Obtener todos los Usuarios habilitados
     /*@Query("SELECT u " +
@@ -20,7 +20,7 @@ public interface RepositoryUsuario extends JpaRepository<Usuario, Long>{
     @Query("SELECT u " +
             "FROM Usuario u " +
             "WHERE u.idUsuario = :id")
-    Usuario obtenerUsuario(@Param("id") Long id);
+    Usuario obtenerUsuario(@Param("id") String id);
 
     //Obtener todas los Usuarios deshabilitados
     /*@Query("SELECT u " +
