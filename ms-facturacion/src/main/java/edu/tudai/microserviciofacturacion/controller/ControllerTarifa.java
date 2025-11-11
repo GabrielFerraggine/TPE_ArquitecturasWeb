@@ -67,10 +67,10 @@ public class ControllerTarifa {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/ajustarPrecios")
-    public ResponseEntity<Void> ajustarPreciosTarifas(@RequestParam BigDecimal nuevaTarifaBase,
-                                                      @RequestParam BigDecimal nuevaTarifaExtra,
-                                                      @RequestParam LocalDate fechaInicio) {
+    @PostMapping("/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}")
+    public ResponseEntity<Void> ajustarPreciosTarifas(@PathVariable BigDecimal nuevaTarifaBase,
+                                                      @PathVariable BigDecimal nuevaTarifaExtra,
+                                                      @PathVariable LocalDate fechaInicio) {
 
         serviceTarifa.ajustarPrecios(nuevaTarifaBase, nuevaTarifaExtra, fechaInicio);
         return ResponseEntity.ok().build();

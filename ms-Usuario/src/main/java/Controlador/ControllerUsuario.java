@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -117,11 +119,16 @@ public class ControllerUsuario {
     }*/
 
     @PostMapping("/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}")
-    public ResponseEntity<Void> ajustarPreciosTarifas(@PathVariable Double nuevaTarifaBase,
-                                                      @PathVariable Double nuevaTarifaExtra,
-                                                      @PathVariable String fechaInicio) {
+    public ResponseEntity<Void> ajustarPreciosTarifas(@PathVariable BigDecimal nuevaTarifaBase,
+                                                      @PathVariable BigDecimal nuevaTarifaExtra,
+                                                      @PathVariable LocalDate fechaInicio) {
         try {
-            servicioUsuario.ajustarPreciosTarifas(nuevaTarifaBase, nueva
+            servicioUsuario.ajustarPreciosTarifas(nuevaTarifaBase, nuevaTarifaExtra, fechaInicio);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     /*=============================Llamadas de usuario=====================================*/
     @GetMapping("/obtenerUsuario/{idUsuario}")
