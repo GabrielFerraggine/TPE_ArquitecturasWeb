@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -67,8 +68,8 @@ public class ControllerTarifa {
     }
 
     @PostMapping("/ajustarPrecios")
-    public ResponseEntity<Void> ajustarPreciosTarifas(@RequestParam double nuevaTarifaBase,
-                                                      @RequestParam double nuevaTarifaExtra,
+    public ResponseEntity<Void> ajustarPreciosTarifas(@RequestParam BigDecimal nuevaTarifaBase,
+                                                      @RequestParam BigDecimal nuevaTarifaExtra,
                                                       @RequestParam LocalDate fechaInicio) {
 
         serviceTarifa.ajustarPrecios(nuevaTarifaBase, nuevaTarifaExtra, fechaInicio);

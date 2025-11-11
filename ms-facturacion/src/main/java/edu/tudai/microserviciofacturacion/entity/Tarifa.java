@@ -3,6 +3,7 @@ package edu.tudai.microserviciofacturacion.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -21,7 +22,7 @@ public class Tarifa {
     @Enumerated(EnumType.STRING)
     private TipoTarifa tipo;
 
-    private Double monto;
+    private BigDecimal monto;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
 }
