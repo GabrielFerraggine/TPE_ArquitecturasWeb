@@ -62,8 +62,7 @@ public class ServicioUsuario {
 
     // ---Metodos con ms-cuenta
     //Obtener cuentas de un usuario
-    @Transactional(readOnly = true)
-    public List<Cuenta> obtenerCuentasUsuarios(String idUsuario) throws Exception {
+    private List<Cuenta> obtenerCuentasUsuarios(String idUsuario) throws Exception {
         try {
             return feignClientCuenta.obtenerCuentasUsuario(idUsuario);
         } catch (Exception e) {
@@ -71,23 +70,37 @@ public class ServicioUsuario {
         }
     }
 
-    //Anular cuenta de un usuario
-    @Transactional
-    public String anularCuenta(Long idCuenta) throws Exception {
+    //Anular cuentas de un usuario
+    public String anularCuentas(String dniUsuario) throws Exception {
         try {
-            return feignClientCuenta.anularCuenta(idCuenta);
+            List<Cuenta> cuentas = obtenerCuentasUsuarios(dniUsuario);
+            int anuladas = 0;
+            for (Cuenta c : cuentas) {
+                if(c.isActivo()){
+                    anuladas++;
+                    feignClientCuenta.anularCuenta(c.getNroCuenta());
+                }
+            }
+            return "Se anularon " + anuladas + " cuentas";
         } catch (Exception e) {
-            throw new Exception("No se pudo anular la cuenta: " + e.getMessage());
+            throw new Exception("Hubo un error anulando cuentas: " + e.getMessage());
         }
     }
 
     //Activar cuenta de un usuario
-    @Transactional
-    public String activarCuenta(Long idCuenta) throws Exception {
+    public String activarCuentas(String dniUsuario) throws Exception {
         try {
-            return feignClientCuenta.activarCuenta(idCuenta);
+            List<Cuenta> cuentas = obtenerCuentasUsuarios(dniUsuario);
+            int activadas = 0;
+            for (Cuenta c : cuentas) {
+                if(!c.isActivo()){
+                    activadas++;
+                    feignClientCuenta.activarCuenta(c.getNroCuenta());
+                }
+            }
+            return "Se activaron " + activadas + " cuentas";
         } catch (Exception e) {
-            throw new Exception("No se pudo activar la cuenta: " + e.getMessage());
+            throw new Exception("Hubo un error activando cuentas: " + e.getMessage());
         }
     }
 

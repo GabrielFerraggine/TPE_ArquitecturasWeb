@@ -45,4 +45,4 @@ public interface RepositoryMonopatin extends JpaRepository<Monopatin, Integer> {
     @Modifying
     @Query("UPDATE Monopatin m SET m.kmRecorridos = :kmRecorridos, m.tiempoDeUsoTotal = :tiempoDeUsoTotal, m.tiempoDePausas = :tiempoDePausas WHERE m.idMonopatin = :idMonopatin")
     int finalizarRecorrido(Long idMonopatin, double kmRecorridos, int tiempoDeUsoTotal, int tiempoDePausas);
-}
+} 

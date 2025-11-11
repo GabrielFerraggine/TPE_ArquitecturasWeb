@@ -36,40 +36,20 @@ public class ControllerUsuario {
     //  y opcionalmente si otros usuarios relacionados a mi cuenta los han usado*/
     // --No se a que servicio pedirlo
 
-    /*@GetMapping("/obtenerCuentaUsuario/{idUsuario}")
-    public ResponseEntity<Cuenta> obtenerCuentaUsuario(@PathVariable String idUsuario) {
-        try {
-            System.out.println("HOLAAAAAAAAAA idUsuario: " + idUsuario);
-            System.out.println(servicioUsuario.obtenerCuentaUsuario(idUsuario) + "UwU");
-            return ResponseEntity.ok(servicioUsuario.obtenerCuentaUsuario(idUsuario));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }*/
 
-
-    @GetMapping("/obtenerCuentasUsuarios/{idCuenta}")
-    public ResponseEntity<List<Cuenta>> obtenerCuentasUsuarios(@PathVariable String idCuenta) {
+    @PutMapping("/{dni}/anularCuentas")
+    public ResponseEntity<String> anularCuentas(@PathVariable String dni) {
         try {
-            return ResponseEntity.ok(servicioUsuario.obtenerCuentasUsuarios(idCuenta));
+            return ResponseEntity.ok(servicioUsuario.anularCuentas(dni));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PutMapping("/{idCuenta}/anularCuenta")
-    public ResponseEntity<String> anularCuenta(@PathVariable Long idCuenta) {
+    @PutMapping("/{dni}/activarCuentas")
+    public ResponseEntity<String> activarCuenta(@PathVariable String dni) {
         try {
-            return ResponseEntity.ok(servicioUsuario.anularCuenta(idCuenta));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/{idCuenta}/activarCuenta")
-    public ResponseEntity<String> activarCuenta(@PathVariable Long idCuenta) {
-        try {
-            return ResponseEntity.ok(servicioUsuario.activarCuenta(idCuenta));
+            return ResponseEntity.ok(servicioUsuario.activarCuentas(dni));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
