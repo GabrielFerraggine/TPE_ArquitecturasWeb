@@ -17,6 +17,8 @@ public class ServicioUsuario {
 
     @Autowired
     private RepositoryUsuario repoUsuario;
+    @Autowired
+    private FeignClientCuenta feignClientCuenta;
 
     //@Autowired
     //private FeignClientCuenta feignCuenta;
@@ -58,29 +60,40 @@ public class ServicioUsuario {
         }
     }*/
 
-    //Obtener una cuenta de un usuario
-    /*@Transactional(readOnly = true)
-    public Cuenta obtenerCuentaUsuario(Long idCuenta) throws Exception{
+    // ---Metodos con ms-cuenta
+    //Obtener cuentas de un usuario
+    @Transactional(readOnly = true)
+    public List<Cuenta> obtenerCuentasUsuarios(String idUsuario) throws Exception {
         try {
-            return feignCuenta.obtenerCuentaUsuario(idCuenta);
-        } catch (Exception e) {
-            throw new Exception("No se pudo obtener la cuenta: " + e.getMessage());
-        }
-    }*/
-
-    //Obtener todas las cuentas de un usuario
-    /*@Transactional(readOnly = true)
-    public List<Cuenta> obtenerCuentasUsuarios(Long idCuenta) throws Exception {
-        try {
-            return feignCuenta.obtenerCuentasUsuario(idCuenta);
+            return feignClientCuenta.obtenerCuentasUsuario(idUsuario);
         } catch (Exception e) {
             throw new Exception("no se pudo obtener todas las cuentas: " + e.getMessage());
         }
-    }*/
+    }
+
+    //Anular cuenta de un usuario
+    @Transactional
+    public String anularCuenta(Long idCuenta) throws Exception {
+        try {
+            return feignClientCuenta.anularCuenta(idCuenta);
+        } catch (Exception e) {
+            throw new Exception("No se pudo anular la cuenta: " + e.getMessage());
+        }
+    }
+
+    //Activar cuenta de un usuario
+    @Transactional
+    public String activarCuenta(Long idCuenta) throws Exception {
+        try {
+            return feignClientCuenta.activarCuenta(idCuenta);
+        } catch (Exception e) {
+            throw new Exception("No se pudo activar la cuenta: " + e.getMessage());
+        }
+    }
 
     //Obtener un viaje de un usuario
     /*@Transactional(readOnly = true)
-    public Viaje obtenerViaje(Long idViaje, Long idUsuario) throws Exception {
+    public Viaje obtenerViaje(Long idViaje, String idUsuario) throws Exception {
         try {
             return feignViaje.obtenerViaje(idViaje, idUsuario);
         } catch (Exception e) {
@@ -90,7 +103,7 @@ public class ServicioUsuario {
 
     //Obtener todos los viajes de un usuario
     /*@Transactional(readOnly = true)
-    public List<Viaje> obtenerViajesUsuario(Long idUsuario) throws Exception {
+    public List<Viaje> obtenerViajesUsuario(String idUsuario) throws Exception {
         try {
             return feignViaje.obtenerViajesUsuario(idUsuario);
         } catch (Exception e) {
@@ -121,7 +134,7 @@ public class ServicioUsuario {
     /*==================================Metodos propios==================================*/
     //Obtener un usuario
     @Transactional(readOnly = true)
-    public DTOUsuario obtenerUsuario(Long id) throws Exception{
+    public DTOUsuario obtenerUsuario(String id) throws Exception{
         try {
             Usuario usuario = repoUsuario.obtenerUsuario(id);
             DTOUsuario dtoUsuario = this.toDTO(usuario);
@@ -146,36 +159,6 @@ public class ServicioUsuario {
         }
     }
 
-    //Obtener todos los usuarios habilitados
-    /*@Transactional(readOnly = true)
-    public List<DTOUsuario> obtenerUsuariosHabilitados() throws Exception {
-        try {
-            List<Usuario> usuarios = repoUsuario.obtenerHabilitados();
-            List<DTOUsuario> dtoUsuarios = new ArrayList<>();
-            for (Usuario u: usuarios) {
-                dtoUsuarios.add(this.toDTO(u));
-            }
-            return dtoUsuarios;
-        } catch(Exception e) {
-            throw new Exception("no se pudo obtener los usuarios habilitados " + e.getMessage());
-        }
-    }*/
-
-    //Obtener todos los usuarios deshabilitados
-    /*@Transactional(readOnly = true)
-    public List<DTOUsuario> obtenerUsuariosDeshabilitados() throws Exception {
-        try {
-            List<Usuario> usuarios = repoUsuario.obtenerDeshabilitados();
-            List<DTOUsuario> dtoUsuarios = new ArrayList<>();
-            for (Usuario u: usuarios) {
-                dtoUsuarios.add(this.toDTO(u));
-            }
-            return dtoUsuarios;
-        } catch(Exception e) {
-            throw new Exception("no se pudo obtener los usuarios habilitados " + e.getMessage());
-        }
-    }*/
-
 
     //Dar de alta un usuario
     @Transactional
@@ -192,7 +175,7 @@ public class ServicioUsuario {
 
     //Dar de baja un usuario
     @Transactional
-    public Boolean eliminarUsuario(Long id) throws Exception{
+    public Boolean eliminarUsuario(String id) throws Exception{
         try {
             if(repoUsuario.existsById(id)) {
                 repoUsuario.deleteById(id);
@@ -209,7 +192,7 @@ public class ServicioUsuario {
 
     //Modificar un usuario (funciona como un patch)
     @Transactional
-    public DTOUsuario actualizarUsuario(Long id, Usuario usuarioActualizado) throws Exception {
+    public DTOUsuario actualizarUsuario(String id, Usuario usuarioActualizado) throws Exception {
         try {
             Usuario usuarioExistente = repoUsuario.findById(id)
                     .orElseThrow(() -> new Exception("Usuario no encontrado con id: " + id));
@@ -246,45 +229,8 @@ public class ServicioUsuario {
 
     //Obtiene un usuario si existe devuelve true
     @Transactional(readOnly = true)
-    public boolean existeUsuario(Long id) {
+    public boolean existeUsuario(String id) {
         return repoUsuario.existsById(id);
     }
-
-    //Habilitar a un usuario
-    /*@Transactional
-    public DTOUsuario habilitarUsuario(Long idUsuario) throws Exception {
-        try {
-            if(repoUsuario.existsById(idUsuario)) {
-                Usuario usuarioExistente = repoUsuario.findById(idUsuario)
-                        .orElseThrow(() -> new Exception("Usuario no encontrado con id: " + idUsuario));
-                usuarioExistente.setHabilitado(true);
-                Usuario usuarioGuardado = repoUsuario.save(usuarioExistente);
-                return this.toDTO(usuarioGuardado);
-            } else {
-                throw new Exception("El usuario con la id: " + idUsuario + " no existe");
-            }
-        } catch (Exception e) {
-            throw new Exception("No se pudo habilitar al usuario: " + e.getMessage());
-        }
-    }*/
-
-    //Deshabilitar a un usuario
-    /*@Transactional
-    public DTOUsuario deshabilitarUsuario(Long idUsuario) throws Exception{
-        try {
-            if(repoUsuario.existsById(idUsuario)) {
-                Usuario usuarioExistente = repoUsuario.findById(idUsuario)
-                        .orElseThrow(() -> new Exception("Usuario no encontrado con id: " + idUsuario));
-                usuarioExistente.setHabilitado(false);
-                Usuario usuarioGuardado = repoUsuario.save(usuarioExistente);
-                return this.toDTO(usuarioGuardado);
-            } else {
-                throw new Exception("El usuario con la id: " + idUsuario + " no existe");
-            }
-        } catch (Exception e) {
-            throw new Exception("No se pudo deshabilitar al usuario: " + e.getMessage());
-        }
-    }*/
-
 
 }

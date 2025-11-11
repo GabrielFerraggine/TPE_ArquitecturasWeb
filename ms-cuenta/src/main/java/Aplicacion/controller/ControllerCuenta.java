@@ -15,7 +15,7 @@ import Aplicacion.service.ServiceCuenta;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cuentas")
+@RequestMapping("/api/cuentas")
 public class ControllerCuenta {
 
     @Autowired
@@ -38,6 +38,7 @@ public class ControllerCuenta {
 
     @GetMapping("/dni/{dni}")
     public ResponseEntity<List<CuentaResponseDTO>> buscarCuentasPorDNI(@PathVariable @NotNull String dni) {
+        System.out.println("----------------obtenerUsuarios");
         return ResponseEntity.ok(serviceCuenta.buscarCuentasPorDNI(dni));
     }
 

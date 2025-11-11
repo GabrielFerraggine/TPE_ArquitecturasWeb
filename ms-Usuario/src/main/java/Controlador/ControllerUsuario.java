@@ -1,6 +1,7 @@
 package Controlador;
 
 import DTO.DTOUsuario;
+import Modelos.*;
 import Entidades.Usuario;
 import Servicio.ServicioUsuario;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/api/usuario")
 public class ControllerUsuario {
 
     private final ServicioUsuario servicioUsuario;
@@ -35,23 +36,48 @@ public class ControllerUsuario {
     //  y opcionalmente si otros usuarios relacionados a mi cuenta los han usado*/
     // --No se a que servicio pedirlo
 
-    /*@GetMapping("/obtenerCuentaUsuario/{idCuenta}")
-    public ResponseEntity<Cuenta> obtenerCuentaUsuario(Long idCuenta) {
+    /*@GetMapping("/obtenerCuentaUsuario/{idUsuario}")
+    public ResponseEntity<Cuenta> obtenerCuentaUsuario(@PathVariable String idUsuario) {
         try {
-            return ResponseEntity.ok(servicioUsuario.obtenerCuentaUsuario(idCuenta));
+            System.out.println("HOLAAAAAAAAAA idUsuario: " + idUsuario);
+            System.out.println(servicioUsuario.obtenerCuentaUsuario(idUsuario) + "UwU");
+            return ResponseEntity.ok(servicioUsuario.obtenerCuentaUsuario(idUsuario));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
+
 
     @GetMapping("/obtenerCuentasUsuarios/{idCuenta}")
-    public ResponseEntity<List<Cuenta>> obtenerCuentasUsuarios(Long idCuenta) {
+    public ResponseEntity<List<Cuenta>> obtenerCuentasUsuarios(@PathVariable String idCuenta) {
         try {
             return ResponseEntity.ok(servicioUsuario.obtenerCuentasUsuarios(idCuenta));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping("/{idCuenta}/anularCuenta")
+    public ResponseEntity<String> anularCuenta(@PathVariable Long idCuenta) {
+        try {
+            return ResponseEntity.ok(servicioUsuario.anularCuenta(idCuenta));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{idCuenta}/activarCuenta")
+    public ResponseEntity<String> activarCuenta(@PathVariable Long idCuenta) {
+        try {
+            return ResponseEntity.ok(servicioUsuario.activarCuenta(idCuenta));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /*
+
+
 
     @GetMapping("/obtenerViaje/{idViaje}/{idUsuario}")
     public ResponseEntity<Viaje> obtenerViaje(Long idViaje, Long idUsuario) {
@@ -106,7 +132,7 @@ public class ControllerUsuario {
 
     /*=============================Llamadas de usuario=====================================*/
     @GetMapping("/obtenerUsuario/{idUsuario}")
-    public ResponseEntity<DTOUsuario> obtenerUsuario(@PathVariable Long idUsuario) {  // Agregar @PathVariable
+    public ResponseEntity<DTOUsuario> obtenerUsuario(@PathVariable String idUsuario) {  // Agregar @PathVariable
         try {
             if (servicioUsuario.existeUsuario(idUsuario)) {
                 return ResponseEntity.ok(servicioUsuario.obtenerUsuario(idUsuario));
@@ -142,7 +168,7 @@ public class ControllerUsuario {
     }
 
     @DeleteMapping("/eliminarUsuario/{idUsuario}")
-    public ResponseEntity<Boolean> eliminarUsuario(@PathVariable Long idUsuario) {  // Agregar @PathVariable
+    public ResponseEntity<Boolean> eliminarUsuario(@PathVariable String idUsuario) {  // Agregar @PathVariable
         try {
             if(servicioUsuario.existeUsuario(idUsuario)) {
                 return ResponseEntity.ok(servicioUsuario.eliminarUsuario(idUsuario));
@@ -155,7 +181,7 @@ public class ControllerUsuario {
     }
 
     @PutMapping("/actualizarUsuario/{idUsuario}")
-    public ResponseEntity<DTOUsuario> actualizarUsuario(@PathVariable Long idUsuario, @RequestBody Usuario u) {  // Agregar @PathVariable y @RequestBody
+    public ResponseEntity<DTOUsuario> actualizarUsuario(@PathVariable String idUsuario, @RequestBody Usuario u) {  // Agregar @PathVariable y @RequestBody
         try {
             if(servicioUsuario.existeUsuario(idUsuario)) {
                 return ResponseEntity.ok(servicioUsuario.actualizarUsuario(idUsuario, u));

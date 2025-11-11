@@ -48,7 +48,7 @@ public class CargarDatos {
                 for (CSVRecord record : csvParser) {
                     Usuario usuario = new Usuario();
 
-                    usuario.setIdUsuario(Long.parseLong(record.get("idUsuario")));
+                    usuario.setIdUsuario(record.get("idUsuario"));
                     usuario.setNombre(record.get("nombre"));
                     usuario.setApellido(record.get("apellido"));
                     usuario.setNroTelefono(record.get("nroTelefono"));

@@ -9,6 +9,28 @@ spring:
           enabled: true
       routes:
         - id : ms-cuenta
-          uri: lb://localhost:8001/cuentas
-          preducates:
-            - Path=/cuentas
+          uri: lb://localhost:8001
+          predicates:
+            - Path=/api/cuentas/**
+
+        - id : ms-usuario
+          uri: lb://localhost:8002
+          predicates:
+            - Path=/api/usuarios/**
+
+        - id : ms-viaje
+          uri: lb://localhost:8003
+          predicates:
+            - Path=/api/viajes/**
+
+        - id : ms-facturacion
+          uri: lb://localhost:8004
+          predicates:
+            - Path=/api/facturacion/**
+            - Path=/api/detalleFactura/**
+            - Path=/api/tarifa/**
+
+        - id: ms-monopatin
+          uri: lb://localhost:8005
+          predicates:
+            - Path=/api/monopatines/**

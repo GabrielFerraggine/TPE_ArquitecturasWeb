@@ -22,25 +22,6 @@ public class ParadaService {
         return paradaRepository.paradaValida(latitud, longitud);
     }
 
-    /*
-    public void validarMonopatinEnParadaEspecifica(Long idMonopatin, Long paradaDesignadaId) {
-        Parada paradaDesignada = paradaRepository.findByIdAndActivaTrue(paradaDesignadaId)
-                .orElseThrow(() -> new RuntimeException("La parada designada no existe"));
-
-        Double latitudMonopatin = monopatinFeignClient.obtenerLatitud(idMonopatin);
-        Double longitudMonopatin = monopatinFeignClient.obtenerLongitud(idMonopatin);
-
-        Double distancia = calcularDistanciaMetros(
-                latitudMonopatin, longitudMonopatin,
-                paradaDesignada.getLatitud(), paradaDesignada.getLongitud()
-        );
-
-        if (distancia > paradaDesignada.getRadioPermitidoMetros()) {
-            throw new RuntimeException("El monopatín no se encuentra en la parada designada");
-        }
-
-    }
-    */
     public boolean validarMonopatinEnParadaEspecifica(Long idMonopatin, Long paradaDesignadaId) {
         try {
             Parada paradaDesignada = paradaRepository.findByIdAndActivaTrue(paradaDesignadaId)
