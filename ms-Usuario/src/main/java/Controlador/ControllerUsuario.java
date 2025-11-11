@@ -94,6 +94,18 @@ public class ControllerUsuario {
         }
     }*/
 
+    /*c. Como administrador quiero consultar los monopatines con más de X viajes en un cierto año.*/
+    @GetMapping("/monopatinesMasUsados/{anio}/{cantidadMinimaViajes}")
+    public ResponseEntity<List<Long>> obtenerMonopatinesMasUsados(@PathVariable int anio,
+                                                                  @PathVariable Long cantidadMinimaViajes) {
+        try {
+            return ResponseEntity.ok(servicioUsuario.obtenerMonopatinesMasUsados(anio, cantidadMinimaViajes));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
     //d. Como administrador quiero consultar el total facturado en un rango de meses de cierto año.*/
     /*@GetMapping("")
     public ResponseEntity<Double> obtenerTotalFacturado(int anioDeseado, int mesDeseadoInicial, int mesDeseadoFinal) {
@@ -103,6 +115,13 @@ public class ControllerUsuario {
             return ResponseEntity.badRequest().build();
         }
     }*/
+
+    @PostMapping("/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}")
+    public ResponseEntity<Void> ajustarPreciosTarifas(@PathVariable Double nuevaTarifaBase,
+                                                      @PathVariable Double nuevaTarifaExtra,
+                                                      @PathVariable String fechaInicio) {
+        try {
+            servicioUsuario.ajustarPreciosTarifas(nuevaTarifaBase, nueva
 
     /*=============================Llamadas de usuario=====================================*/
     @GetMapping("/obtenerUsuario/{idUsuario}")

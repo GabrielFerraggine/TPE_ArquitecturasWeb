@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import feignClients.FeignClientFacturacion;
+import java.time.LocalDate;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +27,11 @@ public class ServicioUsuario {
     //@Autowired
     //private FeignClientMonopatin feignMonopatin;
 
-    //@Autowired
-    //private FeignClientViaje feignViaje;
+    @Autowired
+    private FeignClientViaje feignViaje;
 
-    //@Autowired
-    //private FeignClientFacturacion feignFacturacion;
+    @Autowired
+    private FeignClientFacturacion feignFacturacion;
 
     public DTOUsuario toDTO(Usuario u) {
         DTOUsuario dtoUsuario = new DTOUsuario(
@@ -108,6 +111,16 @@ public class ServicioUsuario {
         }
     }*/
 
+    @Transactional(readOnly = true)
+    public List<Long> obtenerMonopatinesMasUsados(int anioDeseado, Long cantidadMinimaViajes) throws Exception {
+        try {
+            return feignViaje.obtenerMonopatinesMasUsados(anioDeseado, cantidadMinimaViajes);
+        } catch (Exception e) {
+            throw new Exception("Error al obtener los monopatines mas usados en el año: " + anioDeseado
+                    + " con una cantidad minima de viajes de: " + cantidadMinimaViajes);
+        }
+    }
+
     /*@Transactional(readOnly = true)
     public Double obtenerTotalFacturado(int anioDeseado, int mesDeseadoInicial, int mesDeseadoFinal) throws Exception {
         try {
@@ -117,6 +130,15 @@ public class ServicioUsuario {
                     + mesDeseadoInicial + " y " +mesDeseadoFinal);
         }
     }*/
+
+    @Transactional
+    public void ajustarPreciosTarifas(BigDecimal nuevaTarifaBase, BigDecimal nuevaTarifaExtra, LocalDate fechaInicio) throws Exception {
+        try {
+            feignFacturacion.ajustarPreciosTarifas(nuevaTarifaBase, nuevaTarifaExtra, fechaInicio);
+        } catch (Exception e) {
+            throw new Exception("Error al ajustar los precios de las tarifas: " + e.getMessage());
+        }
+    }
 
     /*==================================Metodos propios==================================*/
     //Obtener un usuario
