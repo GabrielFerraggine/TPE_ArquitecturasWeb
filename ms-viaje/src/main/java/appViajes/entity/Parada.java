@@ -9,6 +9,7 @@ import lombok.Data;
 public class Parada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Cambia esto
+    //@GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Column(nullable = false)
