@@ -2,6 +2,7 @@ package Aplicacion.service;
 
 import Aplicacion.DTO.MonopatinDTO;
 import Aplicacion.DTO.ReporteDTO;
+import Aplicacion.entity.Estado;
 import Aplicacion.entity.Monopatin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class ServiceMonopatin {
     }
 
     @Transactional
-    public boolean setEstado(Long idMonopatin, String estado) {
+    public boolean setEstado(Long idMonopatin, Estado estado) {
         return (repoMonopatin.setEstado(idMonopatin, estado) == 1);
     }
 

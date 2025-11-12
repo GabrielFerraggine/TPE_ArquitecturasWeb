@@ -147,21 +147,24 @@ public class ServicioUsuario {
         }
     }
 
-    /*@Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public Double obtenerTotalFacturado(int anioDeseado, int mesDeseadoInicial, int mesDeseadoFinal) throws Exception {
         try {
+            System.out.println("Hola inicio service usuario" + feignFacturacion.obtenerTotalFacturado(anioDeseado, mesDeseadoInicial, mesDeseadoFinal));
             return feignFacturacion.obtenerTotalFacturado(anioDeseado, mesDeseadoInicial, mesDeseadoFinal);
         } catch (Exception e) {
             throw new Exception("Error al obtener el total facturado en el año: " + anioDeseado + " en el intervalo de meses: "
-                    + mesDeseadoInicial + " y " +mesDeseadoFinal);
+                    + mesDeseadoInicial + " y " + mesDeseadoFinal);
         }
-    }*/
+    }
 
     @Transactional
     public void ajustarPreciosTarifas(BigDecimal nuevaTarifaBase, BigDecimal nuevaTarifaExtra, LocalDate fechaInicio) throws Exception {
         try {
+            System.out.println("Hola inicio service usuario");
             feignFacturacion.ajustarPreciosTarifas(nuevaTarifaBase, nuevaTarifaExtra, fechaInicio);
         } catch (Exception e) {
+
             throw new Exception("Error al ajustar los precios de las tarifas: " + e.getMessage());
         }
     }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import Aplicacion.service.ServiceMonopatin;
 import org.springframework.beans.factory.annotation.Autowired;
+import Aplicacion.entity.Estado;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +57,8 @@ public class ControllerMonopatin {
     }
 
     @PutMapping("/{id}/cambiarEstado/{estado}")
-    public ResponseEntity<String> setEstado(@PathVariable("id") Long idMonopatin, @PathVariable("estado") String estado, @RequestBody Monopatin monopatin) {
-        if (estado.equals("enMantenimiento") || estado.equals("enUso") || (estado.equals("libre"))) {
+    public ResponseEntity<String> setEstado(@PathVariable("id") Long idMonopatin, @PathVariable("estado") Estado estado, @RequestBody Monopatin monopatin) {
+        if (Estado.ENUSO == estado || Estado.ENMANTENIMIENTO == estado || Estado.LIBRE == estado) {
             if (serviceMonopatin.setEstado(idMonopatin, estado)) {
                 return ResponseEntity.ok().body("El estado del Monopatin (id = " + idMonopatin + ") se ha actualizado a '" + estado + "'");
             }
@@ -118,8 +119,8 @@ public class ControllerMonopatin {
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{idMonopatin}/finalizarRecorrido")
-    public ResponseEntity<?> finalizarRecorrido(@PathVariable("idMonopatin") Long idMonopatin, @RequestParam double kmRecorridos, @RequestParam int tiempoDeUsoTotal, @RequestParam int tiempoDePausas) {
+    @PutMapping("/finalizarRecorrido/{idMonopatin}/{kmRecorridos}/{tiempoDeUsoTotal}/{tiempoDePausas}")
+    public ResponseEntity<?> finalizarRecorrido(@PathVariable("idMonopatin") Long idMonopatin, @PathVariable double kmRecorridos, @PathVariable int tiempoDeUsoTotal, @PathVariable int tiempoDePausas) {
         boolean resultado = serviceMonopatin.finalizarRecorrido(idMonopatin, kmRecorridos, tiempoDeUsoTotal, tiempoDePausas);
         if (resultado) {
             return ResponseEntity.ok().build();

@@ -17,24 +17,24 @@ public interface RepositoryMonopatin extends JpaRepository<Monopatin, Integer> {
 
     @Modifying
     @Query("UPDATE Monopatin m SET m.estado = :estado WHERE m.idMonopatin = :idMonopatin")
-    int setEstado(Long idMonopatin, String estado);
+    int setEstado(Long idMonopatin, Estado estado);
 
     @Query("SELECT m FROM Monopatin m")
     List<Monopatin> traerTodos();
 
-    @Query("SELECT new Aplicacion.DTO.ReporteDTO (m.idMonopatin, m.kmRecorridos, null, null) " +
+    @Query("SELECT new Aplicacion.DTO.ReporteDTO (m.idMonopatin, m.kmRecorridos, 0, 0) " +
             "FROM Monopatin m ")
     List<ReporteDTO> getReportePorKmRecorridos();
 
-    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, m.kmRecorridos, null, m.tiempoDePausas) " +
+    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, m.kmRecorridos, 0, m.tiempoDePausas) " +
             "FROM Monopatin m ")
     List<ReporteDTO> getReportePorKmYTiempoDePausas();
 
-    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, null, m.tiempoDeUsoTotal, null) " +
+    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, 0, m.tiempoDeUsoTotal, 0) " +
             "FROM Monopatin m ")
     List<ReporteDTO>getReportePorTiempoDeUsoTotal();
 
-    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, null, null, m.tiempoDePausas) " +
+    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, 0, 0, m.tiempoDePausas) " +
             "FROM Monopatin m ")
     List<ReporteDTO>getReportePorTiempoDePausas();
 

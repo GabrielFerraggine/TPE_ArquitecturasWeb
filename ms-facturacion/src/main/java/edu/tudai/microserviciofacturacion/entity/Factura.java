@@ -15,8 +15,13 @@ public class Factura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private Long usuarioId;
+
+    @Column
     private BigDecimal montoTotal;
+
+    @Column
     private LocalDate fechaEmision;
 
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)

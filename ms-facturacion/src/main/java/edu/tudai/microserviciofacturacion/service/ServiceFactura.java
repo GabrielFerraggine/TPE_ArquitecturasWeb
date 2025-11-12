@@ -15,31 +15,32 @@ public class ServiceFactura {
     private final RepositoryFactura repositoryFactura;
 
     @Transactional
-    public List<Factura> buscarTodas(){
+    public List<Factura> buscarTodas() {
         return repositoryFactura.findAll();
     }
 
     @Transactional
-    public Factura buscarPorId(Long id){
+    public Factura buscarPorId(Long id) {
         return repositoryFactura.findById(id).orElse(null);
     }
 
     @Transactional
-    public Factura agregarFactura(Factura factura){
+    public Factura agregarFactura(Factura factura) {
         return repositoryFactura.save(factura);
     }
 
     @Transactional
-    public Factura actualizarFactura(Factura factura){
+    public Factura actualizarFactura(Factura factura) {
         return repositoryFactura.save(factura);
     }
 
     @Transactional
-    public void eliminarFactura(Long id){
+    public void eliminarFactura(Long id) {
         repositoryFactura.deleteById(id);
     }
 
-    public Double obtenerTotalFacturado(int anio, int mesInicio, int mesFin){
+    @Transactional
+    public Double obtenerTotalFacturado(int anio, int mesInicio, int mesFin) {
         return repositoryFactura.obtenerTotalFacturado(anio, mesInicio, mesFin);
     }
 }

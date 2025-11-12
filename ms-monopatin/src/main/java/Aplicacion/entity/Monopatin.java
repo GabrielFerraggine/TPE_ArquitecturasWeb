@@ -18,7 +18,7 @@ public class Monopatin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMonopatin;
-    private String estado; // enUso, enMantenimiento, libre
+    private Estado estado; // enUso, enMantenimiento, libre
     private double latitud;
     private double longitud;
     private double kmRecorridos;

@@ -1,5 +1,6 @@
 package Aplicacion.DTO;
 
+import Aplicacion.entity.Estado;
 import Aplicacion.entity.Monopatin;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 public class MonopatinDTO {
     private Long idMonopatin;
-    private String estado; // enUso, enMantenimiento, libre
+    private Estado estado; // enUso, enMantenimiento, libre
     private double latitud;
     private double longitud;
     private double kmRecorridos;

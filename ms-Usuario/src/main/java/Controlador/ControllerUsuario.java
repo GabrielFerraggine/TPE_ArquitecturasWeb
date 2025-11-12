@@ -115,23 +115,28 @@ public class ControllerUsuario {
 
 
     //d. Como administrador quiero consultar el total facturado en un rango de meses de cierto año.*/
-    /*@GetMapping("")
-    public ResponseEntity<Double> obtenerTotalFacturado(int anioDeseado, int mesDeseadoInicial, int mesDeseadoFinal) {
+    @GetMapping("/factura/totalFacturado/{anioDeseado}/{mesDeseadoInicial}/{mesDeseadoFinal}")
+    public ResponseEntity<Double> obtenerTotalFacturado(@PathVariable int anioDeseado,@PathVariable int mesDeseadoInicial,@PathVariable int mesDeseadoFinal) {
         try {
+            System.out.println("Hola inicio");
             return ResponseEntity.ok(servicioUsuario.obtenerTotalFacturado(anioDeseado, mesDeseadoInicial, mesDeseadoFinal));
         } catch (Exception e) {
+            System.out.println("Hola");
             return ResponseEntity.badRequest().build();
         }
-    }*/
+    }
 
-    @PostMapping("/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}")
+    @PostMapping("/tarifa/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}")
     public ResponseEntity<Void> ajustarPreciosTarifas(@PathVariable BigDecimal nuevaTarifaBase,
                                                       @PathVariable BigDecimal nuevaTarifaExtra,
                                                       @PathVariable LocalDate fechaInicio) {
         try {
+            System.out.println("Hola inicio");
             servicioUsuario.ajustarPreciosTarifas(nuevaTarifaBase, nuevaTarifaExtra, fechaInicio);
+            System.out.println("Hola funciona");
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("Hola");
             return ResponseEntity.badRequest().build();
         }
     }

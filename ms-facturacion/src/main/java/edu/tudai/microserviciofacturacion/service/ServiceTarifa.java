@@ -56,7 +56,6 @@ public class ServiceTarifa {
         tarifaExtra.setMonto(nuevaTarifaExtra);
         tarifaExtra.setFechaInicio(fechaInicio);
         tarifaExtra.setFechaFin(null);
-
         repositoryTarifa.save(tarifaBase);
         repositoryTarifa.save(tarifaExtra);
 

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: microservicio-facturacion
+    name: ms-facturacion
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
@@ -10,7 +10,7 @@ spring:
     show-sql: true
     database: mysql
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
   sql:
     init:
       mode: always

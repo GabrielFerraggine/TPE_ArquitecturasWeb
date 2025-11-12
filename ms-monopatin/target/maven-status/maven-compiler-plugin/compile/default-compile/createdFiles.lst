@@ -1,0 +1,9 @@
+Aplicacion\entity\Monopatin.class
+Aplicacion\service\ServiceMonopatin.class
+Aplicacion\entity\Estado.class
+Aplicacion\controller\ControllerMonopatin.class
+Aplicacion\DTO\ReporteDTO.class
+Aplicacion\Main.class
+Aplicacion\DTO\MonopatinDTO.class
+Aplicacion\repository\RepositoryMonopatin.class
+Aplicacion\Utils\CargarDatos.class

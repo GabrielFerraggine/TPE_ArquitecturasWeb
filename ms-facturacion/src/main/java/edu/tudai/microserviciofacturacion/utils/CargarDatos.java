@@ -48,7 +48,6 @@ public class CargarDatos {
             for (CSVRecord record : csvParser) {
                 Tarifa tarifa = new Tarifa();
 
-                tarifa.setId(Long.parseLong(record.get("id")));
                 tarifa.setTipo(Tarifa.TipoTarifa.valueOf(record.get("tipo").toUpperCase()));
 
                 tarifa.setMonto(new BigDecimal(record.get("monto")));
@@ -73,7 +72,6 @@ public class CargarDatos {
             for (CSVRecord record : csvParser) {
                 Factura factura = new Factura();
 
-                factura.setId(Long.parseLong(record.get("id")));
                 factura.setUsuarioId(Long.parseLong(record.get("usuarioId")));
 
                 factura.setMontoTotal(new BigDecimal(record.get("montoTotal")));
@@ -107,8 +105,6 @@ public class CargarDatos {
                         Long.parseLong(record.get("tiempoUso")),
                         Long.parseLong(record.get("tiempoPausado"))
                 );
-
-                detalle.setId(Long.parseLong(record.get("id")));
 
                 detalle.setMontoCalculado(new BigDecimal(record.get("montoCalculado")));
 

@@ -1,5 +1,6 @@
 package Aplicacion.Utils;
 
+import Aplicacion.entity.Estado;
 import Aplicacion.entity.Monopatin;
 import Aplicacion.repository.RepositoryMonopatin;
 import org.apache.commons.csv.CSVFormat;
@@ -12,9 +13,6 @@ import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import entity.*;
-import repository.*;
-
 @Service
 public class CargarDatos {
     private final RepositoryMonopatin repoMonopatin;
@@ -24,16 +22,7 @@ public class CargarDatos {
         this.repoMonopatin = repoMonopatin;
     }
 
-    @PostConstruct
-    public void init() {
-        try {
-            cargarDatosCSV();
-            System.out.println("Datos cargados exitosamente desde CSV");
-        } catch (IOException e) {
-            System.err.println("Error al cargar datos desde CSV: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+
 
     public void cargarDatosCSV() throws IOException {
         cargarMonopatines();
@@ -46,13 +35,14 @@ public class CargarDatos {
                     new org.springframework.core.io.ClassPathResource("DBData/monopatin.csv");
 
             try (InputStreamReader reader = new InputStreamReader(resource.getInputStream());
-                 CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader)) {
+                 // Añade .withIgnoreSurroundingSpaces()
+                 CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreSurroundingSpaces().parse(reader)) {
 
                 for (CSVRecord record : csvParser) {
                     Monopatin monopatin = new Monopatin();
 
                     monopatin.setIdMonopatin(Long.parseLong(record.get("idMonopatin")));
-                    monopatin.setEstado(record.get("estado"));
+                    monopatin.setEstado(Estado.valueOf(record.get("estado").toUpperCase()));
                     monopatin.setLatitud(Double.parseDouble(record.get("latitud")));
                     monopatin.setLongitud(Double.parseDouble(record.get("longitud")));
                     monopatin.setKmRecorridos(Double.parseDouble(record.get("kmRecorridos")));

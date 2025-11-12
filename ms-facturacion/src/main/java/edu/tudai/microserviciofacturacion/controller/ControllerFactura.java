@@ -65,11 +65,13 @@ public class ControllerFactura {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/totalFacturado")
+    @GetMapping("/totalFacturado/{anio}/{mesInicio}/{mesFin}")
     public ResponseEntity<Double> obtenerTotalFacturado(
-            @RequestParam int anio, @RequestParam int mesInicio, @RequestParam int mesFin){
+            @PathVariable int anio, @PathVariable int mesInicio, @PathVariable int mesFin){ // <-- CORREGIDO AQUÍ
 
         double totalFacturado = serviceFactura.obtenerTotalFacturado(anio, mesInicio, mesFin);
+        System.out.println(totalFacturado);
+
         return ResponseEntity.ok(totalFacturado);
     }
 }

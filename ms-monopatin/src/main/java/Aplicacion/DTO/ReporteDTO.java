@@ -12,4 +12,5 @@ public class ReporteDTO {
     private double kmRecorridos;
     private int tiempoDeUsoTotal;
     private int tiempoDePausas;
+
 }
