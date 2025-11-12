@@ -25,8 +25,11 @@ import appViajes.repository.ViajeRepository;
 
 @Service
 public class CargarDatos {
+    @Autowired
     private final ViajeRepository repoViaje;
+    @Autowired
     private final PausaRepository repoPausa;
+    @Autowired
     private final ParadaRepository repoParada;
 
     @PersistenceContext
@@ -43,18 +46,22 @@ public class CargarDatos {
     public void cargarDatosCSV() {
         try {
             System.out.println("Iniciando carga de datos...");
+            long startTime = System.currentTimeMillis();
 
             // Limpiar en orden inverso por las relaciones FK
+            System.out.println("Limpiando datos anteriores...");
             repoPausa.deleteAllInBatch();
             repoViaje.deleteAllInBatch();
             repoParada.deleteAllInBatch();
+            System.out.println("Datos limpiados");
 
             // Cargar en orden correcto
             cargarParadas();
             cargarViajes();
             cargarPausas();
 
-            System.out.println("Carga de datos completada exitosamente");
+            long endTime = System.currentTimeMillis();
+            System.out.println("Carga de datos completada en " + (endTime - startTime) + " ms");
 
         } catch (Exception e) {
             System.err.println("Error cargando datos CSV: " + e.getMessage());
@@ -66,172 +73,226 @@ public class CargarDatos {
     private void cargarParadas() {
         try {
             File paradasCSV = ResourceUtils.getFile("ms-viaje/src/main/resources/BDData/paradas.csv");
-            List<Parada> paradas = new ArrayList<>();
 
             try (FileReader reader = new FileReader(paradasCSV);
                  CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader)) {
 
+                int batchSize = 50;
+                int count = 0;
+                List<Object[]> batchParams = new ArrayList<>();
+
                 for (CSVRecord record : csvParser) {
-                    Parada parada = new Parada();
-                    // NO establecer ID - dejar que se genere automáticamente
-                    // parada.setId(Long.parseLong(record.get("id"))); // COMENTA ESTA LÍNEA
+                    Object[] params = new Object[]{
+                            Long.parseLong(record.get("id")), // ID manual
+                            record.get("nombre"),
+                            Double.parseDouble(record.get("latitud")),
+                            Double.parseDouble(record.get("longitud")),
+                            Boolean.parseBoolean(record.get("activa")),
+                            record.isMapped("radio_permitido_metros") && !record.get("radio_permitido_metros").isEmpty()
+                                    ? Double.parseDouble(record.get("radio_permitido_metros")) : 50.0
+                    };
 
-                    parada.setNombre(record.get("nombre"));
-                    parada.setLatitud(Double.parseDouble(record.get("latitud")));
-                    parada.setLongitud(Double.parseDouble(record.get("longitud")));
-                    parada.setActiva(Boolean.parseBoolean(record.get("activa")));
+                    batchParams.add(params);
+                    count++;
 
-                    if (record.isMapped("radio_permitido_metros") && !record.get("radio_permitido_metros").isEmpty()) {
-                        parada.setRadioPermitidoMetros(Double.parseDouble(record.get("radio_permitido_metros")));
-                    } else {
-                        parada.setRadioPermitidoMetros(50.0);
+                    if (batchParams.size() >= batchSize) {
+                        ejecutarBatchParadas(batchParams);
+                        batchParams.clear();
+                        System.out.println("Procesadas " + count + " paradas...");
                     }
-
-                    paradas.add(parada);
                 }
-            }
 
-            // Usar saveAll en lugar de EntityManager para evitar problemas de transacción
-            if (!paradas.isEmpty()) {
-                List<Parada> paradasGuardadas = repoParada.saveAll(paradas);
-                System.out.println("Paradas cargadas: " + paradasGuardadas.size());
-            }
+                if (!batchParams.isEmpty()) {
+                    ejecutarBatchParadas(batchParams);
+                }
 
-        } catch (Exception e) {
-            System.err.println("Error cargando paradas: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Error en carga de paradas", e);
+                System.out.println("Total paradas cargadas: " + count);
+
+            } catch (Exception e) {
+                System.err.println("Error cargando paradas: " + e.getMessage());
+                e.printStackTrace();
+                throw new RuntimeException("Error en carga de paradas", e);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Archivo de paradas no encontrado: " + e.getMessage());
+            throw new RuntimeException("Archivo de paradas no encontrado", e);
         }
+    }
+
+    private void ejecutarBatchParadas(List<Object[]> batchParams) {
+        String sql = "INSERT INTO paradas (id, nombre, latitud, longitud, activa, radio_permitido_metros) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+        for (Object[] params : batchParams) {
+            entityManager.createNativeQuery(sql)
+                    .setParameter(1, params[0])
+                    .setParameter(2, params[1])
+                    .setParameter(3, params[2])
+                    .setParameter(4, params[3])
+                    .setParameter(5, params[4])
+                    .setParameter(6, params[5])
+                    .executeUpdate();
+        }
+        entityManager.flush();
     }
 
     private void cargarViajes() {
         try {
             File viajesCSV = ResourceUtils.getFile("ms-viaje/src/main/resources/BDData/viajes.csv");
-            List<Viaje> viajes = new ArrayList<>();
 
             try (FileReader reader = new FileReader(viajesCSV);
                  CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader)) {
 
+                int batchSize = 50;
+                int count = 0;
+                List<Object[]> batchParams = new ArrayList<>();
+
                 for (CSVRecord record : csvParser) {
-                    Viaje viaje = new Viaje();
-                    // NO establecer ID - dejar que se genere automáticamente
-                    // viaje.setId(Long.parseLong(record.get("id"))); // COMENTA ESTA LÍNEA
+                    Object[] params = new Object[]{
+                            Long.parseLong(record.get("id")), // ID manual
+                            Long.parseLong(record.get("id_monopatin")),
+                            Long.parseLong(record.get("id_usuario")),
+                            Long.parseLong(record.get("id_cuenta")),
+                            parsearFecha(record.get("fecha_hora_inicio")),
+                            record.isMapped("fecha_hora_fin") && !record.get("fecha_hora_fin").isEmpty()
+                                    ? parsearFecha(record.get("fecha_hora_fin")) : null,
+                            record.isMapped("km_recorridos") && !record.get("km_recorridos").isEmpty()
+                                    ? Double.parseDouble(record.get("km_recorridos")) : 0.0,
+                            record.isMapped("taifa") && !record.get("taifa").isEmpty()
+                                    ? Double.parseDouble(record.get("taifa")) : 0.0,
+                            Long.parseLong(record.get("parada_inicio")),
+                            record.isMapped("parada_final") && !record.get("parada_final").isEmpty()
+                                    ? Long.parseLong(record.get("parada_final")) : null,
+                            determinarEstado(record)
+                    };
 
-                    viaje.setIdMonopatin(Long.parseLong(record.get("id_monopatin")));
-                    viaje.setIdUsuario(Long.parseLong(record.get("id_usuario")));
-                    viaje.setIdCuenta(Long.parseLong(record.get("id_cuenta")));
-                    viaje.setFechaHoraInicio(parsearFecha(record.get("fecha_hora_inicio")));
+                    batchParams.add(params);
+                    count++;
 
-                    if (record.isMapped("fecha_hora_fin") && !record.get("fecha_hora_fin").isEmpty()) {
-                        viaje.setFechaHoraFin(parsearFecha(record.get("fecha_hora_fin")));
+                    // Ejecutar por lotes
+                    if (batchParams.size() >= batchSize) {
+                        ejecutarBatchViajes(batchParams);
+                        batchParams.clear();
+                        System.out.println("Procesados " + count + " viajes...");
                     }
-
-                    if (record.isMapped("km_recorridos") && !record.get("km_recorridos").isEmpty()) {
-                        viaje.setKmRecorridos(Double.parseDouble(record.get("km_recorridos")));
-                    } else {
-                        viaje.setKmRecorridos(0.0);
-                    }
-
-                    if (record.isMapped("taifa") && !record.get("taifa").isEmpty()) {
-                        viaje.setTaifa(Double.parseDouble(record.get("taifa")));
-                    } else {
-                        viaje.setTaifa(0.0);
-                    }
-
-                    viaje.setParadaInicio(Long.parseLong(record.get("parada_inicio")));
-
-                    if (record.isMapped("parada_final") && !record.get("parada_final").isEmpty()) {
-                        viaje.setParadaFinal(Long.parseLong(record.get("parada_final")));
-                    }
-
-                    // Configurar el estado
-                    String estado = record.get("estado");
-                    if (estado != null && !estado.isEmpty()) {
-                        switch (estado.toUpperCase()) {
-                            case "EN_CURSO":
-                                viaje.setEstado(Viaje.EstadoViaje.EN_CURSO);
-                                break;
-                            case "PAUSADO":
-                                viaje.setEstado(Viaje.EstadoViaje.PAUSADO);
-                                break;
-                            case "FINALIZADO":
-                                viaje.setEstado(Viaje.EstadoViaje.FINALIZADO);
-                                break;
-                            default:
-                                // Determinar estado basado en fecha_hora_fin
-                                if (viaje.getFechaHoraFin() != null) {
-                                    viaje.setEstado(Viaje.EstadoViaje.FINALIZADO);
-                                } else {
-                                    viaje.setEstado(Viaje.EstadoViaje.EN_CURSO);
-                                }
-                        }
-                    } else {
-                        // Si no hay estado, determinarlo por fecha_hora_fin
-                        if (viaje.getFechaHoraFin() != null) {
-                            viaje.setEstado(Viaje.EstadoViaje.FINALIZADO);
-                        } else {
-                            viaje.setEstado(Viaje.EstadoViaje.EN_CURSO);
-                        }
-                    }
-
-                    viaje.setPausas(new ArrayList<>()); // Inicializar lista vacía
-                    viajes.add(viaje);
                 }
-            }
 
-            // Usar saveAll en lugar de EntityManager
-            if (!viajes.isEmpty()) {
-                List<Viaje> viajesGuardados = repoViaje.saveAll(viajes);
-                System.out.println("Viajes cargados: " + viajesGuardados.size());
-            }
+                // Ejecutar último lote
+                if (!batchParams.isEmpty()) {
+                    ejecutarBatchViajes(batchParams);
+                }
 
-        } catch (Exception e) {
-            System.err.println("Error al cargar los viajes desde CSV: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Error en carga de viajes", e);
+                System.out.println("Total viajes cargados: " + count);
+
+            } catch (Exception e) {
+                System.err.println("Error al cargar los viajes desde CSV: " + e.getMessage());
+                e.printStackTrace();
+                throw new RuntimeException("Error en carga de viajes", e);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Archivo de viajes no encontrado: " + e.getMessage());
+            throw new RuntimeException("Archivo de viajes no encontrado", e);
         }
+    }
+
+    private void ejecutarBatchViajes(List<Object[]> batchParams) {
+        String sql = "INSERT INTO viajes (id, id_monopatin, id_usuario, id_cuenta, fecha_hora_inicio, " +
+                "fecha_hora_fin, km_recorridos, taifa, parada_inicio, parada_final, estado) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        for (Object[] params : batchParams) {
+            entityManager.createNativeQuery(sql)
+                    .setParameter(1, params[0])
+                    .setParameter(2, params[1])
+                    .setParameter(3, params[2])
+                    .setParameter(4, params[3])
+                    .setParameter(5, params[4])
+                    .setParameter(6, params[5])
+                    .setParameter(7, params[6])
+                    .setParameter(8, params[7])
+                    .setParameter(9, params[8])
+                    .setParameter(10, params[9])
+                    .setParameter(11, params[10])
+                    .executeUpdate();
+        }
+        entityManager.flush();
+    }
+
+    private String determinarEstado(CSVRecord record) {
+        String estado = record.get("estado");
+        if (estado != null && !estado.isEmpty()) {
+            return estado.toUpperCase();
+        }
+        // Determinar por fecha_hora_fin
+        if (record.isMapped("fecha_hora_fin") && !record.get("fecha_hora_fin").isEmpty()) {
+            return "FINALIZADO";
+        }
+        return "EN_CURSO";
     }
 
     private void cargarPausas() {
         try {
             File pausasCSV = ResourceUtils.getFile("ms-viaje/src/main/resources/BDData/pausas.csv");
-            List<Pausa> pausas = new ArrayList<>();
 
             try (FileReader reader = new FileReader(pausasCSV);
                  CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader)) {
 
+                int batchSize = 50;
+                int count = 0;
+                List<Object[]> batchParams = new ArrayList<>();
+
                 for (CSVRecord record : csvParser) {
-                    Pausa pausa = new Pausa();
-                    // NO establecer ID - dejar que se genere automáticamente
-                    // pausa.setId(Long.parseLong(record.get("id"))); // COMENTA ESTA LÍNEA
+                    Object[] params = new Object[]{
+                            Long.parseLong(record.get("id")), // ID manual
+                            Long.parseLong(record.get("viaje_id")),
+                            parsearFecha(record.get("fecha_hora_inicio")),
+                            record.isMapped("fecha_hora_fin") && !record.get("fecha_hora_fin").isEmpty()
+                                    ? parsearFecha(record.get("fecha_hora_fin")) : null,
+                            record.isMapped("pausa_extendida") && !record.get("pausa_extendida").isEmpty()
+                                    ? Boolean.parseBoolean(record.get("pausa_extendida")) : false
+                    };
 
-                    pausa.setViajeId(Long.parseLong(record.get("viaje_id")));
-                    pausa.setFechaHoraInicio(parsearFecha(record.get("fecha_hora_inicio")));
+                    batchParams.add(params);
+                    count++;
 
-                    if (record.isMapped("fecha_hora_fin") && !record.get("fecha_hora_fin").isEmpty()) {
-                        pausa.setFechaHoraFin(parsearFecha(record.get("fecha_hora_fin")));
+                    if (batchParams.size() >= batchSize) {
+                        ejecutarBatchPausas(batchParams);
+                        batchParams.clear();
+                        System.out.println("Procesadas " + count + " pausas...");
                     }
-
-                    if (record.isMapped("pausa_extendida") && !record.get("pausa_extendida").isEmpty()) {
-                        pausa.setPausaExtendida(Boolean.parseBoolean(record.get("pausa_extendida")));
-                    } else {
-                        pausa.setPausaExtendida(false);
-                    }
-
-                    pausas.add(pausa);
                 }
-            }
 
-            // Usar saveAll en lugar de EntityManager
-            if (!pausas.isEmpty()) {
-                List<Pausa> pausasGuardadas = repoPausa.saveAll(pausas);
-                System.out.println("Pausas cargadas: " + pausasGuardadas.size());
-            }
+                if (!batchParams.isEmpty()) {
+                    ejecutarBatchPausas(batchParams);
+                }
 
-        } catch (Exception e) {
-            System.err.println("Error cargando pausas: " + e.getMessage());
-            e.printStackTrace();
+                System.out.println("Total pausas cargadas: " + count);
+
+            } catch (Exception e) {
+                System.err.println("Error cargando pausas: " + e.getMessage());
+                e.printStackTrace();
+                throw new RuntimeException("Error en carga de pausas", e);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Archivo de pausas no encontrado: " + e.getMessage());
+            throw new RuntimeException("Archivo de pausas no encontrado", e);
         }
+    }
+
+    private void ejecutarBatchPausas(List<Object[]> batchParams) {
+        String sql = "INSERT INTO pausas (id, viaje_id, fecha_hora_inicio, fecha_hora_fin, pausa_extendida) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        for (Object[] params : batchParams) {
+            entityManager.createNativeQuery(sql)
+                    .setParameter(1, params[0])
+                    .setParameter(2, params[1])
+                    .setParameter(3, params[2])
+                    .setParameter(4, params[3])
+                    .setParameter(5, params[4])
+                    .executeUpdate();
+        }
+        entityManager.flush();
     }
 
     private LocalDateTime parsearFecha(String fechaStr) {
