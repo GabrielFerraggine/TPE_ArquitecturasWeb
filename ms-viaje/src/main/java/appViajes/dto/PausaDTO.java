@@ -13,6 +13,5 @@ public class PausaDTO {
     private Long id;
     private LocalDateTime fechaHoraInicio;
     private LocalDateTime fechaHoraFin;
-    //private Long viajeId;
     private Boolean pausaExtendida;
 }

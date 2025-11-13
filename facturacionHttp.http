@@ -1,0 +1,172 @@
+### MS-FACTURACIÓN - Configuración Base
+@baseUrl = http://localhost:8002
+@facturaBase = {{baseUrl}}/api/factura
+@detalleBase = {{baseUrl}}/api/detalleFactura
+@tarifaBase = {{baseUrl}}/api/tarifa
+
+### =========================================
+### FACTURAS
+### =========================================
+
+### 1. Obtener todas las facturas
+GET {{facturaBase}}
+Content-Type: application/json
+
+### 2. Obtener factura por ID
+GET {{facturaBase}}/1
+Content-Type: application/json
+
+### 3. Crear nueva factura
+POST {{facturaBase}}
+Content-Type: application/json
+
+{
+  "usuarioId": 12345,
+  "fechaEmision": "2024-07-15"
+}
+
+### 4. Actualizar factura
+PUT {{facturaBase}}/1
+Content-Type: application/json
+
+{
+  "usuarioId": 12345,
+  "fechaEmision": "2024-07-20"
+}
+
+### 5. Eliminar factura
+DELETE {{facturaBase}}/1
+Content-Type: application/json
+
+### 6. Obtener total facturado por período
+GET {{facturaBase}}/totalFacturado/2024/1/6
+Content-Type: application/json
+
+### =========================================
+### DETALLES DE FACTURA
+### =========================================
+
+### 7. Obtener todos los detalles de factura
+GET {{detalleBase}}
+Content-Type: application/json
+
+### 8. Obtener detalle de factura por ID
+GET {{detalleBase}}/1
+Content-Type: application/json
+
+### 9. Crear nuevo detalle de factura (Caso: Cuenta BÁSICA, menos de 100km)
+POST {{detalleBase}}
+Content-Type: application/json
+
+{
+  "facturaId": 1,
+  "viajeId": 1001,
+  "tarifaBase": 50.00,
+  "tarifaExtra": 20.00,
+  "tiempoUso": 30,
+  "tiempoPausado": 10,
+  "tipoCuenta": "BASICA",
+  "kmAcumuladosMes": 50.0
+}
+
+### 10. Crear nuevo detalle de factura (Caso: Cuenta PREMIUM, menos de 100km - con descuento)
+POST {{detalleBase}}
+Content-Type: application/json
+
+{
+  "facturaId": 1,
+  "viajeId": 1002,
+  "tarifaBase": 50.00,
+  "tarifaExtra": 20.00,
+  "tiempoUso": 45,
+  "tiempoPausado": 20,
+  "tipoCuenta": "PREMIUM",
+  "kmAcumuladosMes": 80.0
+}
+
+### 11. Crear nuevo detalle de factura (Caso: Tiempo pausado > 15 minutos - cobro extra)
+POST {{detalleBase}}
+Content-Type: application/json
+
+{
+  "facturaId": 1,
+  "viajeId": 1003,
+  "tarifaBase": 50.00,
+  "tarifaExtra": 20.00,
+  "tiempoUso": 25,
+  "tiempoPausado": 25,
+  "tipoCuenta": "BASICA",
+  "kmAcumuladosMes": 120.0
+}
+
+### 12. Actualizar detalle de factura
+PUT {{detalleBase}}/1
+Content-Type: application/json
+
+{
+  "facturaId": 1,
+  "viajeId": 1001,
+  "tarifaBase": 55.00,
+  "tarifaExtra": 25.00,
+  "tiempoUso": 35,
+  "tiempoPausado": 12,
+  "tipoCuenta": "BASICA",
+  "kmAcumuladosMes": 60.0
+}
+
+### 13. Eliminar detalle de factura
+DELETE {{detalleBase}}/1
+Content-Type: application/json
+
+### =========================================
+### TARIFAS
+### =========================================
+
+### 14. Obtener todas las tarifas
+GET {{tarifaBase}}
+Content-Type: application/json
+
+### 15. Obtener tarifa por ID
+GET {{tarifaBase}}/1
+Content-Type: application/json
+
+### 16. Crear nueva tarifa BASE
+POST {{tarifaBase}}
+Content-Type: application/json
+
+{
+  "tipo": "BASE",
+  "monto": 50.00,
+  "fechaInicio": "2024-01-01",
+  "fechaFin": "2024-12-31"
+}
+
+### 17. Crear nueva tarifa EXTRA_PAUSA
+POST {{tarifaBase}}
+Content-Type: application/json
+
+{
+  "tipo": "EXTRA_PAUSA",
+  "monto": 20.00,
+  "fechaInicio": "2024-01-01",
+  "fechaFin": "2024-12-31"
+}
+
+### 18. Actualizar tarifa
+PUT {{tarifaBase}}/1
+Content-Type: application/json
+
+{
+  "tipo": "BASE",
+  "monto": 55.00,
+  "fechaInicio": "2024-07-01",
+  "fechaFin": "2024-12-31"
+}
+
+### 19. Eliminar tarifa
+DELETE {{tarifaBase}}/1
+Content-Type: application/json
+
+### 20. Ajustar precios de tarifas
+POST {{tarifaBase}}/ajustarPrecios/60.00/25.00/2024-07-01
+Content-Type: application/json

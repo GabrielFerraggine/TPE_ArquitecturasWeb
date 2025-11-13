@@ -21,7 +21,6 @@ public class IniciarViajeRequest {
         this.paradaFinal = idParadaFinal;
     }
 
-    // Asegúrate de que Lombok genere los setters o agrégalos manualmente
     public void setIdMonopatin(Long idMonopatin) {
         this.idMonopatin = idMonopatin;
     }

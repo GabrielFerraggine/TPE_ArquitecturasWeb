@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name="ms-monopatin", url="http://localhost:8005/api/monopatin")
 public interface MonopatinFeignClient  {
 
-    // /api/monopatines/{id}/cambiarEstado/{estado}
     @PutMapping("/{id}/cambiarEstado/{estado}")
     void actualizarEstadoMonopatin(@PathVariable Long id, @RequestParam String estado);
 

@@ -52,13 +52,7 @@ public class ViajeService {
             throw new RuntimeException("Todos los IDs (monopatin, usuario, cuenta, paradaInicio, paradaFinal) son obligatorios");
         }
 
-        // Verificar si el usuario ya tiene un viaje activo
-        //Viaje viajeActivo = viajeRepository.findViajeActivoByUsuario(request.getIdUsuario());
-        //if (viajeActivo != null) {
-        //    throw new RuntimeException("El usuario ya tiene un viaje activo");
-        //}
 
-        // Verificar si el monopatín ya está en uso
         Viaje monopatinActivo = viajeRepository.findViajeActivoByMonopatin(request.getIdMonopatin());
         if (monopatinActivo != null) {
             throw new RuntimeException("El monopatín ya está en uso");

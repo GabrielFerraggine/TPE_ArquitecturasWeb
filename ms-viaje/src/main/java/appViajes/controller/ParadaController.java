@@ -27,35 +27,6 @@ public class ParadaController {
         }
     }
 
-
-    /*
-    @PostMapping("/crearParada/{nombre}/{latitud}/{longitud}/{activa}/{radioPermitidoMetros}")
-public ResponseEntity<?> crearParadaConPathVariables(
-        @PathVariable String nombre,
-        @PathVariable Double latitud,
-        @PathVariable Double longitud,
-        @PathVariable(required = false) Boolean activa,
-        @PathVariable(required = false) Double radioPermitidoMetros) {
-
-        try {
-            // Crear DTO con los datos recibidos
-            ParadaDTO paradaDTO = new ParadaDTO();
-            paradaDTO.setNombre(nombre);
-            paradaDTO.setLatitud(latitud);
-            paradaDTO.setLongitud(longitud);
-            paradaDTO.setActiva(activa != null ? activa : true);
-            paradaDTO.setRadioPermitidoMetros(radioPermitidoMetros != null ? radioPermitidoMetros : 50.0);
-
-            ParadaDTO nuevaParada = paradaService.crearParada(paradaDTO);
-            return ResponseEntity.ok(nuevaParada);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-     */
-
     @GetMapping("/obtenerTodas")
     public ResponseEntity<List<ParadaDTO>> obtenerTodasParadas() {
         List<ParadaDTO> paradas = paradaService.obtenerTodasParadas();
