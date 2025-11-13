@@ -115,7 +115,7 @@ public class ControllerUsuario {
 
 
     //d. Como administrador quiero consultar el total facturado en un rango de meses de cierto año.*/
-    @GetMapping("/factura/totalFacturado/{anioDeseado}/{mesDeseadoInicial}/{mesDeseadoFinal}")
+    /*@GetMapping("/factura/totalFacturado/{anioDeseado}/{mesDeseadoInicial}/{mesDeseadoFinal}")
     public ResponseEntity<Double> obtenerTotalFacturado(@PathVariable int anioDeseado,@PathVariable int mesDeseadoInicial,@PathVariable int mesDeseadoFinal) {
         try {
             System.out.println("Hola inicio");
@@ -124,9 +124,9 @@ public class ControllerUsuario {
             System.out.println("Hola");
             return ResponseEntity.badRequest().build();
         }
-    }
+    }*/
 
-    @PostMapping("/tarifa/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}")
+    /*@PostMapping("/tarifa/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}")
     public ResponseEntity<Void> ajustarPreciosTarifas(@PathVariable BigDecimal nuevaTarifaBase,
                                                       @PathVariable BigDecimal nuevaTarifaExtra,
                                                       @PathVariable LocalDate fechaInicio) {
@@ -139,7 +139,7 @@ public class ControllerUsuario {
             System.out.println("Hola");
             return ResponseEntity.badRequest().build();
         }
-    }
+    }*/
 
     /*=============================Llamadas de usuario=====================================*/
     @GetMapping("/obtenerUsuario/{idUsuario}")
