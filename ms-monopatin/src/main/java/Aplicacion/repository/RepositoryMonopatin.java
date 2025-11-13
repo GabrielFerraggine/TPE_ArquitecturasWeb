@@ -15,9 +15,18 @@ public interface RepositoryMonopatin extends JpaRepository<Monopatin, Integer> {
     @Query("SELECT m FROM Monopatin m WHERE m.idMonopatin = :id")
     Monopatin buscarPorId(Long id);
 
+    @Query("SELECT m.latitud FROM Monopatin m WHERE m.idMonopatin = :idMonopatin")
+    double getLatitud(Long idMonopatin);
+
+    @Query("SELECT m.longitud FROM Monopatin m WHERE m.idMonopatin = :idMonopatin")
+    double getLongitud(Long idMonopatin);
+
     @Modifying
     @Query("UPDATE Monopatin m SET m.estado = :estado WHERE m.idMonopatin = :idMonopatin")
     int setEstado(Long idMonopatin, Estado estado);
+
+    @Query("SELECT m.estado FROM Monopatin m WHERE m.idMonopatin = :idMonopatin")
+    public Estado getEstado(Long idMonopatin);
 
     @Query("SELECT m FROM Monopatin m")
     List<Monopatin> traerTodos();

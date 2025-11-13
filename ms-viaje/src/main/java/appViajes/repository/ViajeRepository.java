@@ -20,6 +20,9 @@ public interface ViajeRepository extends JpaRepository<Viaje, Long> {
 
     // Querys
     //
+      // reportarViajes
+    @Query("SELECT v FROM Viaje v")
+    List<Viaje> reportarViajes();
 
     @Query("SELECT v FROM Viaje v " +
             "WHERE v.estado = 'EN_CURSO' " +

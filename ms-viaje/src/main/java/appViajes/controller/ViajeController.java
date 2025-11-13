@@ -23,28 +23,47 @@ public class ViajeController {
     @Autowired
     private ParadaService paradaService;
 
+    @GetMapping("/")
+    public ResponseEntity<List<ViajeDTO>> reportarViajes() {
+        List<ViajeDTO> viajes = viajeService.reportarViajes();
+        if (viajes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(viajes);
+    }
+
     @PostMapping("/iniciar")
-    public ResponseEntity<?> iniciarVIaje(@RequestBody IniciarViajeRequest request) {
+    public ResponseEntity<?> iniciarViaje(@RequestBody IniciarViajeRequest request) {
         try {
             ViajeDTO viaje = viajeService.iniciarViaje(request);
             return ResponseEntity.ok(viaje);
 
         } catch (RuntimeException e) {
+            System.err.println("Error en controller: " + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    /*
-    @PostMapping("/finalizar")
-    public ResponseEntity<?> finalizarViaje(@RequestBody FinalizarViajeRequest request) {
-        try {
-            ViajeDTO viaje = viajeService.finalizarViaje(request);
-            return ResponseEntity.ok(viaje);
 
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    // Opcional: mantener el endpoint con path variables
+    @PostMapping("/iniciar/{idMonopatin}/{idUsuario}/{idCuenta}/{idParadaInicio}/{idParadaFinal}")
+    public ResponseEntity<?> iniciarViajeConPath(
+            @PathVariable Long idMonopatin,
+            @PathVariable Long idUsuario,
+            @PathVariable Long idCuenta,
+            @PathVariable Long idParadaInicio,
+            @PathVariable Long idParadaFinal) {
+
+        IniciarViajeRequest request = new IniciarViajeRequest();
+        request.setIdMonopatin(idMonopatin);
+        request.setIdUsuario(idUsuario);
+        request.setIdCuenta(idCuenta);
+        request.setParadaInicio(idParadaInicio);
+        request.setParadaFinal(idParadaFinal);
+
+        return iniciarViaje(request);
     }
-    */
+
+
 
     @PostMapping("/finalizar")
     public ResponseEntity<?> finalizarViaje(@RequestBody FinalizarViajeRequest request) {

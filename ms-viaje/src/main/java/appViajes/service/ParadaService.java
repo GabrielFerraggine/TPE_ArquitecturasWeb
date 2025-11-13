@@ -32,15 +32,15 @@ public class ParadaService {
                 return false;
             }
 
-            Double latitudMonopatin = monopatinFeignClient.obtenerLatitud(idMonopatin);
-            Double longitudMonopatin = monopatinFeignClient.obtenerLongitud(idMonopatin);
+            double latitudMonopatin = monopatinFeignClient.obtenerLatitud(idMonopatin);
+            double longitudMonopatin = monopatinFeignClient.obtenerLongitud(idMonopatin);
 
             // Validar que se obtuvieron coordenadas
             if (latitudMonopatin == 0.0 || longitudMonopatin == 0.0) {
                 return false;
             }
 
-            Double distancia = calcularDistanciaMetros(
+            double distancia = calcularDistanciaMetros(
                     latitudMonopatin, longitudMonopatin,
                     paradaDesignada.getLatitud(), paradaDesignada.getLongitud()
             );

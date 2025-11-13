@@ -46,6 +46,12 @@ public class ControllerMonopatin {
         return ResponseEntity.ok(mpDTO);
     }
 
+    @GetMapping("/{id}/LIBRE")
+    public ResponseEntity<Boolean> estaDisponible(@PathVariable Long id) {
+        Estado estado = serviceMonopatin.getEstado(id);
+        return ResponseEntity.ok().body(estado == Estado.LIBRE);
+    }
+
     @PostMapping("")
     public ResponseEntity<String> save(@RequestBody MonopatinDTO mpDTO) {
         try {
@@ -56,8 +62,9 @@ public class ControllerMonopatin {
         }
     }
 
+    // LIBRE, ENUSO, ENMANTENIMIENTO
     @PutMapping("/{id}/cambiarEstado/{estado}")
-    public ResponseEntity<String> setEstado(@PathVariable("id") Long idMonopatin, @PathVariable("estado") Estado estado, @RequestBody Monopatin monopatin) {
+    public ResponseEntity<String> setEstado(@PathVariable("id") Long idMonopatin, @PathVariable("estado") Estado estado) {
         if (Estado.ENUSO == estado || Estado.ENMANTENIMIENTO == estado || Estado.LIBRE == estado) {
             if (serviceMonopatin.setEstado(idMonopatin, estado)) {
                 return ResponseEntity.ok().body("El estado del Monopatin (id = " + idMonopatin + ") se ha actualizado a '" + estado + "'");
@@ -65,6 +72,16 @@ public class ControllerMonopatin {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("{id}/latitud")
+    public ResponseEntity<Double> obtenerLatitud(@PathVariable Long id) {
+        return ResponseEntity.ok(serviceMonopatin.getLatitud(id));
+    }
+
+    @GetMapping("{id}/longitud")
+    public ResponseEntity<Double> obtenerLongitud(@PathVariable Long id) {
+        return ResponseEntity.ok(serviceMonopatin.getLongitud(id));
     }
 
     @DeleteMapping("/{id}")
@@ -135,5 +152,9 @@ public class ControllerMonopatin {
 
 
     /{idMonopatin}/finalizarRecorrido
+
+
+
+
     */
 }

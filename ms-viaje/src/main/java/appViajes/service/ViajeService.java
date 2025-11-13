@@ -4,10 +4,13 @@ package appViajes.service;
 import appViajes.dto.*;
 import appViajes.entity.Pausa;
 import appViajes.entity.Viaje;
+import appViajes.feignClients.CuentaFeignClient;
 import appViajes.feignClients.MonopatinFeignClient;
+import appViajes.feignClients.UsuarioFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import appViajes.repository.ViajeRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,24 +30,71 @@ public class ViajeService {
     @Autowired
     private MonopatinFeignClient monopatinFeignClient;
 
+    @Autowired
+    private UsuarioFeignClient usuarioFeignClient;
 
-    public ViajeDTO iniciarViaje (IniciarViajeRequest request) {
-        // Verificar si el usuario ya tiene un viaje activo
-        Viaje viajeActico = viajeRepository.findViajeActivoByUsuario(request.getIdUsuario());
-        if (viajeActico != null) {
-            throw new RuntimeException("El usuario ya tiene un viaje activo");
+    @Autowired
+    private CuentaFeignClient cuentaFeignClient;
+
+    @Transactional(readOnly = true)
+    public List<ViajeDTO> reportarViajes(){
+        List<Viaje> viajes = viajeRepository.reportarViajes();
+        return viajes.stream().map(ViajeDTO::new).collect(Collectors.toList());
+    }
+
+    public ViajeDTO iniciarViaje(IniciarViajeRequest request) {
+        System.out.println("Service - Iniciando viaje con: " + request);
+
+        // Validaciones
+        if (request.getIdMonopatin() == null || request.getIdUsuario() == null ||
+                request.getIdCuenta() == null || request.getParadaInicio() == null ||
+                request.getParadaFinal() == null) {
+            throw new RuntimeException("Todos los IDs (monopatin, usuario, cuenta, paradaInicio, paradaFinal) son obligatorios");
         }
+
+        // Verificar si el usuario ya tiene un viaje activo
+        //Viaje viajeActivo = viajeRepository.findViajeActivoByUsuario(request.getIdUsuario());
+        //if (viajeActivo != null) {
+        //    throw new RuntimeException("El usuario ya tiene un viaje activo");
+        //}
+
+        // Verificar si el monopatín ya está en uso
         Viaje monopatinActivo = viajeRepository.findViajeActivoByMonopatin(request.getIdMonopatin());
         if (monopatinActivo != null) {
             throw new RuntimeException("El monopatín ya está en uso");
         }
+
+        // Verificar que el monopatín esté disponible
+        if (!monopatinFeignClient.verificarMonopatinActivo(request.getIdMonopatin())) {
+            throw new RuntimeException("El monopatín no está disponible");
+        }
+
+        // Verificar que el monopatín esté en la parada de inicio
+        boolean estaEnParadaInicio = paradaService.validarMonopatinEnParadaEspecifica(
+                request.getIdMonopatin(),
+                request.getParadaInicio()
+        );
+
+        if (!estaEnParadaInicio) {
+            throw new RuntimeException("El monopatín no se encuentra en la parada de inicio especificada");
+        }
+
+        // Crear el viaje con ambas paradas
         Viaje nuevoViaje = new Viaje(
                 request.getIdMonopatin(),
                 request.getIdUsuario(),
                 request.getIdCuenta(),
                 LocalDateTime.now(),
-                request.getParadaInicio()
+                request.getParadaInicio(),
+                request.getParadaFinal()
         );
+
+        // Actualizar estado del monopatín
+        try {
+            monopatinFeignClient.actualizarEstadoMonopatin(request.getIdMonopatin(), "ENUSO");
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar estado del monopatín: " + e.getMessage());
+        }
 
         Viaje viajeGuardado = viajeRepository.save(nuevoViaje);
         return mapToDTO(viajeGuardado);
@@ -58,7 +108,6 @@ public class ViajeService {
 
         Viaje viaje = viajeOpt.get();
         validarEstadoParaFinalizar(viaje);
-
 
         boolean estaEnParadaCorrecta = paradaService.validarMonopatinEnParadaEspecifica(
                 viaje.getIdMonopatin(),
@@ -74,8 +123,13 @@ public class ViajeService {
         viaje.finalizarViaje(LocalDateTime.now(), request.getParadaFinal(),
                 request.getKmRecorridos());
 
+        monopatinFeignClient.finalizarRecorrido(viaje.getIdMonopatin(), viaje.getKmRecorridos(), viaje.duracionViaje(), viaje.duracionPausasTotales());
+
         Viaje viajeActualizado = viajeRepository.save(viaje);
         return mapToDTO(viajeActualizado);
+
+
+        // /finalizarRecorrido/{idMonopatin}/{kmRecorridos}/{tiempoDeUsoTotal}/{tiempoDePausas}
     }
 
     private void validarEstadoParaFinalizar(Viaje viaje) {

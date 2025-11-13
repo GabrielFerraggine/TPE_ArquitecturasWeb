@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,15 +49,18 @@ public class Viaje {
     @JoinColumn(name = "viaje_id")
     private List<Pausa> pausas = new ArrayList<>();
 
-    public Viaje(Long idMonopatin, Long idUsuario, Long idCuenta, LocalDateTime fechaHoraInicio, Long paradaInicio) {
+    public Viaje(Long idMonopatin, Long idUsuario, Long idCuenta, LocalDateTime fechaHoraInicio,
+                 Long paradaInicio, Long paradaFinal) {
         this.idMonopatin = idMonopatin;
         this.idUsuario = idUsuario;
         this.idCuenta = idCuenta;
-        this.fechaHoraInicio = fechaHoraInicio;
+        this.fechaHoraInicio = LocalDateTime.now();
         this.paradaInicio = paradaInicio;
+        this.paradaFinal = paradaFinal;
         this.estado = EstadoViaje.EN_CURSO;
         this.pausas = new ArrayList<>();
         this.kmRecorridos = 0.0;
+        this.taifa = 0.0;
     }
     public void finalizarViaje(LocalDateTime fechaHoraFin, Long paradaFinal, Double kmRecorridos) {
         this.fechaHoraFin = fechaHoraFin;
@@ -75,22 +78,26 @@ public class Viaje {
         FINALIZADO
     }
 
-    public static LocalDateTime parsearFecha(String fechaStr) {
-        if (fechaStr == null || fechaStr.trim().isEmpty()) {
-            return null;
+    public int duracionViaje(){
+        Duration duracion;
+        if (fechaHoraFin == null) {
+            duracion = Duration.between(fechaHoraInicio, LocalDateTime.now());
+            return (int) duracion.toMinutes();
+        } else {
+            duracion = Duration.between(fechaHoraInicio, fechaHoraFin);
+            return (int) duracion.toMinutes();
         }
-        try {
-            // Intenta con formato "yyyy-MM-dd HH:mm:ss"
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            return LocalDateTime.parse(fechaStr, formatter);
-        } catch (Exception e) {
-            try {
-                // Intenta con formato ISO
-                return LocalDateTime.parse(fechaStr);
-            } catch (Exception ex) {
-                throw new RuntimeException("Error al parsear fecha: " + fechaStr, ex);
+    }
+
+    public int duracionPausasTotales() {
+        int totalMinutos = 0;
+        for (Pausa pausa : pausas) {
+            if (pausa.getFechaHoraFin() != null) {
+                Duration duracionPausa = Duration.between(pausa.getFechaHoraInicio(), pausa.getFechaHoraFin());
+                totalMinutos += duracionPausa.toMinutes();
             }
         }
+        return totalMinutos;
     }
 
 

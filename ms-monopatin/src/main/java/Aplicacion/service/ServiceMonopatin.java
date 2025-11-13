@@ -5,9 +5,12 @@ import Aplicacion.DTO.ReporteDTO;
 import Aplicacion.entity.Estado;
 import Aplicacion.entity.Monopatin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import Aplicacion.repository.RepositoryMonopatin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +44,11 @@ public class ServiceMonopatin {
     @Transactional
     public boolean setEstado(Long idMonopatin, Estado estado) {
         return (repoMonopatin.setEstado(idMonopatin, estado) == 1);
+    }
+
+    @Transactional(readOnly = true)
+    public Estado getEstado(Long idMonopatin) {
+        return repoMonopatin.getEstado(idMonopatin);
     }
 
     @Transactional
@@ -123,8 +131,19 @@ public class ServiceMonopatin {
         mpAUX.setKmRecorridos(kmRecorridos + mpAUX.getKmRecorridos());
         mpAUX.setTiempoDeUsoTotal(tiempoDeUsoTotal + mpAUX.getTiempoDeUsoTotal());
         mpAUX.setTiempoDePausas(tiempoDePausas + mpAUX.getTiempoDePausas());
+        repoMonopatin.setEstado(idMonopatin, Estado.LIBRE);
         int resultado = repoMonopatin.finalizarRecorrido(mpAUX.getIdMonopatin(), mpAUX.getKmRecorridos(), mpAUX.getTiempoDeUsoTotal(), mpAUX.getTiempoDePausas());
         return resultado != 0;
+    }
+
+    @Transactional(readOnly = true)
+    public double getLongitud(Long idMonopatin) {
+        return repoMonopatin.getLongitud(idMonopatin);
+    }
+
+    @Transactional(readOnly = true)
+    public double getLatitud(Long idMonopatin) {
+        return repoMonopatin.getLatitud(idMonopatin);
     }
 }
 

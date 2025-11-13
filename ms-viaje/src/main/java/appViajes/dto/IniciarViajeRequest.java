@@ -12,7 +12,26 @@ public class IniciarViajeRequest {
     private Long idUsuario;
     private Long idCuenta;
     private Long paradaInicio;
+    private Long paradaFinal;
 
-    // Con esto encapsulamos los datos necesarios para iniciar un viaje
+    public void setIdParadaInicio(Long idParadaInicio) {
+        this.paradaInicio = idParadaInicio;
+    }
+    public void setIdParadaFinal(Long idParadaFinal) {
+        this.paradaFinal = idParadaFinal;
+    }
+
+    // Asegúrate de que Lombok genere los setters o agrégalos manualmente
+    public void setIdMonopatin(Long idMonopatin) {
+        this.idMonopatin = idMonopatin;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public void setIdCuenta(Long idCuenta) {
+        this.idCuenta = idCuenta;
+    }
 
 }

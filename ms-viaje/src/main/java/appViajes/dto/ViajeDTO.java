@@ -1,5 +1,6 @@
 package appViajes.dto;
 
+import appViajes.entity.Viaje;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,4 +24,19 @@ public class ViajeDTO {
     private Long paradaFinal;
     private String estado;
     private List<PausaDTO> pausas;
+
+    public ViajeDTO(Viaje viaje) {
+       this.id = viaje.getId();
+       this.idMonopatin = viaje.getIdMonopatin();
+       this.idUsuario = viaje.getIdUsuario();
+       this.idCuenta = viaje.getIdCuenta();
+       this.fechaHoraInicio = viaje.getFechaHoraInicio();
+       this.fechaHoraFin = viaje.getFechaHoraFin();
+       this.kmRecorridos = viaje.getKmRecorridos();
+       this.taifa = viaje.getTaifa();
+       this.paradaInicio = viaje.getParadaInicio();
+       this.paradaFinal = viaje.getParadaFinal();
+       this.estado = viaje.getEstado().toString();
+    }
+
 }
