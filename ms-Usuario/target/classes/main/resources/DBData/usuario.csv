@@ -1,4 +1,0 @@
-idUsuario,nombre,apellido,nroTelefono,mail,rol,latitud,longitud
-1,Juan,Perez,123456789,juan@mail.com,USUARIO,100,200
-2,Maria,Gomez,987654321,maria@mail.com,ADMINISTRADOR,150,250
-3,Carlos,Lopez,555555555,carlos@mail.com,TECNICO_MANTENIMIENTO,120,180

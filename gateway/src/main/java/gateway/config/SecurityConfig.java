@@ -43,6 +43,8 @@ public class SecurityConfig {
                 .securityMatcher("/api/**" )/**/
                 .authorizeHttpRequests( authz -> authz
                         //6 de admin (a - f), 2 de usuario (g - h)
+                        .requestMatchers(HttpMethod.POST, "/api/authenticate").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/monopatines/reporte/kmRecorridos**").hasAnyAuthority( AdminConstant._ADMIN)//punto A
                         .requestMatchers( "/api/usuario/{dni}/**").hasAuthority( AdminConstant._ADMIN)//Punto B (Anular/Activar cuenta)
                         .requestMatchers( "/api/usuario/monopatinesMasUsados/{anio}/{cantidadMinimaViajes}").hasAuthority( AdminConstant._ADMIN)//Punto C
