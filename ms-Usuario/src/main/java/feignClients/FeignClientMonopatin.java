@@ -17,6 +17,6 @@ public interface FeignClientMonopatin {
     un monopatín cerca de mi ubicación*/
     @GetMapping("/obtenerMonopatinesCercanos/{latitud}/{longitud}")
     List<Monopatin> obtenerMonopatinesCercanos(
-            @PathVariable int latitud,
-            @PathVariable int longitud);
+            @PathVariable double latitud,
+            @PathVariable double longitud);
 }

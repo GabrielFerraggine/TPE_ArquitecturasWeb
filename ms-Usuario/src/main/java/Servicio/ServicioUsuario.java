@@ -26,8 +26,8 @@ public class ServicioUsuario {
     //@Autowired
     //private FeignClientCuenta feignCuenta;
 
-    //@Autowired
-    //private FeignClientMonopatin feignMonopatin;
+    @Autowired
+    private FeignClientMonopatin feignMonopatin;
 
     @Autowired
     private FeignClientViaje feignViaje;
@@ -54,14 +54,14 @@ public class ServicioUsuario {
     /*=========================Metodos de los FeignClient================================*/
     /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona,
     para poder encontrar un monopatín cerca de mi ubicación*/
-    /*@Transactional(readOnly = true)
-    public List<Monopatin> obtenerMonopatinesCercanos(int latitud, int longitud) throws Exception {
+    @Transactional(readOnly = true)
+    public List<Monopatin> obtenerMonopatinesCercanos(double latitud, double longitud) throws Exception {
         try {
             return feignMonopatin.obtenerMonopatinesCercanos(latitud, longitud);
         } catch (Exception e) {
             throw new Exception("Error al obtener monopatines cercanos: " + e.getMessage());
         }
-    }*/
+    }
 
     // ---Metodos con ms-cuenta
     //Obtener cuentas de un usuario
@@ -106,36 +106,6 @@ public class ServicioUsuario {
             throw new Exception("Hubo un error activando cuentas: " + e.getMessage());
         }
     }
-
-    //Obtener un viaje de un usuario
-    /*@Transactional(readOnly = true)
-    public Viaje obtenerViaje(Long idViaje, String idUsuario) throws Exception {
-        try {
-            return feignViaje.obtenerViaje(idViaje, idUsuario);
-        } catch (Exception e) {
-            throw new Exception("No se pudo obtener el viaje solicitado: " + e.getMessage());
-        }
-    }*/
-
-    //Obtener todos los viajes de un usuario
-    /*@Transactional(readOnly = true)
-    public List<Viaje> obtenerViajesUsuario(String idUsuario) throws Exception {
-        try {
-            return feignViaje.obtenerViajesUsuario(idUsuario);
-        } catch (Exception e) {
-            throw new Exception("No se pudo obtener los viajes solicitados: " + e.getMessage());
-        }
-    }*/
-
-    //Agregar un nuevo viaje
-    /*@Transactional
-    public Viaje agregarViaje(Viaje v) throws Exception{
-        try {
-            return feignViaje.save(v);
-        } catch(Exception e) {
-            throw new Exception("Error al crear un nuevo viaje: " + e.getMessage());
-        }
-    }*/
 
     @Transactional(readOnly = true)
     public List<Long> obtenerMonopatinesMasUsados(int anioDeseado, Long cantidadMinimaViajes) throws Exception {

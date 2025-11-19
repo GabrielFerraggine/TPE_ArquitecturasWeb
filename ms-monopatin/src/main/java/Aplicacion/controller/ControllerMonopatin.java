@@ -145,6 +145,15 @@ public class ControllerMonopatin {
         return ResponseEntity.internalServerError().body("Error al finalizar el Monopatin");
     }
 
+    @GetMapping("/cercanos/{latitud}/{longitud}")
+    public ResponseEntity<List<MonopatinDTO>> getMonopatinesCercanos(@PathVariable("latitud") Double latitud, @PathVariable("longitud") double longitud) {
+        List<MonopatinDTO> monopatines = serviceMonopatin.getMonopatinesCercanos(latitud, longitud);
+        if (monopatines != null) {
+            return ResponseEntity.ok(monopatines);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     /*
     /reporte
     /reporte/kmRecorridos

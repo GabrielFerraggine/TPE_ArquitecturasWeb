@@ -24,19 +24,20 @@ public class ControllerUsuario {
     /*==============================Llamadas de los FeignClient==============================*/
     /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona,
     para poder encontrar un monopatín cerca de mi ubicación*/
-    /*@GetMapping("/obtenerMonopatinesCercanos/{latitud}/{longitud}")
-    public ResponseEntity<List<Monopatin>> obtenerMonopatinesCercanos(@PathVariable int latitud, @PathVariable int longitud) {
+    @GetMapping("/obtenerMonopatinesCercanos/{latitud}/{longitud}")
+    public ResponseEntity<List<Monopatin>> obtenerMonopatinesCercanos(@PathVariable double latitud, @PathVariable double longitud) {
         try {
             return ResponseEntity.ok(servicioUsuario.obtenerMonopatinesCercanos(latitud, longitud));
         } catch (Exception e) {
             return  ResponseEntity.notFound().build();
         }
-    }*/
+    }
 
     //TODO
     // /*h. Como usuario quiero saber cuánto he usado los monopatines en un período,
     //  y opcionalmente si otros usuarios relacionados a mi cuenta los han usado*/
     // --No se a que servicio pedirlo
+    /*@GetMapping("/tipoUsoMonopatines/{idUsuario}")*/
 
 
     @PutMapping("/{dni}/anularCuentas")
@@ -57,51 +58,6 @@ public class ControllerUsuario {
         }
     }
 
-    /*
-
-
-
-    @GetMapping("/obtenerViaje/{idViaje}/{idUsuario}")
-    public ResponseEntity<Viaje> obtenerViaje(Long idViaje, Long idUsuario) {
-        try {
-            if(servicioUsuario.existeUsuario(idUsuario)) {
-                return ResponseEntity.ok(servicioUsuario.obtenerViaje(idViaje, idUsuario));
-            }else {
-                return ResponseEntity.badRequest().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @GetMapping("/obtenerViajesUsuario/{idUsuario}")
-    public ResponseEntity<List<Viaje>> obtenerViajesUsuario(Long idUsuario) {
-        try {
-            if(servicioUsuario.existeUsuario(idUsuario)) {
-                return ResponseEntity.ok(servicioUsuario.obtenerViajesUsuario(idUsuario));
-            }else {
-                return ResponseEntity.badRequest().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/agregarViaje/{Viaje}")
-    public ResponseEntity<Viaje> agregarViaje(Viaje v, Long idUsuario) {
-        try {
-            if(servicioUsuario.existeUsuario(v.getIdUsuario())) {
-                //TODO ¿deberia agregar a un usuario su lista de viajes?
-                Viaje nuevoViaje = servicioUsuario.agregarViaje(v);
-                return ResponseEntity.status(HttpStatus.CREATED).body(nuevoViaje);
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }*/
-
     /*c. Como administrador quiero consultar los monopatines con más de X viajes en un cierto año.*/
     @GetMapping("/monopatinesMasUsados/{anio}/{cantidadMinimaViajes}")
     public ResponseEntity<List<Long>> obtenerMonopatinesMasUsados(@PathVariable int anio,
@@ -112,34 +68,6 @@ public class ControllerUsuario {
             return ResponseEntity.badRequest().build();
         }
     }
-
-
-    //d. Como administrador quiero consultar el total facturado en un rango de meses de cierto año.*/
-    /*@GetMapping("/factura/totalFacturado/{anioDeseado}/{mesDeseadoInicial}/{mesDeseadoFinal}")
-    public ResponseEntity<Double> obtenerTotalFacturado(@PathVariable int anioDeseado,@PathVariable int mesDeseadoInicial,@PathVariable int mesDeseadoFinal) {
-        try {
-            System.out.println("Hola inicio");
-            return ResponseEntity.ok(servicioUsuario.obtenerTotalFacturado(anioDeseado, mesDeseadoInicial, mesDeseadoFinal));
-        } catch (Exception e) {
-            System.out.println("Hola");
-            return ResponseEntity.badRequest().build();
-        }
-    }*/
-
-    /*@PostMapping("/tarifa/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}")
-    public ResponseEntity<Void> ajustarPreciosTarifas(@PathVariable BigDecimal nuevaTarifaBase,
-                                                      @PathVariable BigDecimal nuevaTarifaExtra,
-                                                      @PathVariable LocalDate fechaInicio) {
-        try {
-            System.out.println("Hola inicio");
-            servicioUsuario.ajustarPreciosTarifas(nuevaTarifaBase, nuevaTarifaExtra, fechaInicio);
-            System.out.println("Hola funciona");
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            System.out.println("Hola");
-            return ResponseEntity.badRequest().build();
-        }
-    }*/
 
     /*=============================Llamadas de usuario=====================================*/
     @GetMapping("/obtenerUsuario/{idUsuario}")
@@ -203,49 +131,6 @@ public class ControllerUsuario {
             return ResponseEntity.notFound().build();
         }
     }
-        /*@GetMapping("/obtenerUsuariosHabilitados/")
-    public ResponseEntity<List<DTOUsuario>> obtenerUsuariosHabilitados() {
-        try {
-            return ResponseEntity.ok(servicioUsuario.obtenerUsuariosHabilitados());
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @GetMapping("/obtenerUsuariosDeshabilitados/")
-    public ResponseEntity<List<DTOUsuario>> obtenerUsuariosDeshabilitados() {
-        try {
-            return ResponseEntity.ok(servicioUsuario.obtenerUsuariosDeshabilitados());
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }*/
-
-    /*@PutMapping("/habilitarUsuario/{idUsuario}")
-    public ResponseEntity<DTOUsuario> habilitarUsuario(Long idUsuario) {
-        try {
-            if(servicioUsuario.existeUsuario(idUsuario)) {
-                return ResponseEntity.ok(servicioUsuario.habilitarUsuario(idUsuario));
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/deshabilitarUsuario/{idUsuario}")
-    public ResponseEntity<DTOUsuario> deshabilitarUsuario(Long idUsuario) {
-        try {
-            if(servicioUsuario.existeUsuario(idUsuario)) {
-                return ResponseEntity.ok(servicioUsuario.deshabilitarUsuario(idUsuario));
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }*/
 }
 
 

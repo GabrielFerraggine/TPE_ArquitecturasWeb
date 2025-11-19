@@ -136,6 +136,13 @@ public class ServiceMonopatin {
         return resultado != 0;
     }
 
+    /* SEGUIR ACA PETERRRR 1
+    @Transactional(readOnly = true)
+    public List<MonopatinDTO> getMonopatinesCercanos(double latitud, double longitud) {
+        return repoMonopatin.getMonopatinesCercanos(latitud, longitud);
+    }
+    */
+
     @Transactional(readOnly = true)
     public double getLongitud(Long idMonopatin) {
         return repoMonopatin.getLongitud(idMonopatin);
