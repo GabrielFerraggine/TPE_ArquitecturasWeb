@@ -136,12 +136,13 @@ public class ServiceMonopatin {
         return resultado != 0;
     }
 
-    /* SEGUIR ACA PETERRRR 1
+
     @Transactional(readOnly = true)
     public List<MonopatinDTO> getMonopatinesCercanos(double latitud, double longitud) {
-        return repoMonopatin.getMonopatinesCercanos(latitud, longitud);
+        List<Monopatin> monopatines = repoMonopatin.getMonopatinesCercanos(latitud - 50.00, latitud + 50.00, longitud - 50.00, longitud + 50.00);
+        return monopatines.stream().map(MonopatinDTO::new).collect(Collectors.toList());
     }
-    */
+
 
     @Transactional(readOnly = true)
     public double getLongitud(Long idMonopatin) {

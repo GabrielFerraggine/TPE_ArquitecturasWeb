@@ -44,14 +44,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests( authz -> authz
                         //6 de admin (a - f), 2 de usuario (g - h)
                         .requestMatchers(HttpMethod.POST, "/api/authenticate").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/monopatines/reporte/kmRecorridos**").hasAnyAuthority( AdminConstant._ADMIN)//punto A
-                        .requestMatchers( "/api/usuario/{dni}/**").hasAuthority( AdminConstant._ADMIN)//Punto B (Anular/Activar cuenta)
-                        .requestMatchers( "/api/usuario/monopatinesMasUsados/{anio}/{cantidadMinimaViajes}").hasAuthority( AdminConstant._ADMIN)//Punto C
-                        .requestMatchers( "/api/factura/totalFacturado/{anio}/{mesInicio}/{mesFin}").hasAuthority( AdminConstant._ADMIN)//Punto D
-                        //TODO .requestMatchers( "/api/tarifa/**").hasAuthority( AdminConstant._ADMIN)//PUNTO e
-                        .requestMatchers( "/api/tarifa/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}").hasAuthority( AdminConstant._ADMIN)//Punto F
-                        //TODO.requestMatchers("/api/usuario/obtenerMonopatinesCercanos/{latitud}/{longitud}").hasAuthority( AdminConstant._USUARIO)//Punto G
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/monopatin/reporte/kmRecorridos**").hasAnyAuthority( AdminConstant._ADMIN)//punto A
+                        .requestMatchers(HttpMethod.PUT, "/api/usuario/{dni}/**").hasAuthority( AdminConstant._ADMIN)//Punto B (Anular/Activar cuenta)
+                        //TODO .requestMatchers(HttpMethod.GET, "/api/usuario/monopatinesMasUsados/{anio}/{cantidadMinimaViajes}").hasAuthority( AdminConstant._ADMIN)//Punto C
+                        .requestMatchers(HttpMethod.GET, "/api/factura/totalFacturado/{anio}/{mesInicio}/{mesFin}").hasAuthority( AdminConstant._ADMIN)//Punto D
+                        //TODO .requestMatchers( "/api/usuario/**").hasAuthority( AdminConstant._ADMIN)//PUNTO e
+                        .requestMatchers(HttpMethod.POST, "/api/tarifa/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}").hasAuthority( AdminConstant._ADMIN)//Punto F
+                        .requestMatchers(HttpMethod.GET, "/api/usuario/obtenerMonopatinesCercanos/{latitud}/{longitud}").hasAuthority( AdminConstant._USUARIO)//Punto G
                         //TODO .requestMatchers("/api/usuario/tipoUsoMonopatines/{idUsuario}").hasAuthority( AdminConstant._USUARIO)//Punto H
                         //.requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
                         .anyRequest().authenticated()

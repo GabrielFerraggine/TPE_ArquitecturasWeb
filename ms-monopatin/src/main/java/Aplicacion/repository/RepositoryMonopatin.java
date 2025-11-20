@@ -15,6 +15,9 @@ public interface RepositoryMonopatin extends JpaRepository<Monopatin, Integer> {
     @Query("SELECT m FROM Monopatin m WHERE m.idMonopatin = :id")
     Monopatin buscarPorId(Long id);
 
+    @Query("SELECT m FROM Monopatin m WHERE m.latitud BETWEEN :latitudMin AND :latitudMax AND m.longitud BETWEEN :longitudMin AND :longitudMax")
+    List<Monopatin> getMonopatinesCercanos(double latitudMin, double latitudMax, double longitudMin, double longitudMax);
+
     @Query("SELECT m.latitud FROM Monopatin m WHERE m.idMonopatin = :idMonopatin")
     double getLatitud(Long idMonopatin);
 

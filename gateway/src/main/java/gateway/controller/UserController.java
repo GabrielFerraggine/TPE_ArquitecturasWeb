@@ -14,16 +14,27 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     private final UsuarioService usuarioService;
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<?> saveUser( @RequestBody @Valid UsuarioDTO usuarioDTO) {
-        final var id = usuarioService.saveUser( usuarioDTO );
-        return new ResponseEntity<>( id, HttpStatus.CREATED );
+        log.info("Received request to create user: {}", usuarioDTO.getUsername());
+        try {
+            final var id = usuarioService.saveUser(usuarioDTO);
+            log.info("User created successfully with ID: {}", id);
+            return new ResponseEntity<>(id, HttpStatus.CREATED);
+        } catch (Exception e) {
+            log.error("Error creating user: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating user: " + e.getMessage());
+        }
     }
 }

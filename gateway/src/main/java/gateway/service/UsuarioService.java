@@ -21,7 +21,10 @@ public class UsuarioService {
     public long saveUser(UsuarioDTO request){
         final var usuario = new Usuario(request.getUsername() );
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
-        final var roles =  this.adminRepository.findAllById( request.getAdmins() );
+        final var roles = adminRepository.findByNameIn(request.getAdmins());
+        if (roles.isEmpty()) {
+            throw new IllegalArgumentException("No se encontraron roles válidos");
+        }
         usuario.setAdmins( roles );
         final var result = this.usuarioRepository.save( usuario );
         return result.getId();
