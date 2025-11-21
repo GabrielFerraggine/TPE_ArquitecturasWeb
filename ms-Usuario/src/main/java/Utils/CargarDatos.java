@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import Entidades.*;
 import Repository.RepositoryUsuario;
@@ -38,7 +42,6 @@ public class CargarDatos {
 
     private void cargarUsuarios() throws IOException {
         if (repoUsuario.count() == 0) {
-            // Usar ClassPathResource en lugar de ResourceUtils.getFile
             org.springframework.core.io.Resource resource =
                     new org.springframework.core.io.ClassPathResource("DBData/usuario.csv");
 
@@ -54,15 +57,48 @@ public class CargarDatos {
                     usuario.setNroTelefono(record.get("nroTelefono"));
                     usuario.setMail(record.get("mail"));
                     usuario.setRol(Rol.valueOf(record.get("rol")));
-                    usuario.setLatitud(Integer.parseInt(record.get("latitud")));
-                    usuario.setLongitud(Integer.parseInt(record.get("longitud")));
+                    usuario.setLatitud(Double.parseDouble(record.get("latitud")));
+                    usuario.setLongitud(Double.parseDouble(record.get("longitud")));
+                    usuario.setCuentas(parsearListaCuentas(record.get("cuentas")));
+                    usuario.setMonopatines(parsearListaLong(record.get("monopatines")));
+                    usuario.setViajes(parsearListaLong(record.get("viajes")));
 
                     repoUsuario.save(usuario);
+                    System.out.println("Usuario creado: " + usuario.getNombre() + " con " +
+                            usuario.getCuentas().size() + " cuentas");
                 }
-                System.out.println("Usuarios cargados: " + repoUsuario.count());
+                System.out.println("Total usuarios cargados: " + repoUsuario.count());
             }
         } else {
             System.out.println("Los datos ya fueron cargados previamente");
         }
+    }
+
+    private List<Cuenta> parsearListaCuentas(String cuentasStr) {
+        if (cuentasStr == null || cuentasStr.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(cuentasStr.split("\\|"))
+                .map(String::trim)
+                .map(Long::parseLong)
+                .map(id -> {
+                    Cuenta cuenta = new Cuenta();
+                    cuenta.setIdCuenta(id);
+                    // Si la entidad Cuenta tiene más campos, puedes inicializarlos aquí
+                    return cuenta;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<Long> parsearListaLong(String listaStr) {
+        if (listaStr == null || listaStr.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(listaStr.split("\\|"))
+                .map(String::trim)
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
     }
 }

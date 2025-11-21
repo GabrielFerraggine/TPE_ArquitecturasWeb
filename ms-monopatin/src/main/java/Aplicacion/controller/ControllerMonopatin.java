@@ -14,9 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api/monopatin")
 public class ControllerMonopatin {
+
+    private static final Logger log = LoggerFactory.getLogger(ControllerMonopatin.class);
+
 
     @Autowired
     private ServiceMonopatin serviceMonopatin;
@@ -147,8 +153,11 @@ public class ControllerMonopatin {
 
     @GetMapping("/obtenerMonopatinesCercanos/{latitud}/{longitud}")
     public ResponseEntity<List<MonopatinDTO>> getMonopatinesCercanos(@PathVariable("latitud") Double latitud, @PathVariable("longitud") double longitud) {
+
         List<MonopatinDTO> monopatines = serviceMonopatin.getMonopatinesCercanos(latitud, longitud);
         if (monopatines != null) {
+            log.info(" [MOCK MAPA] Consultando monopatines cercanos...");
+
             return ResponseEntity.ok(monopatines);
         }
         return ResponseEntity.notFound().build();

@@ -1,0 +1,32 @@
+server:
+  port: 8001
+
+debug: false
+
+spring:
+  application:
+    name: ms-cuenta
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 1234
+    url: jdbc:mysql://localhost:3306/cuentas?createDatabaseIfNotExist=true
+
+  jpa:
+    show-sql: true
+    database: mysql
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  sql:
+    init:
+      mode: always
+
+
+
+
+

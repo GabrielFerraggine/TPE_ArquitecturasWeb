@@ -1,5 +1,6 @@
 package Servicio;
 
+import DTO.DTOTiempoDeViaje;
 import Entidades.Usuario;
 import Modelos.*;
 import Repository.RepositoryUsuario;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import feignClients.FeignClientFacturacion;
+import org.springframework.web.bind.annotation.PathVariable;
+
 import java.time.LocalDate;
 
 import java.math.BigDecimal;
@@ -40,13 +43,13 @@ public class ServicioUsuario {
                 u.getIdUsuario(),
                 u.getNombre(),
                 u.getApellido(),
-       //         u.getCuentas(),
+                u.getCuentas(),
                 u.getMail(),
                 u.getRol(),
                 u.getLatitud(),
-                u.getLongitud()
-                //,u.getMonopatines(),
-        //     u.getViajes()
+                u.getLongitud(),
+                u.getMonopatines(),
+                u.getViajes()
         );
         return dtoUsuario;
     }
@@ -241,4 +244,9 @@ public class ServicioUsuario {
         return repoUsuario.existsById(id);
     }
 
+
+    /*@Transactional
+    public DTOTiempoDeViaje cuantoSeUsoEnCiertoPeriodo(String miDNI, LocalDate fechaDesde, LocalDate fechaHasta, boolean loUsaron) {
+        return feignViaje.cuantoSeUsoEnCiertoPeriodo(miDNI, fechaDesde, fechaHasta, loUsaron);
+    }*/
 }

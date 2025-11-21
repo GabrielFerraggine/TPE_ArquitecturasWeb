@@ -1,5 +1,6 @@
 package feignClients;
 
+import DTO.DTOTiempoDeViaje;
 import Modelos.Viaje;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,21 +13,11 @@ import java.util.List;
 
 @FeignClient(name = "ms-viaje", url = "http://localhost:8003/viaje")
 public interface FeignClientViaje {
-    //Obtener un viaje
-    /*@GetMapping("/obtenerViaje/{idViaje}/{idUsuario}")
-    Viaje obtenerViaje(@PathVariable("idViaje") Long idViaje,
-                       @PathVariable("idUsuario") Long idUsuario);*/
-
-    //Obtener todos los viajes de un usuario
-    /*@GetMapping("/obtenerViajes/{idUsuario}")
-    List<Viaje> obtenerViajesUsuario(@PathVariable("idUsuario") Long idUsuario);*/
-
-    //Agregar un nuevo viaje
-    /*@PostMapping
-    Viaje save(@RequestBody Viaje viaje);*/
 
     //c. Como administrador quiero consultar los monopatines con más de X viajes en un cierto año
     @GetMapping("/monopatinesMasUsados/{anio}/{cantidadMinimaViajes}")
     List<Long> obtenerMonopatinesMasUsados(@PathVariable("anio") int anio,
                                            @PathVariable("cantidadMinimaViajes") Long cantidadMinimaViajes);
+
+
 }

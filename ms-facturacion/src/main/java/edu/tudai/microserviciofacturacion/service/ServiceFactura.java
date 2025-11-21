@@ -5,6 +5,8 @@ import edu.tudai.microserviciofacturacion.repository.RepositoryFactura;
 import jakarta.transaction.Transactional;
 import lombok.*;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @Data
 public class ServiceFactura {
 
+    private static final Logger log = LoggerFactory.getLogger(ServiceFactura.class);
     private final RepositoryFactura repositoryFactura;
 
     @Transactional
@@ -26,6 +29,7 @@ public class ServiceFactura {
 
     @Transactional
     public Factura agregarFactura(Factura factura) {
+        log.info("[MOCK MERCADOPAGO] Procesando pago...");
         return repositoryFactura.save(factura);
     }
 

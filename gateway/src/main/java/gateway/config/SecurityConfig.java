@@ -47,7 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/monopatin/reporte/kmRecorridos**").hasAnyAuthority( AdminConstant._ADMIN)//punto A
                         .requestMatchers(HttpMethod.PUT, "/api/usuario/{dni}/**").hasAuthority( AdminConstant._ADMIN)//Punto B (Anular/Activar cuenta)
-                        //TODO .requestMatchers(HttpMethod.GET, "/api/usuario/monopatinesMasUsados/{anio}/{cantidadMinimaViajes}").hasAuthority( AdminConstant._ADMIN)//Punto C
+                        .requestMatchers(HttpMethod.GET, "/api/viaje/viajesFrecuentes/{cantidadMinima}/{anio}").hasAuthority( AdminConstant._ADMIN)//Punto C
                         .requestMatchers(HttpMethod.GET, "/api/factura/totalFacturado/{anio}/{mesInicio}/{mesFin}").hasAuthority( AdminConstant._ADMIN)//Punto D
                         //TODO .requestMatchers( "/api/usuario/**").hasAuthority( AdminConstant._ADMIN)//PUNTO e
                         .requestMatchers(HttpMethod.POST, "/api/tarifa/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}").hasAuthority( AdminConstant._ADMIN)//Punto F

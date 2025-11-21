@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/gateway_db
     username: root
-    password: SQLPassword
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -55,3 +55,65 @@ spring:
               uri: http://localhost:8005
               predicates:
                 - Path=/api/monopatin/**
+
+            # --- NUEVAS RUTAS PARA DOCUMENTACIÓN ---
+
+            # Documentación MS-CUENTA
+            - id: ms-cuenta-openapi
+              uri: http://localhost:8001
+              predicates:
+                # La URL será: /v3/api-docs/ms-cuenta
+                - Path=/v3/api-docs/ms-cuenta
+              filters:
+                # Reescribe el path a /v3/api-docs para el MS
+                - RewritePath=/v3/api-docs/ms-cuenta, /v3/api-docs
+
+            # Documentación MS-USUARIO
+            - id: ms-usuario-openapi
+              uri: http://localhost:8002
+              predicates:
+                - Path=/v3/api-docs/ms-usuario
+              filters:
+                - RewritePath=/v3/api-docs/ms-usuario, /v3/api-docs
+
+            # Documentación MS-VIAJE
+            - id: ms-viaje-openapi
+              uri: http://localhost:8003
+              predicates:
+                - Path=/v3/api-docs/ms-viaje
+              filters:
+                - RewritePath=/v3/api-docs/ms-viaje, /v3/api-docs
+
+            # Documentación MS-FACTURACION (Puerto 8004)
+            - id: ms-facturacion-openapi
+              uri: http://localhost:8004
+              predicates:
+                - Path=/v3/api-docs/ms-facturacion
+              filters:
+                - RewritePath=/v3/api-docs/ms-facturacion, /v3/api-docs
+
+            # Documentación MS-MONOPATIN
+            - id: ms-monopatin-openapi
+              uri: http://localhost:8005
+              predicates:
+                - Path=/v3/api-docs/ms-monopatin
+              filters:
+                - RewritePath=/v3/api-docs/ms-monopatin, /v3/api-docs
+
+# Bloque de configuración de SpringDoc para AGREGACIÓN
+springdoc:
+  swagger-ui:
+    # URL de acceso a la interfaz unificada: http://localhost:8080/swagger-ui.html
+    path: /swagger-ui.html
+    # Lista de las URLs de las especificaciones OpenAPI que definimos arriba
+    urls:
+      - name: Cuenta API
+        url: /v3/api-docs/ms-cuenta
+      - name: Usuario API
+        url: /v3/api-docs/ms-usuario
+      - name: Viaje API
+        url: /v3/api-docs/ms-viaje
+      - name: Facturacion API
+        url: /v3/api-docs/ms-facturacion
+      - name: Monopatin API
+        url: /v3/api-docs/ms-monopatin

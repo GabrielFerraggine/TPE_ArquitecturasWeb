@@ -1,15 +1,14 @@
 package appViajes.controller;
 
-import appViajes.dto.FinalizarViajeRequest;
-import appViajes.dto.PausaRequest;
-import appViajes.dto.ViajeDTO;
-import appViajes.dto.IniciarViajeRequest;
+import appViajes.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import appViajes.service.ParadaService;
 import appViajes.service.ViajeService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -117,6 +116,7 @@ public class ViajeController {
         return ResponseEntity.ok(viajes);
     }
 
+    /**/
     @GetMapping("/viajesFrecuentes/{cantidadMinima}/{anio}")
     public ResponseEntity<List<Map<String, Object>>> obtenerMonopatinesConMasDeXViajes(
             @RequestParam Long cantidadMinima,
@@ -133,7 +133,55 @@ public class ViajeController {
         }
     }
 
+    //Como administrador quiero ver los usuarios que más utilizan los monopatines, filtrado por período y por tipo de usuario.
+    //Como usuario quiero saber cuánto he usado los monopatines en un período, y opcionalmente si otros usuarios relacionados a mi cuenta los han usado.
 
+    //Datos enviados: idUsuario, inicio, fin, boolean verCuentasRelacionadas
+    //Opcionalmente si otros usuarios relacionados a mi cuenta los han usado.
+    //Datos respuesta: int tiempoUsoMonopatines
 
+    // Endpoint alternativo con path variables para mayor flexibilidad
+    @GetMapping("/tiempoUsoMonopatines/{idUsuario}/{fechaInicio}/{fechaFin}/{verCuentasRelacionadas}")
+    public ResponseEntity<?> tiempoUsoMonopatinesPath(
+            @PathVariable Long idUsuario,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
+            @PathVariable Boolean verCuentasRelacionadas) {
+
+        TiempoUsoRequest request = new TiempoUsoRequest();
+        request.setIdUsuario(idUsuario);
+        request.setFechaInicio(fechaInicio);
+        request.setFechaFin(fechaFin);
+        request.setVerCuentasRelacionadas(verCuentasRelacionadas);
+
+        return tiempoUsoMonopatines(request);
+    }
+
+    @PostMapping("/tiempoUsoMonopatines")
+    public ResponseEntity<?> tiempoUsoMonopatines(@RequestBody TiempoUsoRequest request) {
+        try {
+            TiempoUsoResponse response = viajeService.obtenerTiempoUsoMonopatines(request);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /*
+    // Endpoint para administradores - top usuarios por uso
+    @GetMapping("/admin/topUsuarios")
+    public ResponseEntity<?> obtenerTopUsuariosPorUso(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
+            @RequestParam(required = false) String tipoUsuario) {
+
+        try {
+            List<Map<String, Object>> topUsuarios = viajeService.obtenerTopUsuariosPorUso(fechaInicio, fechaFin, tipoUsuario);
+            return ResponseEntity.ok(topUsuarios);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al obtener el reporte: " + e.getMessage());
+        }
+    }
+    */
 
 }

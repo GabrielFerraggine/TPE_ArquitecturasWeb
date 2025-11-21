@@ -1,5 +1,6 @@
 package Controlador;
 
+import DTO.DTOTiempoDeViaje;
 import DTO.DTOUsuario;
 import Modelos.*;
 import Entidades.Usuario;
@@ -7,10 +8,9 @@ import Servicio.ServicioUsuario;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuario")
@@ -39,7 +39,17 @@ public class ControllerUsuario {
     // --No se a que servicio pedirlo
     /*@GetMapping("/tipoUsoMonopatines/{idUsuario}")*/
 
-
+    /*INTENTO DE RESOLVER EL PUNTO H DE PETER 1:*/
+    /* /cuantoLoUse/{miDNI}/{fechaDesde}/{fechaHasta}?loUsaronOtros=true */
+ /*   @GetMapping("/cuantoLoUse/{miDNI}/{fechaDesde}/{fechaHasta}")
+    public ResponseEntity<DTOTiempoDeViaje> cuantoSeUsoEnCiertoPeriodo(@PathVariable String miDNI, @PathVariable LocalDate fechaDesde, @PathVariable LocalDate fechaHasta, @RequestParam(required = false) Optional<Boolean> loUsaronOtros) {
+        boolean loUsaron = false;
+        if (loUsaronOtros.isPresent()) {
+            loUsaron = true;
+        }
+        return ResponseEntity.ok(servicioUsuario.cuantoSeUsoEnCiertoPeriodo(miDNI, fechaDesde, fechaHasta, loUsaron));
+    }
+*/
     @PutMapping("/{dni}/anularCuentas")
     public ResponseEntity<String> anularCuentas(@PathVariable String dni) {
         try {
@@ -55,17 +65,6 @@ public class ControllerUsuario {
             return ResponseEntity.ok(servicioUsuario.activarCuentas(dni));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
-        }
-    }
-
-    /*c. Como administrador quiero consultar los monopatines con más de X viajes en un cierto año.*/
-    @GetMapping("/monopatinesMasUsados/{anio}/{cantidadMinimaViajes}")
-    public ResponseEntity<List<Long>> obtenerMonopatinesMasUsados(@PathVariable int anio,
-                                                                  @PathVariable Long cantidadMinimaViajes) {
-        try {
-            return ResponseEntity.ok(servicioUsuario.obtenerMonopatinesMasUsados(anio, cantidadMinimaViajes));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
         }
     }
 

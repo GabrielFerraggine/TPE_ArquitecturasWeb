@@ -45,6 +45,26 @@ public interface ViajeRepository extends JpaRepository<Viaje, Long> {
             @Param("cantidadMinima") Long cantidadMinima,
             @Param("anio") Integer anio);
 
+    @Query("SELECT SUM(FUNCTION('TIMESTAMPDIFF', MINUTE, v.fechaHoraInicio, COALESCE(v.fechaHoraFin, CURRENT_TIMESTAMP))) " +
+            "FROM Viaje v " +
+            "WHERE v.idUsuario = :idUsuario " +
+            "AND v.fechaHoraInicio BETWEEN :fechaInicio AND :fechaFin " +
+            "AND v.estado IN ('FINALIZADO', 'EN_CURSO')")
+    Integer findTiempoUsoTotalPorUsuarioYPeriodo(@Param("idUsuario") Long idUsuario,
+                                                 @Param("fechaInicio") LocalDateTime fechaInicio,
+                                                 @Param("fechaFin") LocalDateTime fechaFin);
 
+    @Query("SELECT v.idUsuario, " +
+            "SUM(FUNCTION('TIMESTAMPDIFF', MINUTE, v.fechaHoraInicio, COALESCE(v.fechaHoraFin, CURRENT_TIMESTAMP))) as tiempoTotal, " +
+            "COUNT(v) as cantidadViajes " +
+            "FROM Viaje v " +
+            "WHERE v.idCuenta IN (SELECT DISTINCT v2.idCuenta FROM Viaje v2 WHERE v2.idUsuario = :idUsuario) " +
+            "AND v.fechaHoraInicio BETWEEN :fechaInicio AND :fechaFin " +
+            "AND v.estado IN ('FINALIZADO', 'EN_CURSO') " +
+            "GROUP BY v.idUsuario " +
+            "ORDER BY tiempoTotal DESC")
+    List<Object[]> findTiempoUsoPorCuentasRelacionadas(@Param("idUsuario") Long idUsuario,
+                                                       @Param("fechaInicio") LocalDateTime fechaInicio,
+                                                       @Param("fechaFin") LocalDateTime fechaFin);
 }
 

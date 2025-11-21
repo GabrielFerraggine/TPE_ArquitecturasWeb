@@ -13,6 +13,7 @@ import appViajes.repository.ViajeRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -197,6 +198,50 @@ public class ViajeService {
     }
 
 
+    @Transactional(readOnly = true)
+    public TiempoUsoResponse obtenerTiempoUsoMonopatines(TiempoUsoRequest request) {
+        // Validaciones
+        if (request.getFechaInicio().isAfter(request.getFechaFin())) {
+            throw new RuntimeException("La fecha de inicio no puede ser posterior a la fecha fin");
+        }
+
+        // Obtener tiempo de uso del usuario principal
+        Integer tiempoUsoPrincipal = viajeRepository.findTiempoUsoTotalPorUsuarioYPeriodo(
+                request.getIdUsuario(),
+                request.getFechaInicio(),
+                request.getFechaFin());
+
+        if (tiempoUsoPrincipal == null) {
+            tiempoUsoPrincipal = 0;
+        }
+
+        TiempoUsoResponse response = new TiempoUsoResponse();
+        response.setIdUsuario(request.getIdUsuario());
+        response.setTiempoUsoTotalMinutos(tiempoUsoPrincipal);
+
+        // SI se solicitan cuentas relacionadas
+        if (Boolean.TRUE.equals(request.getVerCuentasRelacionadas())){
+            List<Object[]> resultadosRelacionados = viajeRepository.findTiempoUsoPorCuentasRelacionadas(
+                    request.getIdUsuario(),
+                    request.getFechaInicio(),
+                    request.getFechaFin());
+            List<TiempoUsoResponse.UsuarioTiempoInfo> usuariosInfo = resultadosRelacionados.stream().map(result -> {
+                Long idUsuario = (Long) result[0];
+                Long tiempoTotal =  (Long) result[1];
+                Long cantidadViajes = (Long) result[2];
+
+                TiempoUsoResponse.UsuarioTiempoInfo usuarioTiempoInfo = new TiempoUsoResponse.UsuarioTiempoInfo();
+                usuarioTiempoInfo.setIdUsuario(idUsuario);
+                usuarioTiempoInfo.setNombreUsuario("Usuario "+idUsuario);
+                usuarioTiempoInfo.setTiempoUsoMinutos(tiempoTotal != null ? tiempoTotal.intValue() : 0);
+                usuarioTiempoInfo.setCantidadViajes(cantidadViajes != null ? cantidadViajes.intValue() : 0);
+                return usuarioTiempoInfo;
+            }).collect(Collectors.toList());
+            response.setUsuariosRelacionados(usuariosInfo);
+        }
+
+        return response;
+    }
 
 
 
