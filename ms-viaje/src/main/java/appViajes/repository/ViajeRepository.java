@@ -63,29 +63,44 @@ public interface ViajeRepository extends JpaRepository<Viaje, Long> {
                                                      @Param("fechaInicio") LocalDateTime fechaInicio,
                                                      @Param("fechaFin") LocalDateTime fechaFin);
 
-    /*
-    @Query("SELECT SUM(FUNCTION('TIMESTAMPDIFF', MINUTE, v.fechaHoraInicio, COALESCE(v.fechaHoraFin, CURRENT_TIMESTAMP))) " +
-            "FROM Viaje v " +
-            "WHERE v.idUsuario = :idUsuario " +
-            "AND v.fechaHoraInicio BETWEEN :fechaInicio AND :fechaFin " +
-            "AND v.estado IN ('FINALIZADO', 'EN_CURSO')")
-    Integer findTiempoUsoTotalPorUsuarioYPeriodo(@Param("idUsuario") Long idUsuario,
-                                                 @Param("fechaInicio") LocalDateTime fechaInicio,
-                                                 @Param("fechaFin") LocalDateTime fechaFin);
-
+    // Top usuarios por uso (todos los usuarios)
     @Query("SELECT v.idUsuario, " +
-            "SUM(FUNCTION('TIMESTAMPDIFF', MINUTE, v.fechaHoraInicio, COALESCE(v.fechaHoraFin, CURRENT_TIMESTAMP))) as tiempoTotal, " +
-            "COUNT(v) as cantidadViajes " +
+            "COUNT(v) as cantidadViajes, " +
+            "SUM(FUNCTION('TIMESTAMPDIFF', MINUTE, v.fechaHoraInicio, COALESCE(v.fechaHoraFin, CURRENT_TIMESTAMP))) as tiempoTotalMinutos " +
             "FROM Viaje v " +
-            "WHERE v.idCuenta IN (SELECT DISTINCT v2.idCuenta FROM Viaje v2 WHERE v2.idUsuario = :idUsuario) " +
-            "AND v.fechaHoraInicio BETWEEN :fechaInicio AND :fechaFin " +
+            "WHERE v.fechaHoraInicio BETWEEN :fechaInicio AND :fechaFin " +
             "AND v.estado IN ('FINALIZADO', 'EN_CURSO') " +
             "GROUP BY v.idUsuario " +
-            "ORDER BY tiempoTotal DESC")
-    List<Object[]> findTiempoUsoPorCuentasRelacionadas(@Param("idUsuario") Long idUsuario,
-                                                       @Param("fechaInicio") LocalDateTime fechaInicio,
-                                                       @Param("fechaFin") LocalDateTime fechaFin);
+            "ORDER BY tiempoTotalMinutos DESC")
+    List<Object[]> findTopUsuariosPorUso(@Param("fechaInicio") LocalDateTime fechaInicio,
+                                         @Param("fechaFin") LocalDateTime fechaFin);
 
-     */
+    // Top usuarios premium por uso
+    @Query("SELECT v.idUsuario, " +
+            "COUNT(v) as cantidadViajes, " +
+            "SUM(FUNCTION('TIMESTAMPDIFF', MINUTE, v.fechaHoraInicio, COALESCE(v.fechaHoraFin, CURRENT_TIMESTAMP))) as tiempoTotalMinutos " +
+            "FROM Viaje v " +
+            "WHERE v.fechaHoraInicio BETWEEN :fechaInicio AND :fechaFin " +
+            "AND v.estado IN ('FINALIZADO', 'EN_CURSO') " +
+            "AND v.idCuenta IN :cuentasPremium " +
+            "GROUP BY v.idUsuario " +
+            "ORDER BY tiempoTotalMinutos DESC")
+    List<Object[]> findTopUsuariosPremiumPorUso(@Param("fechaInicio") LocalDateTime fechaInicio,
+                                                @Param("fechaFin") LocalDateTime fechaFin,
+                                                @Param("cuentasPremium") List<Long> cuentasPremium);
+
+    // Top usuarios básicos por uso
+    @Query("SELECT v.idUsuario, " +
+            "COUNT(v) as cantidadViajes, " +
+            "SUM(FUNCTION('TIMESTAMPDIFF', MINUTE, v.fechaHoraInicio, COALESCE(v.fechaHoraFin, CURRENT_TIMESTAMP))) as tiempoTotalMinutos " +
+            "FROM Viaje v " +
+            "WHERE v.fechaHoraInicio BETWEEN :fechaInicio AND :fechaFin " +
+            "AND v.estado IN ('FINALIZADO', 'EN_CURSO') " +
+            "AND v.idCuenta NOT IN :cuentasPremium " +
+            "GROUP BY v.idUsuario " +
+            "ORDER BY tiempoTotalMinutos DESC")
+    List<Object[]> findTopUsuariosBasicosPorUso(@Param("fechaInicio") LocalDateTime fechaInicio,
+                                                @Param("fechaFin") LocalDateTime fechaFin,
+                                                @Param("cuentasPremium") List<Long> cuentasPremium);
 }
 

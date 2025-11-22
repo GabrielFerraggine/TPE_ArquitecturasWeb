@@ -178,34 +178,6 @@ public class ViajeController {
 
 
 
-    /*
-    @GetMapping("/tiempoUsoMonopatines/{idUsuario}/{fechaInicio}/{fechaFin}/{verCuentasRelacionadas}")
-    public ResponseEntity<?> tiempoUsoMonopatinesPath(
-            @PathVariable Long idUsuario,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
-            @PathVariable Boolean verCuentasRelacionadas) {
-
-        TiempoUsoRequest request = new TiempoUsoRequest();
-        request.setIdUsuario(idUsuario);
-        request.setFechaInicio(fechaInicio);
-        request.setFechaFin(fechaFin);
-        request.setVerCuentasRelacionadas(verCuentasRelacionadas);
-
-        return tiempoUsoMonopatines(request);
-    }
-
-    @PostMapping("/tiempoUsoMonopatines")
-    public ResponseEntity<?> tiempoUsoMonopatines(@RequestBody TiempoUsoRequest request) {
-        try {
-            TiempoUsoResponse response = viajeService.obtenerTiempoUsoMonopatines(request);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    /*
     // Endpoint para administradores - top usuarios por uso
     @GetMapping("/admin/topUsuarios")
     public ResponseEntity<?> obtenerTopUsuariosPorUso(
@@ -220,6 +192,5 @@ public class ViajeController {
             return ResponseEntity.badRequest().body("Error al obtener el reporte: " + e.getMessage());
         }
     }
-    */
 
 }
