@@ -197,7 +197,31 @@ public class ViajeService {
         return viajeRepository.findMonopatinesConMasDeXViajesEnAnio(cantidadMinima, anio);
     }
 
+    @Transactional(readOnly = true)
+    public Integer obtenerTiempoUsoMonopatines(Long idUsuario, LocalDateTime fechaInicio,
+                                               LocalDateTime fechaFin, Boolean verCuentasRelacionadas) {
 
+        // Validaciones básicas
+        if (fechaInicio.isAfter(fechaFin)) {
+            throw new RuntimeException("La fecha de inicio no puede ser posterior a la fecha fin");
+        }
+
+        Integer tiempoTotal;
+
+        if (Boolean.TRUE.equals(verCuentasRelacionadas)) {
+            // Suma de TODOS los usuarios de las cuentas relacionadas
+            tiempoTotal = viajeRepository.findTiempoUsoTotalPorCuentasRelacionadas(
+                    idUsuario, fechaInicio, fechaFin);
+        } else {
+            // Solo el usuario específico
+            tiempoTotal = viajeRepository.findTiempoUsoTotalPorUsuarioYPeriodo(
+                    idUsuario, fechaInicio, fechaFin);
+        }
+
+        return tiempoTotal != null ? tiempoTotal : 0;
+    }
+
+    /*
     @Transactional(readOnly = true)
     public TiempoUsoResponse obtenerTiempoUsoMonopatines(TiempoUsoRequest request) {
         // Validaciones
@@ -242,7 +266,7 @@ public class ViajeService {
 
         return response;
     }
-
+    */
 
 
 

@@ -142,6 +142,44 @@ public class ViajeController {
 
     // Endpoint alternativo con path variables para mayor flexibilidad
     @GetMapping("/tiempoUsoMonopatines/{idUsuario}/{fechaInicio}/{fechaFin}/{verCuentasRelacionadas}")
+    public ResponseEntity<?> tiempoUsoMonopatines(
+            @PathVariable Long idUsuario,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
+            @PathVariable Boolean verCuentasRelacionadas) {
+
+        try {
+            Integer tiempoTotal = viajeService.obtenerTiempoUsoMonopatines(
+                    idUsuario, fechaInicio, fechaFin, verCuentasRelacionadas);
+
+            return ResponseEntity.ok(tiempoTotal);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/tiempoUsoMonopatines")
+    public ResponseEntity<?> tiempoUsoMonopatines(@RequestBody Map<String, Object> request) {
+        try {
+            Long idUsuario = Long.valueOf(request.get("idUsuario").toString());
+            LocalDateTime fechaInicio = LocalDateTime.parse(request.get("fechaInicio").toString());
+            LocalDateTime fechaFin = LocalDateTime.parse(request.get("fechaFin").toString());
+            Boolean verCuentasRelacionadas = Boolean.valueOf(request.get("verCuentasRelacionadas").toString());
+
+            Integer tiempoTotal = viajeService.obtenerTiempoUsoMonopatines(
+                    idUsuario, fechaInicio, fechaFin, verCuentasRelacionadas);
+
+            return ResponseEntity.ok(tiempoTotal);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error en los parámetros: " + e.getMessage());
+        }
+    }
+
+
+
+    /*
+    @GetMapping("/tiempoUsoMonopatines/{idUsuario}/{fechaInicio}/{fechaFin}/{verCuentasRelacionadas}")
     public ResponseEntity<?> tiempoUsoMonopatinesPath(
             @PathVariable Long idUsuario,
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
