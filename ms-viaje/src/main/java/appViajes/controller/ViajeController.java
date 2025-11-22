@@ -179,7 +179,7 @@ public class ViajeController {
 
 
     // Endpoint para administradores - top usuarios por uso
-    @GetMapping("/admin/topUsuarios")
+    @GetMapping("/admin/topUsuarios/{fechaInicio}/{fechaFin}/{tipoUsuario}")
     public ResponseEntity<?> obtenerTopUsuariosPorUso(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,

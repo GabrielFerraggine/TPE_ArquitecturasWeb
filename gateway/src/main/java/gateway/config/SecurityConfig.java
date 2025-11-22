@@ -52,7 +52,7 @@ public class SecurityConfig {
                         //TODO .requestMatchers( "/api/usuario/**").hasAuthority( AdminConstant._ADMIN)//PUNTO e
                         .requestMatchers(HttpMethod.POST, "/api/tarifa/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}").hasAuthority( AdminConstant._ADMIN)//Punto F
                         .requestMatchers(HttpMethod.GET, "/api/usuario/obtenerMonopatinesCercanos/{latitud}/{longitud}").hasAuthority( AdminConstant._USUARIO)//Punto G
-                        //TODO .requestMatchers("/api/usuario/tipoUsoMonopatines/{idUsuario}").hasAuthority( AdminConstant._USUARIO)//Punto H
+                        .requestMatchers("/api/viaje/admin/topUsuarios/{fechaInicio}/{fechaFin}/{tipoUsuario}").hasAuthority( AdminConstant._USUARIO)//Punto H
                         //.requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
                         .anyRequest().authenticated()
                 )
