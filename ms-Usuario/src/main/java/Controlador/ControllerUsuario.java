@@ -5,11 +5,14 @@ import DTO.DTOUsuario;
 import Modelos.*;
 import Entidades.Usuario;
 import Servicio.ServicioUsuario;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -33,23 +36,22 @@ public class ControllerUsuario {
         }
     }
 
-    //TODO
-    // /*h. Como usuario quiero saber cuánto he usado los monopatines en un período,
-    //  y opcionalmente si otros usuarios relacionados a mi cuenta los han usado*/
-    // --No se a que servicio pedirlo
-    /*@GetMapping("/tipoUsoMonopatines/{idUsuario}")*/
+    /*h. Como usuario quiero saber cuánto he usado los monopatines en un período,
+    y opcionalmente si otros usuarios relacionados a mi cuenta los han usado*/
+    @GetMapping("/admin/topUsuarios")
+    public ResponseEntity<List<Map<String, Object>>> obtenerTopUsuariosPorUso(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
+            @RequestParam(required = false, defaultValue = "TODOS") String tipoUsuario) {
 
-    /*INTENTO DE RESOLVER EL PUNTO H DE PETER 1:*/
-    /* /cuantoLoUse/{miDNI}/{fechaDesde}/{fechaHasta}?loUsaronOtros=true */
- /*   @GetMapping("/cuantoLoUse/{miDNI}/{fechaDesde}/{fechaHasta}")
-    public ResponseEntity<DTOTiempoDeViaje> cuantoSeUsoEnCiertoPeriodo(@PathVariable String miDNI, @PathVariable LocalDate fechaDesde, @PathVariable LocalDate fechaHasta, @RequestParam(required = false) Optional<Boolean> loUsaronOtros) {
-        boolean loUsaron = false;
-        if (loUsaronOtros.isPresent()) {
-            loUsaron = true;
+        try {
+            List<Map<String, Object>> resultado = servicioUsuario.obtenerTopUsuariosPorUso(fechaInicio, fechaFin, tipoUsuario);
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(servicioUsuario.cuantoSeUsoEnCiertoPeriodo(miDNI, fechaDesde, fechaHasta, loUsaron));
     }
-*/
+
     @PutMapping("/{dni}/anularCuentas")
     public ResponseEntity<String> anularCuentas(@PathVariable String dni) {
         try {

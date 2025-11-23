@@ -1,6 +1,5 @@
 package Servicio;
 
-import DTO.DTOTiempoDeViaje;
 import Entidades.Usuario;
 import Modelos.*;
 import Repository.RepositoryUsuario;
@@ -10,24 +9,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import feignClients.FeignClientFacturacion;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ServicioUsuario {
 
     @Autowired
     private RepositoryUsuario repoUsuario;
+
     @Autowired
     private FeignClientCuenta feignClientCuenta;
-
-    //@Autowired
-    //private FeignClientCuenta feignCuenta;
 
     @Autowired
     private FeignClientMonopatin feignMonopatin;
@@ -123,7 +122,6 @@ public class ServicioUsuario {
     @Transactional(readOnly = true)
     public Double obtenerTotalFacturado(int anioDeseado, int mesDeseadoInicial, int mesDeseadoFinal) throws Exception {
         try {
-            System.out.println("Hola inicio service usuario" + feignFacturacion.obtenerTotalFacturado(anioDeseado, mesDeseadoInicial, mesDeseadoFinal));
             return feignFacturacion.obtenerTotalFacturado(anioDeseado, mesDeseadoInicial, mesDeseadoFinal);
         } catch (Exception e) {
             throw new Exception("Error al obtener el total facturado en el año: " + anioDeseado + " en el intervalo de meses: "
@@ -134,11 +132,20 @@ public class ServicioUsuario {
     @Transactional
     public void ajustarPreciosTarifas(BigDecimal nuevaTarifaBase, BigDecimal nuevaTarifaExtra, LocalDate fechaInicio) throws Exception {
         try {
-            System.out.println("Hola inicio service usuario");
             feignFacturacion.ajustarPreciosTarifas(nuevaTarifaBase, nuevaTarifaExtra, fechaInicio);
         } catch (Exception e) {
 
             throw new Exception("Error al ajustar los precios de las tarifas: " + e.getMessage());
+        }
+    }
+
+    //Punto H
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> obtenerTopUsuariosPorUso(LocalDateTime fechaInicio, LocalDateTime fechaFin, String tipoUsuario) throws Exception {
+        try {
+            return feignViaje.obtenerTopUsuarios(fechaInicio, fechaFin, tipoUsuario);
+        } catch (Exception e) {
+            throw new Exception("Error al solicitar los usuarios top de los monopatines: " + e.getMessage());
         }
     }
 

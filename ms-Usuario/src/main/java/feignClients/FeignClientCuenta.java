@@ -27,7 +27,4 @@ public interface FeignClientCuenta {
     @PutMapping("/{id}/activar")
     String activarCuenta(@PathVariable("id") Long id);
 
-
-
-    //TODO ¿Donde hacemos el agregar usuario a una cuenta?
 }
