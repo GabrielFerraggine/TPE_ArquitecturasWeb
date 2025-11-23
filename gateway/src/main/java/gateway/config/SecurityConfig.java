@@ -49,10 +49,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/usuario/{dni}/**").hasAuthority( AdminConstant._ADMIN)//Punto B (Anular/Activar cuenta)
                         .requestMatchers(HttpMethod.GET, "/api/viaje/viajesFrecuentes/{cantidadMinima}/{anio}").hasAuthority( AdminConstant._ADMIN)//Punto C
                         .requestMatchers(HttpMethod.GET, "/api/factura/totalFacturado/{anio}/{mesInicio}/{mesFin}").hasAuthority( AdminConstant._ADMIN)//Punto D
-                        //TODO .requestMatchers( "/api/usuario/**").hasAuthority( AdminConstant._ADMIN)//PUNTO e
+                        //TODO .requestMatchers( "/api/viaje/**").hasAuthority( AdminConstant._ADMIN)//PUNTO e
                         .requestMatchers(HttpMethod.POST, "/api/tarifa/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}").hasAuthority( AdminConstant._ADMIN)//Punto F
                         .requestMatchers(HttpMethod.GET, "/api/usuario/obtenerMonopatinesCercanos/{latitud}/{longitud}").hasAuthority( AdminConstant._USUARIO)//Punto G
                         .requestMatchers("/api/viaje/admin/topUsuarios/{fechaInicio}/{fechaFin}/{tipoUsuario}").hasAuthority( AdminConstant._USUARIO)//Punto H
+                        //TODO la version del H final es consumida desde usuario (Creo)
                         //.requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
                         .anyRequest().authenticated()
                 )

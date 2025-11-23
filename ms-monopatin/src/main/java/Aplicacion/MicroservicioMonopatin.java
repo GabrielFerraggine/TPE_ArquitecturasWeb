@@ -15,10 +15,10 @@ import org.springframework.context.ConfigurableApplicationContext;
                 description = "Módulo de gestión de monopatines."
         )
 )
-public class Main {
+public class MicroservicioMonopatin {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(MicroservicioMonopatin.class, args);
 
         try {
             CargarDatos cargaDeDatos = context.getBean(CargarDatos.class);

@@ -4,57 +4,41 @@ import java.util.List;
 
 import Aplicacion.DTO.*;
 import Aplicacion.entity.*;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.Aggregation;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.Update;
 import org.springframework.stereotype.Repository;
 
 @Repository("RepositoryMonopatin")
-public interface RepositoryMonopatin extends JpaRepository<Monopatin, Integer> {
+public interface RepositoryMonopatin extends MongoRepository<Monopatin, Long> {
 
-    @Query("SELECT m FROM Monopatin m WHERE m.idMonopatin = :id")
-    Monopatin buscarPorId(Long id);
+    Monopatin findByIdMonopatin(Long id);
 
-    @Query("SELECT m FROM Monopatin m WHERE m.latitud BETWEEN :latitudMin AND :latitudMax AND m.longitud BETWEEN :longitudMin AND :longitudMax")
+    @Query("{ 'latitud': { $gte: ?0, $lte: ?1 }, 'longitud': { $gte: ?2, $lte: ?3 } }")
     List<Monopatin> getMonopatinesCercanos(double latitudMin, double latitudMax, double longitudMin, double longitudMax);
 
-    @Query("SELECT m.latitud FROM Monopatin m WHERE m.idMonopatin = :idMonopatin")
-    double getLatitud(Long idMonopatin);
+    @Query(value = "{ 'idMonopatin': ?0 }", fields = "{ 'latitud': 1, '_id': 0 }")
+    Monopatin getLatitud(Long idMonopatin);
 
-    @Query("SELECT m.longitud FROM Monopatin m WHERE m.idMonopatin = :idMonopatin")
-    double getLongitud(Long idMonopatin);
+    @Query(value = "{ 'idMonopatin': ?0 }", fields = "{ 'longitud': 1, '_id': 0 }")
+    Monopatin getLongitud(Long idMonopatin);
 
-    @Modifying
-    @Query("UPDATE Monopatin m SET m.estado = :estado WHERE m.idMonopatin = :idMonopatin")
-    int setEstado(Long idMonopatin, Estado estado);
-
-    @Query("SELECT m.estado FROM Monopatin m WHERE m.idMonopatin = :idMonopatin")
-    public Estado getEstado(Long idMonopatin);
-
-    @Query("SELECT m FROM Monopatin m")
+    @Query("{}")
     List<Monopatin> traerTodos();
 
-    @Query("SELECT new Aplicacion.DTO.ReporteDTO (m.idMonopatin, m.kmRecorridos, 0, 0) " +
-            "FROM Monopatin m ")
-    List<ReporteDTO> getReportePorKmRecorridos();
+    @Query(value = "{}", fields = "{ 'idMonopatin' : 1, 'kmRecorridos' : 1 }")
+    List<Monopatin> findAllDataParaReporteKm();
 
-    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, m.kmRecorridos, 0, m.tiempoDePausas) " +
-            "FROM Monopatin m ")
-    List<ReporteDTO> getReportePorKmYTiempoDePausas();
+    @Query(value = "{}", fields = "{ 'idMonopatin': 1, 'kmRecorridos': 1, 'tiempoDePausas': 1 }")
+    List<Monopatin> findAllDataReportePausasyKm();
 
-    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, 0, m.tiempoDeUsoTotal, 0) " +
-            "FROM Monopatin m ")
-    List<ReporteDTO>getReportePorTiempoDeUsoTotal();
+    @Query(value = "{}", fields = "{'idMonopatin' : 1, 'tiempoDeUsoTotal': 1}")
+    List<Monopatin> findAllDataReportePorTiempoDeUsoTotal();
 
-    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, 0, 0, m.tiempoDePausas) " +
-            "FROM Monopatin m ")
-    List<ReporteDTO>getReportePorTiempoDePausas();
+    @Query(value = "{}", fields = "{'idMonopatin':  1, 'tiempoDePausas' : 1 }")
+    List<Monopatin> findAllDataReportePorTiempoDePausas();
 
-    @Query("SELECT new Aplicacion.DTO.ReporteDTO(m.idMonopatin, m.kmRecorridos, m.tiempoDeUsoTotal, m.tiempoDePausas) " +
-            "FROM Monopatin m ")
-    List<ReporteDTO>getReporteCompleto();
-
-    @Modifying
-    @Query("UPDATE Monopatin m SET m.kmRecorridos = :kmRecorridos, m.tiempoDeUsoTotal = :tiempoDeUsoTotal, m.tiempoDePausas = :tiempoDePausas WHERE m.idMonopatin = :idMonopatin")
-    int finalizarRecorrido(Long idMonopatin, double kmRecorridos, int tiempoDeUsoTotal, int tiempoDePausas);
+    @Query(value = "{}", fields = "{'idMonopatin': 1, 'kmRecorridos': 1, 'tiempoDeUsoTotal': 1, 'tiempoDePausas': 1}")
+    List<Monopatin> findAllDataReporteCompleto();
 } 

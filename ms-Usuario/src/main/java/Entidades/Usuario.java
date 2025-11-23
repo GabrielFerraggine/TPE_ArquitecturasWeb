@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "usuario")
 @Entity
 public class Usuario {
 
     @Id
-    @Column
+    @Column(name = "id_usuario")
     private String idUsuario;
 
     @Column
@@ -35,7 +37,6 @@ public class Usuario {
     @Column
     private String mail;
 
-    //Usa un enumerado (usuario, mantenimiento, admin)
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
@@ -45,7 +46,6 @@ public class Usuario {
     @Column
     private double longitud;
 
-    //Guarda las id de los monopatines utilizados
     @ElementCollection
     @CollectionTable(
             name = "usuario_monopatines",
@@ -54,7 +54,6 @@ public class Usuario {
     @Column(name = "monopatin_id")
     private List<Long> monopatines = new ArrayList<>();
 
-    //Guarda las id de los viajes realizados
     @ElementCollection
     @CollectionTable(
             name = "usuario_viajes",
@@ -62,4 +61,14 @@ public class Usuario {
     )
     @Column(name = "viaje_id")
     private List<Long> viajes = new ArrayList<>();
+
+    public void agregarCuenta(Cuenta cuenta) {
+        if (this.cuentas == null) {
+            this.cuentas = new ArrayList<>();
+        }
+        if (!this.cuentas.contains(cuenta)) {
+            this.cuentas.add(cuenta);
+            cuenta.agregarUsuario(this);
+        }
+    }
 }

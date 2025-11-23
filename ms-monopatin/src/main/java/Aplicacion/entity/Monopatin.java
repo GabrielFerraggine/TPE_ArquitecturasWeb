@@ -1,28 +1,38 @@
 package Aplicacion.entity;
 
 import Aplicacion.DTO.MonopatinDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
-@Entity
+@Document(collection = "monopatines")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Monopatin {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMonopatin;
+
+    @Field
     private Estado estado; // enUso, enMantenimiento, libre
+
+    @Field
     private double latitud;
+
+    @Field
     private double longitud;
+
+    @Field
     private double kmRecorridos;
+
+    @Field
     private int tiempoDeUsoTotal;
+
+    @Field
     private int tiempoDePausas;
 
     public Monopatin(MonopatinDTO mpDTO) {

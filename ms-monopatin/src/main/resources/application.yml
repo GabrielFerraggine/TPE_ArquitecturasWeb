@@ -1,0 +1,10 @@
+server:
+  port: 8005
+
+spring:
+  application:
+    name: ms-monopatin
+
+  data:
+    mongodb:
+      uri: mongodb+srv://fandreozzi_db_user:fwVzyTJWDJUgBACB@arquitecturasweb.gucjt95.mongodb.net/ms_monopatin?appName=ArquitecturasWeb

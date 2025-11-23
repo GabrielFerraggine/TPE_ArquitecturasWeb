@@ -10,7 +10,6 @@ import Aplicacion.service.ServiceMonopatin;
 import org.springframework.beans.factory.annotation.Autowired;
 import Aplicacion.entity.Estado;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -162,17 +161,4 @@ public class ControllerMonopatin {
         }
         return ResponseEntity.notFound().build();
     }
-
-    /*
-    /reporte
-    /reporte/kmRecorridos
-    /reporte/kmRecorridos?tiempoDePausas=true
-
-
-    /{idMonopatin}/finalizarRecorrido
-
-
-
-
-    */
 }
