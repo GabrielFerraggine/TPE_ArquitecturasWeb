@@ -178,6 +178,7 @@ public class ViajeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    // ej http://localhost:8003/api/viajes/tiempoUsoMonopatines/201/2024-01-01T00:00:00/2024-12-31T23:59:59/false
     @GetMapping("/tiempoUsoMonopatines/{idUsuario}/{fechaInicio}/{fechaFin}/{verCuentasRelacionadas}")
     public ResponseEntity<?> tiempoUsoMonopatinesPath(
             @PathVariable Long idUsuario,
@@ -195,36 +196,13 @@ public class ViajeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-/*
-
-    @PostMapping("/tiempoUsoMonopatines")
-    public ResponseEntity<?> tiempoUsoMonopatines(@RequestBody Map<String, Object> request) {
-        try {
-            Long idUsuario = Long.valueOf(request.get("idUsuario").toString());
-            LocalDateTime fechaInicio = LocalDateTime.parse(request.get("fechaInicio").toString());
-            LocalDateTime fechaFin = LocalDateTime.parse(request.get("fechaFin").toString());
-            Boolean verCuentasRelacionadas = Boolean.valueOf(request.get("verCuentasRelacionadas").toString());
-
-            Integer tiempoTotal = viajeService.obtenerTiempoUsoMonopatines(
-                    idUsuario, fechaInicio, fechaFin, verCuentasRelacionadas);
-
-            return ResponseEntity.ok(tiempoTotal);
-
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error en los parámetros: " + e.getMessage());
-        }
-    }
-
-*/
-
-
 
     // Endpoint para administradores - top usuarios por uso
-    @GetMapping("/admin/topUsuarios{fechaInicio}/{fechaFin}/{tipoUsuario}")
+    @GetMapping("/admin/topUsuarios/{fechaInicio}/{fechaFin}/{tipoUsuario}")
     public ResponseEntity<?> obtenerTopUsuariosPorUso(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
-            @RequestParam(required = false, defaultValue = "TODOS") String tipoUsuario) {
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
+            @PathVariable String tipoUsuario) {
 
         try {
             List<Map<String, Object>> topUsuarios = viajeService.obtenerTopUsuariosPorUso(fechaInicio, fechaFin, tipoUsuario);
