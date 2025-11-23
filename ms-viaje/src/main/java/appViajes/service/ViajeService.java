@@ -226,23 +226,32 @@ public class ViajeService {
 
         List<Object[]> resultados;
 
-        List<Long> cuentasPremium = usuarioFeignClient.obtenerCuentasPremium();
+        try {
+            // Obtener cuentas premium del microservicio de usuarios
+            List<Long> cuentasPremium = usuarioFeignClient.obtenerCuentasPremium();
 
+            if (cuentasPremium == null) {
+                cuentasPremium = Collections.emptyList(); // Evitar NullPointerException
+            }
 
-        switch (tipoUsuario != null ? tipoUsuario.toUpperCase() : "TODOS") {
-            case "PREMIUM":
-                resultados = viajeRepository.findTopUsuariosPremiumPorUso(fechaInicio, fechaFin, cuentasPremium);
-                break;
-            case "BASICO":
-                resultados = viajeRepository.findTopUsuariosBasicosPorUso(fechaInicio, fechaFin, cuentasPremium);
-                break;
-            case "TODOS":
-            default:
-                resultados = viajeRepository.findTopUsuariosPorUso(fechaInicio, fechaFin);
-                break;
+            switch (tipoUsuario != null ? tipoUsuario.toUpperCase() : "TODOS") {
+                case "PREMIUM":
+                    resultados = viajeRepository.findTopUsuariosPremiumPorUso(fechaInicio, fechaFin, cuentasPremium);
+                    break;
+                case "BASICO":
+                    resultados = viajeRepository.findTopUsuariosBasicosPorUso(fechaInicio, fechaFin, cuentasPremium);
+                    break;
+                case "TODOS":
+                default:
+                    resultados = viajeRepository.findTopUsuariosPorUso(fechaInicio, fechaFin);
+                    break;
+            }
+
+            return mapearResultadosTopUsuarios(resultados);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al obtener top usuarios: " + e.getMessage(), e);
         }
-
-        return mapearResultadosTopUsuarios(resultados);
     }
 
     private List<Map<String, Object>> mapearResultadosTopUsuarios(List<Object[]> resultados){
