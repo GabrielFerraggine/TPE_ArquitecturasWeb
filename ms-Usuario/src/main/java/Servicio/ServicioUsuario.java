@@ -29,9 +29,6 @@ public class ServicioUsuario {
     private FeignClientCuenta feignClientCuenta;
 
     @Autowired
-    private FeignClientMonopatin feignMonopatin;
-
-    @Autowired
     private FeignClientViaje feignViaje;
 
     @Autowired
@@ -50,15 +47,6 @@ public class ServicioUsuario {
         return dtoUsuario;
     }
 
-    /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona*/
-    @Transactional(readOnly = true)
-    public List<Monopatin> obtenerMonopatinesCercanos(double latitud, double longitud) throws Exception {
-        try {
-            return feignMonopatin.obtenerMonopatinesCercanos(latitud, longitud);
-        } catch (Exception e) {
-            throw new Exception("Error al obtener monopatines cercanos: " + e.getMessage());
-        }
-    }
 
     //Obtener cuentas de un usuario
     private List<Cuenta> obtenerCuentasUsuarios(String idUsuario) throws Exception {

@@ -24,16 +24,6 @@ public class ControllerUsuario {
         this.servicioUsuario = servicioUsuario;
     }
 
-    /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona*/
-    @GetMapping("/obtenerMonopatinesCercanos/{latitud}/{longitud}")
-    public ResponseEntity<List<Monopatin>> obtenerMonopatinesCercanos(@PathVariable double latitud, @PathVariable double longitud) {
-        try {
-            return ResponseEntity.ok(servicioUsuario.obtenerMonopatinesCercanos(latitud, longitud));
-        } catch (Exception e) {
-            return  ResponseEntity.notFound().build();
-        }
-    }
-
     /*h. Como usuario quiero saber cuánto he usado los monopatines en un período,
     y opcionalmente si otros usuarios relacionados a mi cuenta los han usado*/
     @GetMapping("/admin/topUsuarios")
