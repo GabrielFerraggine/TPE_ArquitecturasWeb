@@ -10,6 +10,7 @@
         <module name="ms-facturacion" />
         <module name="ms-Usuario" />
         <module name="ms-monopatin" />
+        <module name="ms-ia" />
         <module name="ms-viaje" />
         <module name="ms-cuenta" />
       </profile>
@@ -37,6 +38,7 @@
       <module name="ms-Usuario" options="-parameters" />
       <module name="ms-cuenta" options="-parameters" />
       <module name="ms-facturacion" options="-parameters" />
+      <module name="ms-ia" options="-parameters" />
       <module name="ms-monopatin" options="-parameters" />
       <module name="ms-viaje" options="-parameters" />
     </option>

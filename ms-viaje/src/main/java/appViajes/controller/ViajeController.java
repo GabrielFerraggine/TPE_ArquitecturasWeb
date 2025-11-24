@@ -120,8 +120,8 @@ public class ViajeController {
     /**/
     @GetMapping("/viajesFrecuentes/{cantidadMinima}/{anio}")
     public ResponseEntity<List<Map<String, Object>>> obtenerMonopatinesConMasDeXViajes(
-            @RequestParam Long cantidadMinima,
-            @RequestParam Integer anio) {
+            @PathVariable Long cantidadMinima,
+            @PathVariable Integer anio) {
 
         try {
             List<Map<String, Object>> resultado = viajeService

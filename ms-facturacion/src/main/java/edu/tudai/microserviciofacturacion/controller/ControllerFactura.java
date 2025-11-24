@@ -60,18 +60,22 @@ public class ControllerFactura {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Factura> eliminarFactura(@PathVariable("id") Long id, @RequestBody Factura factura){
+    public ResponseEntity<Void> eliminarFactura(@PathVariable("id") Long id){
         serviceFactura.eliminarFactura(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/totalFacturado/{anio}/{mesInicio}/{mesFin}")
     public ResponseEntity<Double> obtenerTotalFacturado(
-            @PathVariable int anio, @PathVariable int mesInicio, @PathVariable int mesFin){ // <-- CORREGIDO AQUÍ
+            @PathVariable int anio, @PathVariable int mesInicio, @PathVariable int mesFin){
 
-        double totalFacturado = serviceFactura.obtenerTotalFacturado(anio, mesInicio, mesFin);
-        System.out.println(totalFacturado);
+        Double totalFacturado = serviceFactura.obtenerTotalFacturado(anio, mesInicio, mesFin);
 
+        if (totalFacturado == null) {
+            totalFacturado = 0.0;
+        }
+
+        System.out.println("Total calculado: " + totalFacturado);
         return ResponseEntity.ok(totalFacturado);
     }
 }
