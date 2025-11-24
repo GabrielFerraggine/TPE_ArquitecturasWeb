@@ -89,7 +89,7 @@ public interface ViajeRepository extends JpaRepository<Viaje, Long> {
             "ORDER BY tiempoTotalMinutos DESC", nativeQuery = true)
     List<Object[]> findTopUsuariosPremiumPorUso(@Param("fechaInicio") LocalDateTime fechaInicio,
                                                 @Param("fechaFin") LocalDateTime fechaFin,
-                                                @Param("cuentasPremium") List<Long> cuentasPremium);
+                                                @Param("rolo") List<Long> rol);
 
     // Top usuarios básicos por uso
     @Query(value = "SELECT v.id_usuario, " +

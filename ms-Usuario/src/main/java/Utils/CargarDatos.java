@@ -93,6 +93,7 @@ public class CargarDatos {
         usuario.setRol(parsearRol(record.get("rol")));
         usuario.setLatitud(Double.parseDouble(record.get("latitud")));
         usuario.setLongitud(Double.parseDouble(record.get("longitud")));
+        usuario.setPassword(record.get("password"));
 
         // Inicializar lista de cuentas vacía por ahora
         usuario.setCuentas(new ArrayList<>());

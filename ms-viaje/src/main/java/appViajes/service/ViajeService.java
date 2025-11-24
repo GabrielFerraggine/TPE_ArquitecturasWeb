@@ -224,27 +224,16 @@ public class ViajeService {
             throw new RuntimeException("La fecha de inicio no puede ser posterior a la fecha fin");
         }
 
-        List<Object[]> resultados;
-
         try {
-            // Obtener cuentas premium del microservicio de usuarios
-            List<Long> cuentasPremium = usuarioFeignClient.obtenerCuentasPremium();
+            // 1. Obtener lista de IDs de usuarios del rol especificado desde ms-usuarios
+            List<Long> usuariosFiltrados = obtenerUsuariosIdsPorRol(tipoUsuario);
 
-            if (cuentasPremium == null) {
-                cuentasPremium = Collections.emptyList(); // Evitar NullPointerException
-            }
+            // 2. Obtener todos los resultados de viajes
+            List<Object[]> resultados = viajeRepository.findTopUsuariosPorUso(fechaInicio, fechaFin);
 
-            switch (tipoUsuario != null ? tipoUsuario.toUpperCase() : "TODOS") {
-                case "PREMIUM":
-                    resultados = viajeRepository.findTopUsuariosPremiumPorUso(fechaInicio, fechaFin, cuentasPremium);
-                    break;
-                case "BASICO":
-                    resultados = viajeRepository.findTopUsuariosBasicosPorUso(fechaInicio, fechaFin, cuentasPremium);
-                    break;
-                case "TODOS":
-                default:
-                    resultados = viajeRepository.findTopUsuariosPorUso(fechaInicio, fechaFin);
-                    break;
+            // 3. Filtrar resultados solo para usuarios del rol especificado
+            if (!"TODOS".equalsIgnoreCase(tipoUsuario)) {
+                resultados = filtrarPorUsuariosEspecificos(resultados, usuariosFiltrados);
             }
 
             return mapearResultadosTopUsuarios(resultados);
@@ -254,10 +243,80 @@ public class ViajeService {
         }
     }
 
-    private List<Map<String, Object>> mapearResultadosTopUsuarios(List<Object[]> resultados){
+    private List<Long> obtenerUsuariosIdsPorRol(String tipoUsuario) {
+        try {
+            if ("TODOS".equalsIgnoreCase(tipoUsuario)) {
+                return Collections.emptyList();
+            }
+
+            // Convertir string a Enum Rol
+            String rolValidado = validarYConvertirRol(tipoUsuario);
+
+            // Llamar al microservicio de usuarios
+            List<String> usuariosResponse = usuarioFeignClient.obtenerUsuariosPorRol(rolValidado);
+
+            // Convertir la lista de Strings a lista de Longs
+            return usuariosResponse.stream()
+                    .map(this::parsearIdUsuario)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al obtener usuarios del tipo: " + tipoUsuario + " - " + e.getMessage());
+        }
+    }
+
+    private String validarYConvertirRol(String tipoUsuario) {
+        String rolUpper = tipoUsuario.toUpperCase();
+        if (rolUpper.equals("USUARIO") || rolUpper.equals("ADMINISTRADOR") ||
+                rolUpper.equals("TECNICO_MANTENIMIENTO") || rolUpper.equals("TODOS")) {
+            return rolUpper;
+        }
+        throw new RuntimeException("Tipo de usuario no válido: " + tipoUsuario +
+                ". Valores válidos: USUARIO, ADMINISTRADOR, TECNICO_MANTENIMIENTO, TODOS");
+    }
+
+    private Long parsearIdUsuario(String usuarioStr) {
+        try {
+            // Si el ms-usuarios retorna solo IDs como strings
+            if (usuarioStr.matches("\\d+")) {
+                return Long.parseLong(usuarioStr);
+            }
+
+            // Si retorna objetos JSON, extraer el ID
+            // Ejemplo: "{\"idUsuario\": 1, \"nombre\": \"Juan\"}" -> extraer "1"
+            if (usuarioStr.contains("idUsuario")) {
+                String idStr = usuarioStr.replaceAll(".*\"idUsuario\"\\s*:\\s*(\\d+).*", "$1");
+                return Long.parseLong(idStr);
+            }
+
+            // Intentar extraer cualquier número
+            String numericPart = usuarioStr.replaceAll("[^0-9]", "");
+            return numericPart.isEmpty() ? null : Long.parseLong(numericPart);
+
+        } catch (NumberFormatException e) {
+            System.err.println("Error parseando ID de usuario: " + usuarioStr);
+            return null;
+        }
+    }
+
+    private List<Object[]> filtrarPorUsuariosEspecificos(List<Object[]> resultados, List<Long> usuariosFiltrados) {
+        if (usuariosFiltrados == null || usuariosFiltrados.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return resultados.stream()
+                .filter(resultado -> {
+                    Long idUsuario = (Long) resultado[0];
+                    return usuariosFiltrados.contains(idUsuario);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<Map<String, Object>> mapearResultadosTopUsuarios(List<Object[]> resultados) {
         List<Map<String, Object>> topUsuarios = new ArrayList<>();
 
-        for (Object[] resultado : resultados){
+        for (Object[] resultado : resultados) {
             Map<String, Object> usuarioInfo = new HashMap<>();
             usuarioInfo.put("idUsuario", resultado[0]);
             usuarioInfo.put("cantidadViajes", resultado[1]);
@@ -266,11 +325,6 @@ public class ViajeService {
         }
         return topUsuarios;
     }
-
-
-
-
-
 
 
     private ViajeDTO mapToDTO(Viaje viaje) {

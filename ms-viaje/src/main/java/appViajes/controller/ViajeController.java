@@ -141,27 +141,6 @@ public class ViajeController {
     //Opcionalmente si otros usuarios relacionados a mi cuenta los han usado.
     //Datos respuesta: int tiempoUsoMonopatines
 
-    // Endpoint alternativo con path variables para mayor flexibilidad
-    /*
-    @GetMapping("/tiempoUsoMonopatines/{idUsuario}/{fechaInicio}/{fechaFin}/{verCuentasRelacionadas}")
-    public ResponseEntity<?> tiempoUsoMonopatines(
-            @PathVariable Long idUsuario,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
-            @PathVariable Boolean verCuentasRelacionadas) {
-
-        try {
-            Integer tiempoTotal = viajeService.obtenerTiempoUsoMonopatines(
-                    idUsuario, fechaInicio, fechaFin, verCuentasRelacionadas);
-
-            return ResponseEntity.ok(tiempoTotal);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-    */
-
     // POST con Request Body
     @PostMapping("/tiempoUsoMonopatines")
     public ResponseEntity<?> tiempoUsoMonopatines(@RequestBody TiempoUsoRequest request) {
@@ -178,7 +157,7 @@ public class ViajeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    // ej http://localhost:8003/api/viajes/tiempoUsoMonopatines/201/2024-01-01T00:00:00/2024-12-31T23:59:59/false
+    // ej http://localhost:8003/api/viajes/tiempoUsoMonopatines/1/2024-01-01T00:00:00/2024-12-31T23:59:59/true
     @GetMapping("/tiempoUsoMonopatines/{idUsuario}/{fechaInicio}/{fechaFin}/{verCuentasRelacionadas}")
     public ResponseEntity<?> tiempoUsoMonopatinesPath(
             @PathVariable Long idUsuario,
@@ -198,6 +177,7 @@ public class ViajeController {
     }
 
     // Endpoint para administradores - top usuarios por uso
+    // ej http://localhost:8003/api/viajes/admin/topUsuarios/2023-01-01T00:00:00/2025-12-31T23:59:59/USUARIO
     @GetMapping("/admin/topUsuarios/{fechaInicio}/{fechaFin}/{tipoUsuario}")
     public ResponseEntity<?> obtenerTopUsuariosPorUso(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -208,7 +188,7 @@ public class ViajeController {
             List<Map<String, Object>> topUsuarios = viajeService.obtenerTopUsuariosPorUso(fechaInicio, fechaFin, tipoUsuario);
 
             if (topUsuarios.isEmpty()) {
-                return ResponseEntity.ok(Collections.singletonMap("mensaje", "No se encontraron usuarios para el período especificado"));
+                return ResponseEntity.ok(Collections.singletonMap("mensaje", "No se encontraron usuarios para el período y rol especificado"));
             }
 
             return ResponseEntity.ok(topUsuarios);
@@ -216,5 +196,6 @@ public class ViajeController {
             return ResponseEntity.badRequest().body("Error al obtener el reporte: " + e.getMessage());
         }
     }
+
 
 }

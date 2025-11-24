@@ -1,7 +1,7 @@
 package Controlador;
 
-import DTO.DTOTiempoDeViaje;
 import DTO.DTOUsuario;
+import Entidades.Rol;
 import Modelos.*;
 import Entidades.Usuario;
 import Servicio.ServicioUsuario;
@@ -9,11 +9,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuario")
@@ -72,7 +71,7 @@ public class ControllerUsuario {
 
     /*=============================Llamadas de usuario=====================================*/
     @GetMapping("/obtenerUsuario/{idUsuario}")
-    public ResponseEntity<DTOUsuario> obtenerUsuario(@PathVariable String idUsuario) {  // Agregar @PathVariable
+    public ResponseEntity<DTOUsuario> obtenerUsuario(@PathVariable String idUsuario) {
         try {
             if (servicioUsuario.existeUsuario(idUsuario)) {
                 return ResponseEntity.ok(servicioUsuario.obtenerUsuario(idUsuario));
@@ -93,8 +92,17 @@ public class ControllerUsuario {
         }
     }
 
+    @GetMapping("/obtenerUsuariosPorRol/{rol}")
+    public ResponseEntity<List<String>> obtenerUsuariosPorRol(@PathVariable Rol rol) {
+        try {
+            return ResponseEntity.ok(servicioUsuario.obtenerUsuariosPorRol(rol));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping("/agregarUsuario")
-    public ResponseEntity<DTOUsuario> agregarUsuario(@RequestBody Usuario u) {  // Cambiar a @RequestBody
+    public ResponseEntity<DTOUsuario> agregarUsuario(@RequestBody Usuario u) {
         try {
             if(!servicioUsuario.existeUsuario(u.getIdUsuario())) {
                 DTOUsuario dtoUsuario = servicioUsuario.agregarUsuario(u);
@@ -108,7 +116,7 @@ public class ControllerUsuario {
     }
 
     @DeleteMapping("/eliminarUsuario/{idUsuario}")
-    public ResponseEntity<Boolean> eliminarUsuario(@PathVariable String idUsuario) {  // Agregar @PathVariable
+    public ResponseEntity<Boolean> eliminarUsuario(@PathVariable String idUsuario) {
         try {
             if(servicioUsuario.existeUsuario(idUsuario)) {
                 return ResponseEntity.ok(servicioUsuario.eliminarUsuario(idUsuario));
@@ -121,7 +129,7 @@ public class ControllerUsuario {
     }
 
     @PutMapping("/actualizarUsuario/{idUsuario}")
-    public ResponseEntity<DTOUsuario> actualizarUsuario(@PathVariable String idUsuario, @RequestBody Usuario u) {  // Agregar @PathVariable y @RequestBody
+    public ResponseEntity<DTOUsuario> actualizarUsuario(@PathVariable String idUsuario, @RequestBody Usuario u) {
         try {
             if(servicioUsuario.existeUsuario(idUsuario)) {
                 return ResponseEntity.ok(servicioUsuario.actualizarUsuario(idUsuario, u));
@@ -132,6 +140,7 @@ public class ControllerUsuario {
             return ResponseEntity.notFound().build();
         }
     }
+
 }
 
 

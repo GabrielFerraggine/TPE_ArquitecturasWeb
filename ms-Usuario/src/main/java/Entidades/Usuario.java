@@ -62,6 +62,9 @@ public class Usuario {
     @Column(name = "viaje_id")
     private List<Long> viajes = new ArrayList<>();
 
+    @Column(name = "password")
+    private String password;
+
     public void agregarCuenta(Cuenta cuenta) {
         if (this.cuentas == null) {
             this.cuentas = new ArrayList<>();

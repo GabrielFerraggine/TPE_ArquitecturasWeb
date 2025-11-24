@@ -1,5 +1,6 @@
 package Servicio;
 
+import Entidades.Rol;
 import Entidades.Usuario;
 import Modelos.*;
 import Repository.RepositoryUsuario;
@@ -17,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class ServicioUsuario {
@@ -42,13 +42,10 @@ public class ServicioUsuario {
                 u.getIdUsuario(),
                 u.getNombre(),
                 u.getApellido(),
-                u.getCuentas(),
                 u.getMail(),
                 u.getRol(),
                 u.getLatitud(),
-                u.getLongitud(),
-                u.getMonopatines(),
-                u.getViajes()
+                u.getLongitud()
         );
         return dtoUsuario;
     }
@@ -177,6 +174,17 @@ public class ServicioUsuario {
         }
     }
 
+    //Obtener todos los usuarios de un mismo rol
+    @Transactional
+    public List<String> obtenerUsuariosPorRol(Rol rol) throws Exception {
+        try {
+            List<String> usuarios = repoUsuario.obtenerUsuariosPorRol(rol);
+            return usuarios;
+
+        }catch (Exception e) {
+            throw new Exception("No se pudo obtener los usuarios con el rol: " + rol + " " + e.getMessage());
+        }
+    }
 
     //Dar de alta un usuario
     @Transactional

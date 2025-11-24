@@ -1,11 +1,21 @@
 id,nombre,latitud,longitud,activa,radio_permitido_metros
-1,Plaza Central,-34.603722,-58.381592,true,50
-2,Estación Norte,-34.589123,-58.392345,true,50
-3,Shopping del Centro,-34.601456,-58.386789,true,50
-4,Parque Sur,-34.615678,-58.395432,true,50
-5,Universidad,-34.598765,-58.375432,true,50
-6,Hospital Municipal,-34.608912,-58.389123,true,50
-7,Mercado Artesanal,-34.595432,-58.382345,true,50
-8,Biblioteca Nacional,-34.602345,-58.391234,true,50
-9,Estación de Tren,-34.607891,-58.378901,true,50
-10,Plaza Deportiva,-34.612345,-58.384567,true,50
+1,Plaza Central,100.0,200.0,true,50.0
+2,Estación Norte,150.0,250.0,true,50.0
+3,Centro Comercial,120.0,180.0,true,50.0
+4,Parque Sur,130.0,220.0,true,50.0
+5,Universidad,140.0,190.0,true,50.0
+6,Hospital,160.0,210.0,true,50.0
+7,Mercado Municipal,170.0,230.0,true,50.0
+8,Biblioteca,180.0,240.0,true,50.0
+9,Estadio,190.0,270.0,true,50.0
+10,Plaza Oeste,200.0,280.0,true,50.0
+11,Centro Deportivo,210.0,290.0,true,50.0
+12,Parque Este,220.0,300.0,true,50.0
+13,Terminal de Buses,230.0,310.0,true,50.0
+14,Mall Comercial,240.0,320.0,true,50.0
+15,Plaza Norte,250.0,330.0,true,50.0
+16,Centro Cultural,260.0,340.0,true,50.0
+17,Parque Central,270.0,350.0,true,50.0
+18,Estación Sur,280.0,360.0,true,50.0
+19,Universidad Técnica,290.0,370.0,true,50.0
+20,Hospital Regional,300.0,380.0,true,50.0
