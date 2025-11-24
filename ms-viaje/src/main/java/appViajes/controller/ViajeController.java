@@ -169,16 +169,20 @@ public class ViajeController {
             Integer tiempoTotal = viajeService.obtenerTiempoUsoMonopatines(
                     idUsuario, fechaInicio, fechaFin, verCuentasRelacionadas);
 
-            return ResponseEntity.ok(tiempoTotal);
+            if(verCuentasRelacionadas) {
+                return ResponseEntity.ok("Se ha utilizado los monopatines por " + tiempoTotal + " minutos sumando cuentas relacionadas.");
+            } else {
+                return ResponseEntity.ok("Se ha utilizado los monopatines por " + tiempoTotal + " minutos.");
+            }
 
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // Endpoint para administradores - top usuarios por uso
+    // Endpoint para administradores - top usuarios por uso - EJERCICIO E
     // ej http://localhost:8003/api/viajes/admin/topUsuarios/2023-01-01T00:00:00/2025-12-31T23:59:59/USUARIO
-    @GetMapping("/admin/topUsuarios/{fechaInicio}/{fechaFin}/{tipoUsuario}")
+    @GetMapping("/topUsuarios/{fechaInicio}/{fechaFin}/{tipoUsuario}")
     public ResponseEntity<?> obtenerTopUsuariosPorUso(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,

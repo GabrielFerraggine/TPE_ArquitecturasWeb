@@ -56,6 +56,11 @@ spring:
               predicates:
                 - Path=/api/monopatin/**
 
+            - id: ms-ia
+              uri: http://localhost:8006
+              predicates:
+                - Path=/api/ia/**
+
             # --- NUEVAS RUTAS PARA DOCUMENTACIÓN ---
 
             # Documentación MS-CUENTA

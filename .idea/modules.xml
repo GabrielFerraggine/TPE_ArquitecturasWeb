@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Tpe_arqui.iml" filepath="$PROJECT_DIR$/Tpe_arqui.iml" />
       <module fileurl="file://$PROJECT_DIR$/ms-autenticacion/ms-autenticacion.iml" filepath="$PROJECT_DIR$/ms-autenticacion/ms-autenticacion.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-facturacion/ms-facturacion.iml" filepath="$PROJECT_DIR$/ms-facturacion/ms-facturacion.iml" />
       <module fileurl="file://$PROJECT_DIR$/ms-monopatin/ms-monopatin.iml" filepath="$PROJECT_DIR$/ms-monopatin/ms-monopatin.iml" />
       <module fileurl="file://$PROJECT_DIR$/ms-viaje/ms-viaje.iml" filepath="$PROJECT_DIR$/ms-viaje/ms-viaje.iml" />
     </modules>

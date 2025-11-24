@@ -58,23 +58,7 @@ public class ServiceIA {
                                 )
                         )
                 ),
-                // TOOL 2: Monopatines Cercanos (NUEVA)
-                Map.of(
-                        "type", "function",
-                        "function", Map.of(
-                                "name", "buscar_monopatines_cercanos",
-                                "description", "Busca monopatines disponibles cerca de una ubicación (latitud/longitud).",
-                                "parameters", Map.of(
-                                        "type", "object",
-                                        "properties", Map.of(
-                                                "latitud", Map.of("type", "number", "description", "Latitud geográfica"),
-                                                "longitud", Map.of("type", "number", "description", "Longitud geográfica")
-                                        ),
-                                        "required", List.of("latitud", "longitud")
-                                )
-                        )
-                ),
-                // TOOL 3: Historial de Viajes (ACTUALIZADA con tu controller real)
+                // TOOL 2: Historial de Viajes (ACTUALIZADA con tu controller real)
                 Map.of(
                         "type", "function",
                         "function", Map.of(
