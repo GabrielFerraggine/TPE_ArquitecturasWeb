@@ -10,7 +10,7 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class Admin {
+public class Rol {
 
     @Id
     private String name;

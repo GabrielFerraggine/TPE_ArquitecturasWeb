@@ -28,7 +28,6 @@ public class DetalleFactura {
     private Long tiempoPausado;
     private BigDecimal montoCalculado;
 
-    //se crea construnctor con 6 parametros(no uso el AllArgs de lombok)
     public DetalleFactura(Factura factura, Long viajeId, BigDecimal tarifaBase, BigDecimal tarifaExtra, long tiempoUso, long tiempoPausado) {
         this.factura = factura;
         this.viajeId = viajeId;

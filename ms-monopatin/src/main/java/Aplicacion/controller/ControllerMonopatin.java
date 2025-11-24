@@ -67,7 +67,6 @@ public class ControllerMonopatin {
         }
     }
 
-    // LIBRE, ENUSO, ENMANTENIMIENTO
     @PutMapping("/{id}/cambiarEstado/{estado}")
     public ResponseEntity<String> setEstado(@PathVariable("id") Long idMonopatin, @PathVariable("estado") Estado estado) {
         if (Estado.ENUSO == estado || Estado.ENMANTENIMIENTO == estado || Estado.LIBRE == estado) {
@@ -99,7 +98,6 @@ public class ControllerMonopatin {
         return ResponseEntity.ok().body("Se borró el Monopatin (id = " + id + ")");
     }
 
-    /*reporte/kmRecorridos?tiempoDePausas=true & ... */
     @GetMapping("/reporte/kmRecorridos")
     public ResponseEntity<List<ReporteDTO>> getReportePorKmRecorridos(@RequestParam(required = false)Optional<Boolean> tiempoDePausas) {
         List<ReporteDTO> reporte = null;

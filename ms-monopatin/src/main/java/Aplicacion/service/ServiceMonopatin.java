@@ -4,13 +4,9 @@ import Aplicacion.DTO.MonopatinDTO;
 import Aplicacion.DTO.ReporteDTO;
 import Aplicacion.entity.Estado;
 import Aplicacion.entity.Monopatin;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import Aplicacion.repository.RepositoryMonopatin;
 
 import java.util.Collections;
@@ -74,21 +70,18 @@ public class ServiceMonopatin {
 
     public List<ReporteDTO> getReportePorKmRecorridos() {
         try {
-            // 1. Recuperamos los datos crudos (Entidades parciales) de Mongo
             List<Monopatin> monopatines = repoMonopatin.findAllDataParaReporteKm();
 
-            // 2. Si está vacío, retornamos lista vacía (Spring Data nunca devuelve null, pero por seguridad)
             if (monopatines.isEmpty()) {
                 return Collections.emptyList();
             }
 
-            // 3. Convertimos la lista de Monopatin a ReporteDTO usando Stream
             return monopatines.stream()
                     .map(m -> new ReporteDTO(
                             m.getIdMonopatin(),
                             m.getKmRecorridos(),
-                            0,  // Tu valor hardcodeado original
-                            0   // Tu valor hardcodeado original
+                            0,
+                            0
                     ))
                     .collect(Collectors.toList());
 
@@ -99,20 +92,18 @@ public class ServiceMonopatin {
 
     public List<ReporteDTO> getReportePorKmYTiempoDePausas() {
         try {
-            // 1. Traemos los datos de Mongo
             List<Monopatin> monopatines = repoMonopatin.findAllDataReportePausasyKm();
 
             if (monopatines.isEmpty()) {
                 return Collections.emptyList();
             }
 
-            // 2. Mapeamos a DTO en memoria
             return monopatines.stream()
                     .map(m -> new ReporteDTO(
                             m.getIdMonopatin(),
                             m.getKmRecorridos(),
-                            0, // El valor hardcodeado (tercer parámetro)
-                            m.getTiempoDePausas() // El cuarto parámetro ahora viene de la base
+                            0,
+                            m.getTiempoDePausas()
                     ))
                     .collect(Collectors.toList());
 
@@ -123,14 +114,12 @@ public class ServiceMonopatin {
 
     public List<ReporteDTO> getReportePorTiempoDeUsoTotal() {
         try {
-            // 1. Traemos los datos de Mongo
             List<Monopatin> monopatines = repoMonopatin.findAllDataReportePorTiempoDeUsoTotal();
 
             if (monopatines.isEmpty()) {
                 return Collections.emptyList();
             }
 
-            // 2. Mapeamos a DTO en memoria
             return monopatines.stream()
                     .map(m -> new ReporteDTO(
                             m.getIdMonopatin(),
@@ -147,14 +136,12 @@ public class ServiceMonopatin {
 
     public List<ReporteDTO> getReportePorTiempoDePausas() {
         try {
-            // 1. Traemos los datos de Mongo
             List<Monopatin> monopatines = repoMonopatin.findAllDataReportePorTiempoDePausas();
 
             if (monopatines.isEmpty()) {
                 return Collections.emptyList();
             }
 
-            // 2. Mapeamos a DTO en memoria
             return monopatines.stream()
                     .map(m -> new ReporteDTO(
                             m.getIdMonopatin(),
@@ -171,14 +158,12 @@ public class ServiceMonopatin {
 
     public List<ReporteDTO> getReporteCompleto() {
         try {
-            // 1. Traemos los datos de Mongo
             List<Monopatin> monopatines = repoMonopatin.findAllDataReporteCompleto();
 
             if (monopatines.isEmpty()) {
                 return Collections.emptyList();
             }
 
-            // 2. Mapeamos a DTO en memoria
             return monopatines.stream()
                     .map(m -> new ReporteDTO(
                             m.getIdMonopatin(),
@@ -196,14 +181,12 @@ public class ServiceMonopatin {
 
     public boolean finalizarRecorrido(Long idMonopatin, double kmRecorridos,
                                       int tiempoDeUsoTotal, int tiempoDePausas) {
-        // Buscar valores actuales
         Monopatin monopatin = buscarMonopatinPorId(idMonopatin);
 
         if (monopatin == null) {
             return false;
         }
 
-        // Calcular nuevos valores
         double nuevosKm = monopatin.getKmRecorridos() + kmRecorridos;
         int nuevoTiempoUso = monopatin.getTiempoDeUsoTotal() + tiempoDeUsoTotal;
         int nuevoTiempoPausas = monopatin.getTiempoDePausas() + tiempoDePausas;

@@ -4,7 +4,6 @@ package appViajes.service;
 import appViajes.dto.*;
 import appViajes.entity.Pausa;
 import appViajes.entity.Viaje;
-import appViajes.feignClients.CuentaFeignClient;
 import appViajes.feignClients.MonopatinFeignClient;
 import appViajes.feignClients.UsuarioFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,6 @@ public class ViajeService {
     @Autowired
     private UsuarioFeignClient usuarioFeignClient;
 
-    @Autowired
-    private CuentaFeignClient cuentaFeignClient;
 
     @Transactional(readOnly = true)
     public List<ViajeDTO> reportarViajes(){
@@ -110,7 +107,6 @@ public class ViajeService {
             throw new RuntimeException("El monopatín no se encuentra en la parada designada para finalizar");
         }
 
-        //Calcular la tarifa?
 
         viaje.finalizarViaje(LocalDateTime.now(), request.getParadaFinal(),
                 request.getKmRecorridos());
@@ -121,7 +117,6 @@ public class ViajeService {
         return mapToDTO(viajeActualizado);
 
 
-        // /finalizarRecorrido/{idMonopatin}/{kmRecorridos}/{tiempoDeUsoTotal}/{tiempoDePausas}
     }
 
     private void validarEstadoParaFinalizar(Viaje viaje) {
@@ -184,7 +179,7 @@ public class ViajeService {
     public List<ViajeDTO> obtenerViajesPorCuenta(Long idCuenta){
         return viajeRepository.findByIdCuenta(idCuenta)
                 .stream().map(
-                        this::mapToDTO // viaje->mapToDTO(viaje)
+                        this::mapToDTO
                 )
                 .collect(Collectors.toList());
     }
@@ -206,11 +201,9 @@ public class ViajeService {
         Integer tiempoTotal;
 
         if (Boolean.TRUE.equals(verCuentasRelacionadas)) {
-            // Suma de TODOS los usuarios de las cuentas relacionadas
             tiempoTotal = viajeRepository.findTiempoUsoTotalPorCuentasRelacionadas(
                     idUsuario, fechaInicio, fechaFin);
         } else {
-            // Solo el usuario específico
             tiempoTotal = viajeRepository.findTiempoUsoTotalPorUsuarioYPeriodo(
                     idUsuario, fechaInicio, fechaFin);
         }
@@ -225,13 +218,10 @@ public class ViajeService {
         }
 
         try {
-            // 1. Obtener lista de IDs de usuarios del rol especificado desde ms-usuarios
             List<Long> usuariosFiltrados = obtenerUsuariosIdsPorRol(tipoUsuario);
 
-            // 2. Obtener todos los resultados de viajes
             List<Object[]> resultados = viajeRepository.findTopUsuariosPorUso(fechaInicio, fechaFin);
 
-            // 3. Filtrar resultados solo para usuarios del rol especificado
             if (!"TODOS".equalsIgnoreCase(tipoUsuario)) {
                 resultados = filtrarPorUsuariosEspecificos(resultados, usuariosFiltrados);
             }
@@ -283,14 +273,11 @@ public class ViajeService {
                 return Long.parseLong(usuarioStr);
             }
 
-            // Si retorna objetos JSON, extraer el ID
-            // Ejemplo: "{\"idUsuario\": 1, \"nombre\": \"Juan\"}" -> extraer "1"
             if (usuarioStr.contains("idUsuario")) {
                 String idStr = usuarioStr.replaceAll(".*\"idUsuario\"\\s*:\\s*(\\d+).*", "$1");
                 return Long.parseLong(idStr);
             }
 
-            // Intentar extraer cualquier número
             String numericPart = usuarioStr.replaceAll("[^0-9]", "");
             return numericPart.isEmpty() ? null : Long.parseLong(numericPart);
 

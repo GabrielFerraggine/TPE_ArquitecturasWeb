@@ -46,13 +46,13 @@ public class Usuario {
             joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "authority_name", referencedColumnName = "name") }
     )
-    private Set<Admin> admins = new HashSet<>();
+    private Set<Rol> admins = new HashSet<>();
 
     public Usuario( final String username ) {
         this.username = username.toLowerCase();
     }
 
-    public void setAdmins( final Collection<Admin> authorities ) {
+    public void setAdmins( final Collection<Rol> authorities ) {
         this.admins = new HashSet<>( authorities );
     }
 }

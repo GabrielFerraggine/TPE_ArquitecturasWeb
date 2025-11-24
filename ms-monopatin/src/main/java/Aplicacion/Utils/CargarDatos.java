@@ -8,7 +8,6 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jakarta.annotation.PostConstruct;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,12 +29,10 @@ public class CargarDatos {
 
     private void cargarMonopatines() throws IOException {
         if (repoMonopatin.count() == 0) {
-            // Usar ClassPathResource en lugar de ResourceUtils.getFile
             org.springframework.core.io.Resource resource =
                     new org.springframework.core.io.ClassPathResource("DBData/monopatin.csv");
 
             try (InputStreamReader reader = new InputStreamReader(resource.getInputStream());
-                 // Añade .withIgnoreSurroundingSpaces()
                  CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreSurroundingSpaces().parse(reader)) {
 
                 for (CSVRecord record : csvParser) {

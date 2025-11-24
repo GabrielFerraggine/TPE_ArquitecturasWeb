@@ -1,6 +1,6 @@
 package gateway.security;
 
-import gateway.entity.Admin;
+import gateway.entity.Rol;
 import gateway.entity.Usuario;
 import gateway.repository.UsuarioRepository;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class DomainUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> grantedAuthorities = user
                 .getAdmins()
                 .stream()
-                .map( Admin::getName )
+                .map( Rol::getName )
                 .map( SimpleGrantedAuthority::new )
                 .collect( Collectors.toList() );
 

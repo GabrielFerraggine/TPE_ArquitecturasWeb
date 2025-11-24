@@ -1,9 +1,7 @@
 package appViajes.controller;
 
 import appViajes.dto.ParadaDTO;
-import appViajes.entity.Parada;
 import appViajes.service.ParadaService;
-import org.aspectj.apache.bcel.classfile.annotation.RuntimeInvisAnnos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

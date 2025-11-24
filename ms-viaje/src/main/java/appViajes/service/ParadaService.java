@@ -85,7 +85,6 @@ public class ParadaService {
     public List<ParadaDTO> obtenerTodasParadas() {
         List<Parada> paradas = paradaRepository.findAll();
         return paradas.stream().map(this::mapToDTO).toList();
-        // resturn paradas.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     public ParadaDTO obtenerParadaPorId(Long id) {

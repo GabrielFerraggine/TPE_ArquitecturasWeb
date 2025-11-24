@@ -22,7 +22,7 @@ public class GroqClient {
     public GroqClient(
             @Value("${groq.base-url:https://api.groq.com/openai}") String baseUrl,
             @Value("${groq.api-key}") String apiKey,
-            @Value("${groq.model:llama3-70b-8192}") String model // Usamos un modelo potente para tools
+            @Value("${groq.model:llama3-70b-8192}") String model
     ) {
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;

@@ -47,12 +47,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/monopatin/reporte/kmRecorridos**").hasAnyAuthority( AdminConstant._ADMIN)//punto A
                         .requestMatchers(HttpMethod.PUT, "/api/usuario/{dni}/**").hasAuthority( AdminConstant._ADMIN)//Punto B (Anular/Activar cuenta)
-                        .requestMatchers(HttpMethod.GET, "/api/viaje/viajesFrecuentes/{cantidadMinima}/{anio}").hasAuthority( AdminConstant._ADMIN)//Punto C
+                        .requestMatchers(HttpMethod.GET, "/api/viajes/viajesFrecuentes/{cantidadMinima}/{anio}").hasAuthority( AdminConstant._ADMIN)//Punto C
                         .requestMatchers(HttpMethod.GET, "/api/factura/totalFacturado/{anio}/{mesInicio}/{mesFin}").hasAuthority( AdminConstant._ADMIN)//Punto D
                         .requestMatchers( "/api/viajes/topUsuarios/**").hasAuthority( AdminConstant._ADMIN)//PUNTO e
                         .requestMatchers(HttpMethod.POST, "/api/tarifa/ajustarPrecios/{nuevaTarifaBase}/{nuevaTarifaExtra}/{fechaInicio}").hasAuthority( AdminConstant._ADMIN)//Punto F
-                        .requestMatchers(HttpMethod.GET, "/api/usuario/obtenerMonopatinesCercanos/{latitud}/{longitud}").hasAuthority( AdminConstant._USUARIO)//Punto G
-                        .requestMatchers(HttpMethod.GET, "/api/viaje/tiempoUsoMonopatines/**").hasAuthority( AdminConstant._USUARIO)//Punto H
+                        .requestMatchers(HttpMethod.GET, "/api/monopatin/obtenerMonopatinesCercanos/{latitud}/{longitud}").hasAuthority( AdminConstant._USUARIO)//Punto G
+                        .requestMatchers(HttpMethod.GET, "/api/viajes/tiempoUsoMonopatines/**").hasAuthority( AdminConstant._USUARIO)//Punto H
                         .requestMatchers("/api/ia/**").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -1,8 +1,5 @@
 package appViajes.Utils;
 
-import appViajes.entity.Parada;
-import appViajes.entity.Pausa;
-import appViajes.entity.Viaje;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.apache.commons.csv.CSVFormat;
@@ -55,7 +52,6 @@ public class CargarDatos {
             repoParada.deleteAllInBatch();
             System.out.println("Datos limpiados");
 
-            // Cargar en orden correcto
             cargarParadas();
             cargarViajes();
             cargarPausas();
@@ -169,7 +165,6 @@ public class CargarDatos {
                     batchParams.add(params);
                     count++;
 
-                    // Ejecutar por lotes
                     if (batchParams.size() >= batchSize) {
                         ejecutarBatchViajes(batchParams);
                         batchParams.clear();
@@ -177,7 +172,6 @@ public class CargarDatos {
                     }
                 }
 
-                // Ejecutar último lote
                 if (!batchParams.isEmpty()) {
                     ejecutarBatchViajes(batchParams);
                 }
@@ -300,12 +294,10 @@ public class CargarDatos {
             return null;
         }
         try {
-            // Probar formato con espacio
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             return LocalDateTime.parse(fechaStr, formatter);
         } catch (Exception e1) {
             try {
-                // Probar formato ISO
                 return LocalDateTime.parse(fechaStr);
             } catch (Exception e2) {
                 System.err.println("No se pudo parsear la fecha: " + fechaStr);

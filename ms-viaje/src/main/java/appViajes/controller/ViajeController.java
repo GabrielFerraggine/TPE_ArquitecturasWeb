@@ -44,7 +44,6 @@ public class ViajeController {
         }
     }
 
-    // Opcional: mantener el endpoint con path variables
     @PostMapping("/iniciar/{idMonopatin}/{idUsuario}/{idCuenta}/{idParadaInicio}/{idParadaFinal}")
     public ResponseEntity<?> iniciarViajeConPath(
             @PathVariable Long idMonopatin,
@@ -137,11 +136,6 @@ public class ViajeController {
     //Como administrador quiero ver los usuarios que más utilizan los monopatines, filtrado por período y por tipo de usuario.
     //Como usuario quiero saber cuánto he usado los monopatines en un período, y opcionalmente si otros usuarios relacionados a mi cuenta los han usado.
 
-    //Datos enviados: idUsuario, inicio, fin, boolean verCuentasRelacionadas
-    //Opcionalmente si otros usuarios relacionados a mi cuenta los han usado.
-    //Datos respuesta: int tiempoUsoMonopatines
-
-    // POST con Request Body
     @PostMapping("/tiempoUsoMonopatines")
     public ResponseEntity<?> tiempoUsoMonopatines(@RequestBody TiempoUsoRequest request) {
         try {
@@ -157,7 +151,7 @@ public class ViajeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    // ej http://localhost:8003/api/viajes/tiempoUsoMonopatines/1/2024-01-01T00:00:00/2024-12-31T23:59:59/true
+
     @GetMapping("/tiempoUsoMonopatines/{idUsuario}/{fechaInicio}/{fechaFin}/{verCuentasRelacionadas}")
     public ResponseEntity<?> tiempoUsoMonopatinesPath(
             @PathVariable Long idUsuario,
@@ -181,7 +175,6 @@ public class ViajeController {
     }
 
     // Endpoint para administradores - top usuarios por uso - EJERCICIO E
-    // ej http://localhost:8003/api/viajes/admin/topUsuarios/2023-01-01T00:00:00/2025-12-31T23:59:59/USUARIO
     @GetMapping("/topUsuarios/{fechaInicio}/{fechaFin}/{tipoUsuario}")
     public ResponseEntity<?> obtenerTopUsuariosPorUso(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,

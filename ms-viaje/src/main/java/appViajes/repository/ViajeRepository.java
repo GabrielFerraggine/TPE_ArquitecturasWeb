@@ -18,9 +18,7 @@ public interface ViajeRepository extends JpaRepository<Viaje, Long> {
     List<Viaje> findByIdCuenta(Long idCuenta);
     List<Viaje> findByFechaHoraInicioBetween(LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
-    // Querys
-    //
-      // reportarViajes
+
     @Query("SELECT v FROM Viaje v")
     List<Viaje> reportarViajes();
 
@@ -45,7 +43,6 @@ public interface ViajeRepository extends JpaRepository<Viaje, Long> {
             @Param("cantidadMinima") Long cantidadMinima,
             @Param("anio") Integer anio);
 
-    /// //
 
     @Query(value = "SELECT COALESCE(SUM(TIMESTAMPDIFF(MINUTE, v.fecha_hora_inicio, COALESCE(v.fecha_hora_fin, CURRENT_TIMESTAMP))), 0) " +
             "FROM viajes v " +

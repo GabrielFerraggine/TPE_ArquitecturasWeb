@@ -1,7 +1,6 @@
 package Modelos;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -17,6 +16,4 @@ public class Viaje {
     private Double taifa;
     private Long paradaInicio;
     private Long paradaFinal;
-    //private EstadoViaje estado;
-    //private List<Pausa> pausas;
 }

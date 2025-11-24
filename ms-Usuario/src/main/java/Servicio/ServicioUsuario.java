@@ -50,9 +50,7 @@ public class ServicioUsuario {
         return dtoUsuario;
     }
 
-    /*=========================Metodos de los FeignClient================================*/
-    /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona,
-    para poder encontrar un monopatín cerca de mi ubicación*/
+    /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona*/
     @Transactional(readOnly = true)
     public List<Monopatin> obtenerMonopatinesCercanos(double latitud, double longitud) throws Exception {
         try {
@@ -62,7 +60,6 @@ public class ServicioUsuario {
         }
     }
 
-    // ---Metodos con ms-cuenta
     //Obtener cuentas de un usuario
     private List<Cuenta> obtenerCuentasUsuarios(String idUsuario) throws Exception {
         try {
@@ -146,7 +143,6 @@ public class ServicioUsuario {
         }
     }
 
-    /*==================================Metodos propios==================================*/
     //Obtener un usuario
     @Transactional(readOnly = true)
     public DTOUsuario obtenerUsuario(String id) throws Exception{
@@ -260,8 +256,4 @@ public class ServicioUsuario {
     }
 
 
-    /*@Transactional
-    public DTOTiempoDeViaje cuantoSeUsoEnCiertoPeriodo(String miDNI, LocalDate fechaDesde, LocalDate fechaHasta, boolean loUsaron) {
-        return feignViaje.cuantoSeUsoEnCiertoPeriodo(miDNI, fechaDesde, fechaHasta, loUsaron);
-    }*/
 }

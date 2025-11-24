@@ -1,8 +1,5 @@
 package feignClients;
 
-import DTO.DTOTiempoDeViaje;
-import Modelos.Viaje;
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;

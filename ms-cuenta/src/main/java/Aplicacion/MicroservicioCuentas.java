@@ -11,7 +11,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 @OpenAPIDefinition(
         info = @Info(
                 title = "Cuenta microservicio",
-                version = "1.9.9",
+                version = "1.0.0",
                 description = "Módulo de gestión de cuentas y saldos."
         )
 )

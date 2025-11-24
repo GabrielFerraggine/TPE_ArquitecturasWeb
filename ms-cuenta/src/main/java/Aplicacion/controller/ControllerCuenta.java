@@ -87,6 +87,11 @@ public class ControllerCuenta {
         return ResponseEntity.ok(serviceCuenta.verSaldo(id));
     }
 
+    @GetMapping("/{id}/premium")
+    public boolean verificarCuentaPremium(@PathVariable @NotNull Long id) {
+        return serviceCuenta.verificarCuentaPremium(id);
+    }
+
 
 
 }

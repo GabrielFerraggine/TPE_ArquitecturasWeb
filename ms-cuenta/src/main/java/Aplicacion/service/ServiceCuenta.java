@@ -9,6 +9,7 @@ import Aplicacion.dtos.SaldoResponseDTO;
 import Aplicacion.entity.Cuenta;
 import Aplicacion.entity.Usuario;
 import Aplicacion.repository.RepositoryUsuario;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,5 +95,10 @@ public class ServiceCuenta {
     public SaldoResponseDTO verSaldo(Long numeroCuenta) {
         Cuenta cuenta = repoCuenta.findById(numeroCuenta).orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
         return new SaldoResponseDTO(numeroCuenta, cuenta.getSaldo());
+    }
+
+    public boolean verificarCuentaPremium(@NotNull Long id) {
+        Cuenta cuenta = repoCuenta.findById(id).orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+        return cuenta.isPremium();
     }
 }

@@ -56,7 +56,6 @@ public class CargarDatos {
                     Usuario usuario = crearUsuarioBasicoDesdeRecord(record);
                     usuarios.add(usuario);
 
-                    // Recopilar información de relaciones para procesar después
                     String cuentasStr = record.get("cuentas");
                     if (cuentasStr != null && !cuentasStr.trim().isEmpty()) {
                         List<Long> idsCuentas = parsearListaLong(cuentasStr);
@@ -68,11 +67,9 @@ public class CargarDatos {
                     }
                 }
 
-                // Guardar usuarios primero (sin las relaciones de cuentas)
                 repoUsuario.saveAll(usuarios);
                 System.out.println("Usuarios básicos guardados: " + usuarios.size());
 
-                // Ahora establecer las relaciones ManyToMany
                 establecerRelacionesCuentas(usuarios, cuentasUsuariosMap);
 
                 System.out.println("Total usuarios cargados: " + repoUsuario.count());
@@ -95,10 +92,8 @@ public class CargarDatos {
         usuario.setLongitud(Double.parseDouble(record.get("longitud")));
         usuario.setPassword(record.get("password"));
 
-        // Inicializar lista de cuentas vacía por ahora
         usuario.setCuentas(new ArrayList<>());
 
-        // Procesar listas simples
         usuario.setMonopatines(parsearListaLong(record.get("monopatines")));
         usuario.setViajes(parsearListaLong(record.get("viajes")));
 
@@ -106,11 +101,9 @@ public class CargarDatos {
     }
 
     private void establecerRelacionesCuentas(List<Usuario> usuarios, Map<Long, Set<String>> cuentasUsuariosMap) {
-        // Crear un mapa de usuarios por ID para fácil acceso
         Map<String, Usuario> usuarioMap = usuarios.stream()
                 .collect(Collectors.toMap(Usuario::getIdUsuario, u -> u));
 
-        // Para cada cuenta, crear la entidad y establecer relaciones
         for (Map.Entry<Long, Set<String>> entry : cuentasUsuariosMap.entrySet()) {
             Long cuentaId = entry.getKey();
             Set<String> usuarioIds = entry.getValue();
@@ -118,7 +111,6 @@ public class CargarDatos {
             Cuenta cuenta = new Cuenta();
             cuenta.setIdCuenta(cuentaId);
 
-            // Establecer relaciones bidireccionales
             for (String usuarioId : usuarioIds) {
                 Usuario usuario = usuarioMap.get(usuarioId);
                 if (usuario != null) {
@@ -127,7 +119,6 @@ public class CargarDatos {
             }
         }
 
-        // Guardar usuarios actualizados con las relaciones
         repoUsuario.saveAll(usuarios);
         System.out.println("Relaciones de cuentas establecidas para " + cuentasUsuariosMap.size() + " cuentas únicas");
     }

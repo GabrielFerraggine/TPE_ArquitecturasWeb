@@ -40,4 +40,8 @@ public class Cuenta {
     @Column
     private boolean activo; //estado de cuenta: anulada o no
 
+    public boolean isPremium() {
+        return tipoCuenta == TipoCuenta.PREMIUM;
+    }
+
 }

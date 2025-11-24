@@ -23,9 +23,8 @@ public class ControllerUsuario {
     public ControllerUsuario(ServicioUsuario servicioUsuario) {
         this.servicioUsuario = servicioUsuario;
     }
-    /*==============================Llamadas de los FeignClient==============================*/
-    /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona,
-    para poder encontrar un monopatín cerca de mi ubicación*/
+
+    /*g. Como usuario quiero un listado de los monopatines cercanos a mi zona*/
     @GetMapping("/obtenerMonopatinesCercanos/{latitud}/{longitud}")
     public ResponseEntity<List<Monopatin>> obtenerMonopatinesCercanos(@PathVariable double latitud, @PathVariable double longitud) {
         try {
@@ -69,7 +68,6 @@ public class ControllerUsuario {
         }
     }
 
-    /*=============================Llamadas de usuario=====================================*/
     @GetMapping("/obtenerUsuario/{idUsuario}")
     public ResponseEntity<DTOUsuario> obtenerUsuario(@PathVariable String idUsuario) {
         try {

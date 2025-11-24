@@ -2,10 +2,7 @@ package org.example.Service;
 
 import org.example.Client.GroqClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import org.example.feignClient.CuentaFeignClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,24 +21,19 @@ public class ServiceIA {
     @Autowired
     private GroqClient groqClient;
 
-    // Cliente HTTP para llamar a ms-facturacion, ms-viaje, etc.
+    @Autowired
+    private CuentaFeignClient cuentaFeignClient;
+
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // --- URLs de tus otros Microservicios (Ajusta los puertos si cambian) ---
     private final String URL_MS_FACTURACION = "http://localhost:8004/api/factura";
     private final String URL_MS_VIAJE = "http://localhost:8003/api/viajes";
-    private final String URL_MS_MONOPATIN = "http://localhost:8005/api/monopatin";
 
-    /*
     private static final String SECRET = "j7ZookpUTYxclaULynjypGQVKMYXqOXMI+/1sQ2gOV1BF6VOHw6OzYj9RNZY4GcHAE3Igrah3MZ26oLrY/3y4Q==";
-    private static final String AUTHORITIES_KEY = "auth"; */
-    /**
-     * 1. Define las "Tools" que la IA puede usar (Menú de opciones)
-     */
+
     private List<Map<String, Object>> obtenerDefinicionTools() {
         return List.of(
-                // TOOL 1: Facturación (La que ya tenías)
                 Map.of(
                         "type", "function",
                         "function", Map.of(
@@ -58,7 +50,6 @@ public class ServiceIA {
                                 )
                         )
                 ),
-                // TOOL 2: Historial de Viajes (ACTUALIZADA con tu controller real)
                 Map.of(
                         "type", "function",
                         "function", Map.of(
@@ -91,28 +82,19 @@ public class ServiceIA {
         );
     }
 
-    /**
-     * 2. Procesa el prompt del usuario
-     */
     public ResponseEntity<?> procesarMensaje(String prompt, String token) {
         try {
-            // --- PASO 1: Preguntar a la IA qué hacer ---
             Map<String, Object> respuestaIa = groqClient.preguntarConTools(prompt, obtenerDefinicionTools());
 
             if ((boolean) respuestaIa.get("esFuncion")) {
-                // CASO 1: La IA decidió usar una herramienta
                 String nombreFuncion = (String) respuestaIa.get("nombreFuncion");
                 String argumentosJson = (String) respuestaIa.get("argumentos");
 
                 log.info("🤖 Ejecutando tool: {}", nombreFuncion);
                 Object resultadoApi = ejecutarToolReal(nombreFuncion, argumentosJson, token);
 
-                // --- PASO 2 (NUEVO): VOLVER A LLAMAR A LA IA PARA RESUMIR ---
-
-                // Convertimos el resultado crudo a texto para que la IA lo lea
                 String jsonResultado = objectMapper.writeValueAsString(resultadoApi);
 
-                // Creamos un nuevo prompt interno
                 String promptResumen = String.format(
                         "El usuario preguntó: \"%s\".\n" +
                                 "Usé la herramienta \"%s\" y obtuve estos datos crudos: %s.\n" +
@@ -121,16 +103,13 @@ public class ServiceIA {
                         prompt, nombreFuncion, jsonResultado
                 );
 
-                // Llamamos a Groq de nuevo (esta vez SIN tools, solo para charlar)
                 Map<String, Object> respuestaFinal = groqClient.preguntarConTools(promptResumen, List.of());
 
-                // Devolvemos la respuesta bonita
                 return ResponseEntity.ok(Map.of(
                         "respuesta", respuestaFinal.get("contenido")
                 ));
 
             } else {
-                // CASO 2: Charla normal
                 return ResponseEntity.ok(Map.of(
                         "respuesta", respuestaIa.get("contenido")
                 ));
@@ -142,15 +121,10 @@ public class ServiceIA {
         }
     }
 
-    /**
-     * 3. Switch para ejecutar la llamada HTTP real al microservicio correspondiente
-     */
     private Object ejecutarToolReal(String nombreFuncion, String jsonArgs, String token) throws Exception {
         Map<String, Object> args = objectMapper.readValue(jsonArgs, Map.class);
 
         switch (nombreFuncion) {
-
-            // CASO A: FACTURACIÓN (Ya lo tenías, lo dejo igual)
             case "obtener_total_facturado":
                 Integer anio = ((Number) args.get("anio")).intValue();
                 Integer mesInicio = ((Number) args.get("mesInicio")).intValue();
@@ -158,25 +132,15 @@ public class ServiceIA {
                 String urlFact = URL_MS_FACTURACION + "/totalFacturado/" + anio + "/" + mesInicio + "/" + mesFin;
                 return restTemplate.getForObject(urlFact, Double.class);
 
-            // CASO C: HISTORIAL DE VIAJES (Nuevo)
-            // Endpoint: /api/viajes/usuario/{idUsuario}
             case "historial_viajes_usuario":
-                // Intentamos sacar el ID del prompt, si no viene, usamos 1 por defecto (o podrías sacarlo del token)
                 Integer idUser = args.containsKey("idUsuario") ? ((Number) args.get("idUsuario")).intValue() : 1;
-
                 String urlViajes = URL_MS_VIAJE + "/usuario/" + idUser;
-
-                // Retorna la lista de ViajeDTO
                 return restTemplate.getForObject(urlViajes, List.class);
 
             case "reporte_viajes_frecuentes":
                 Integer cant = ((Number) args.get("cantidadMinima")).intValue();
                 Integer anioReporte = ((Number) args.get("anio")).intValue();
-
-                // Construimos la URL: /api/viajes/viajesFrecuentes/{cantidad}/{anio}
                 String urlReporte = URL_MS_VIAJE + "/viajesFrecuentes/" + cant + "/" + anioReporte;
-
-                // Retornamos la lista de mapas
                 return restTemplate.getForObject(urlReporte, List.class);
 
             default:
@@ -184,39 +148,11 @@ public class ServiceIA {
         }
     }
 
-/*
     public boolean esUsuarioPremium(String token) {
         try {
-            // 1. Limpiar el token (quitar "Bearer " si viene)
-            String jwtReal = token;
-            if (token != null && token.startsWith("Bearer ")) {
-                jwtReal = token.substring(7);
-            }
-
-            // 2. Parsear el Token usando la misma clave secreta
-            byte[] keyBytes = Decoders.BASE64.decode(SECRET);
-
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(keyBytes))
-                    .build()
-                    .parseClaimsJws(jwtReal)
-                    .getBody();
-
-            // 3. Extraer los roles (vienen como String separados por coma)
-            // Ejemplo: "ROLE_USER,ROLE_PREMIUM"
-            String roles = claims.get(AUTHORITIES_KEY, String.class);
-
-            // 4. Validar si tiene el rol deseado
-            // Asegúrate de usar el nombre exacto que tienes en tu DB
-            return roles != null && roles.contains("ROLE_PREMIUM");
-
+            return(cuentaFeignClient.verificarCuentaPremium(1L));
         } catch (Exception e) {
-            // Si el token está vencido, manipulado o inválido, asumimos que NO es premium
-            // e.printStackTrace(); // Descomentar solo para debug
             return false;
         }
-    } */
-    public boolean esUsuarioPremium(String token){
-        return true;
     }
 }

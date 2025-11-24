@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/ia")
 public class ControllerIA {
     @Autowired
-    private ServiceIA sia;
+    private ServiceIA serviceIa;
 
     @PostMapping(value = "/chat", produces = "application/json")
     public ResponseEntity<?> conversar(
@@ -18,14 +18,14 @@ public class ControllerIA {
             @RequestHeader(value = "Authorization", required = false) String token
     ) {
         try {
-            // 1. Validación de Usuario Premium (Simulada o llamando a ms-usuario)
-            if (token == null || !sia.esUsuarioPremium(token)) {
+            // Validación de Usuario Premium
+            if (token == null || !serviceIa.esUsuarioPremium(token)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body("Acceso denegado: Esta funcionalidad es exclusiva para usuarios PREMIUM.");
             }
 
-            // 2. Procesar el mensaje
-            return sia.procesarMensaje(prompt, token);
+            // Procesar el mensaje
+            return serviceIa.procesarMensaje(prompt, token);
 
         } catch (Exception e) {
             e.printStackTrace();
